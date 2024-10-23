@@ -67,11 +67,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		whiteB = CreateSolidBrush(RGB(255, 255, 255));
 
 		InitSprite();
-		gm.AddObject((GameObject*)HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1));
+		//gm.AddObject((GameObject*)HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1));
 		//((PlayStation*)gm.GetGameObject(0))->LoadData("sampleTest.txt");
-		((PlayStation*)gm.GetGameObject(0))->LoadMusic("Sound\\momijinosakamichi.ogg");
-		((PlayStation*)gm.GetGameObject(0))->LoadData("NoteData\\Momijinosakamichi.txt");
-		//gm.AddObject((GameObject*)HeapDebugClass::HeapNew<LogoPage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+		//((PlayStation*)gm.GetGameObject(0))->LoadMusic("Sound\\momijinosakamichi.ogg");
+		//((PlayStation*)gm.GetGameObject(0))->LoadData("NoteData\\Momijinosakamichi.txt");
+		gm.AddObject((GameObject*)HeapDebugClass::HeapNew<LogoPage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 		//gm.AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 		gm.Update(0);
 		InitObjs();
