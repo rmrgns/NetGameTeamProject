@@ -539,7 +539,7 @@ ROTPOS PlayStation::GetNextROTPOS(ROTPOS rot, bool left)
 void PlayStation::Rim()
 {
 	Music::PlayOnce(1);
-	Music::SetChannelVolume(1, 0.4f);
+	Music::SetChannelVolume(1, 0.1f);
 }
 
 void PlayStation::Hit(char pan, Note note)
@@ -768,6 +768,8 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
 		Music::SetChannelPos(0, 1000 * GetTime());
+		// 사운드 조절
+		Music::SetChannelVolume(0, 0.1f);
 	}
 	else {
 		//clear one sound
