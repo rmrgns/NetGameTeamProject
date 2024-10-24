@@ -122,8 +122,8 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
-	AddMusicData("Sound/momijinosakamichi.ogg", "NoteData/Momijinosakamichi.txt");
-	AddMusicData("Sound/otherOperation5.mp3", "NoteData/momi.txt");
+	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
+	AddMusicData("otherOperation5.mp3", "momi.txt");
 	SetLocation(loc);
 	SetLayer(layer);
 	return this;
@@ -385,7 +385,9 @@ const int& TitlePage::GetIconNum()
 
 void TitlePage::AddMusicData(const string& musicName, const string& dataName)
 {
-	musicDataSet.push_back({ musicName, dataName });
+	string music = "Sound/" + musicName;
+	string data = "NoteData/" + dataName;
+	musicDataSet.push_back({ music, data });
 }
 
 void TitlePage::PrintMusicData() const
