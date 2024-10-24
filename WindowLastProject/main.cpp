@@ -71,7 +71,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		//((PlayStation*)gm.GetGameObject(0))->LoadData("sampleTest.txt");
 		//((PlayStation*)gm.GetGameObject(0))->LoadMusic("Sound\\momijinosakamichi.ogg");
 		//((PlayStation*)gm.GetGameObject(0))->LoadData("NoteData\\Momijinosakamichi.txt");
-		gm.AddObject((GameObject*)HeapDebugClass::HeapNew<LogoPage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+		gm.AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 		//gm.AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 		gm.Update(0);
 		InitObjs();
