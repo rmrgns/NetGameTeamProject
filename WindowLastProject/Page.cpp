@@ -122,6 +122,8 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
+	AddMusicData("Sound/momijinosakamichi.ogg", "NoteData/Momijinosakamichi.txt");
+	AddMusicData("Sound/otherOperation5.mp3", "NoteData/momi.txt");
 	SetLocation(loc);
 	SetLayer(layer);
 	return this;
@@ -232,6 +234,10 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_SPACE) {
 				IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
 			}
+			if (wParam == '1')
+				tempcount = 0;
+			if (wParam == '2')
+				tempcount = 1;
 		}
 	}
 }
@@ -320,10 +326,10 @@ void TitlePage::NextPage()
 			{
 				GameManager* GM = (GameManager*)gm;
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
-				ps->LoadMusic("Sound\\momijinosakamichi.ogg");
-				ps->LoadData("NoteData\\Momijinosakamichi.txt");
-				ps->LoadMusic("Sound\\otherOperation5.mp3");
-				ps->LoadData("NoteData\\momi.txt");
+				ps->LoadMusic(musicDataSet[tempcount].musicName.c_str());
+				ps->LoadData(musicDataSet[tempcount].noteName.c_str());
+				//ps->LoadMusic(musicDataSet[1].musicName.c_str());
+				//ps->LoadData(musicDataSet[1].noteName.c_str());
 
 				GM->AddObject((GameObject*)ps);
 			}
@@ -375,6 +381,15 @@ const int& TitlePage::GetIconNum()
 	if (enable) {
 		return iconNum;
 	}
+}
+
+void TitlePage::AddMusicData(const string& musicName, const string& dataName)
+{
+	musicDataSet.push_back({ musicName, dataName });
+}
+
+void TitlePage::PrintMusicData() const
+{
 }
 
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam)
