@@ -124,6 +124,9 @@ TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
 	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
 	AddMusicData("otherOperation5.mp3", "momi.txt");
+	AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
+	AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
+	AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
 	SetLocation(loc);
 	SetLayer(layer);
 	return this;
@@ -234,10 +237,13 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_SPACE) {
 				IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
 			}
-			if (wParam == '1')
-				tempcount = 0;
-			if (wParam == '2')
-				tempcount = 1;
+			if (wParam >= '1' && wParam <= '9')
+			{
+				tempcount = int(wParam) - 49;
+				if (musicDataSet.size() <= tempcount)
+					tempcount = 0;
+			}
+
 		}
 	}
 }
