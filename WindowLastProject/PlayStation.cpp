@@ -781,6 +781,8 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
 		Music::SetChannelPos(0, 1000 * GetTime());
+		// 사운드 조절
+		Music::SetChannelVolume(0, 0.1f);
 	}
 }
 
@@ -1870,3 +1872,5 @@ void PlayStation::Render(HDC hdc)
 		
 	}
 }
+
+
