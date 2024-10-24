@@ -217,6 +217,22 @@ public:
 
 	}
 
+	void DeleteObject(GameObject* const go) {
+		if (objup > 0)
+		{
+			for (int i = 0; i < objup; ++i) {
+				if (GetGameObject(i) == go)
+				{
+					GameObject* obj = GetGameObject(i);
+					if (HeapDebugClass::HeapDebug[obj] == true) {
+						HeapDebugClass::HeapDelete<GameObject>(obj);
+						objPool[i] = nullptr;
+					}
+				}
+			}
+		}
+	}
+
 	GameObject* GetGameObject(const int& index) {
 		if (0 <= index && index < objup) {
 			if (HeapDebugClass::HeapDebug[objPool[index]] == true) {
@@ -267,6 +283,7 @@ public:
 				objPool[i]->Event(hWnd, iMessage, wParam, lParam);
 			}
 		}
+		
 	}
 
 	void Render(HDC hdc) {

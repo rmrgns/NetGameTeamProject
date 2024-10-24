@@ -1,5 +1,7 @@
 #include "EditStation.h"
-
+#include "HeapDebug.h"
+#include "Game.h"
+#include "Page.h"
 GameUI* GameUI::UIArr[GAMEUI_MAX] = {};
 int GameUI::GameUIUpdate = 0;
 
@@ -357,6 +359,9 @@ void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		if (iMessage == WM_KEYDOWN) {
 			if (wParam == VK_NUMPAD1 || wParam == 49) {
 				AddNoteType = NOTE_TYPE::NormalNote;
+				GameManager* GM = (GameManager*)gm;
+				GM->DeleteObject(this);
+				//GM->AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 			}
 
 			if (wParam == VK_NUMPAD2 || wParam == 50) {
@@ -388,6 +393,14 @@ void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_DOWN) {
 				EditNote[NoteSelected].endtime -= tb;
 				playStation->LoadNotes(EditNote);
+			}
+
+			if (wParam == VK_NUMPAD7)
+			{
+				
+				
+					
+				
 			}
 		}
 		if (iMessage == WM_MOUSEWHEEL) {
