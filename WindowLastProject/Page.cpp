@@ -122,8 +122,8 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
-	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
-	AddMusicData("otherOperation5.mp3", "momi.txt");
+	AddMusicData("Sound/momijinosakamichi.ogg", "NoteData/Momijinosakamichi.txt");
+	AddMusicData("Sound/otherOperation5.mp3", "NoteData/momi.txt");
 	SetLocation(loc);
 	SetLayer(layer);
 	return this;
@@ -328,6 +328,8 @@ void TitlePage::NextPage()
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
 				ps->LoadMusic(musicDataSet[tempcount].musicName.c_str());
 				ps->LoadData(musicDataSet[tempcount].noteName.c_str());
+				//ps->LoadMusic(musicDataSet[1].musicName.c_str());
+				//ps->LoadData(musicDataSet[1].noteName.c_str());
 
 				GM->AddObject((GameObject*)ps);
 			}
@@ -383,9 +385,7 @@ const int& TitlePage::GetIconNum()
 
 void TitlePage::AddMusicData(const string& musicName, const string& dataName)
 {
-	string music = "Sound/" + musicName;
-	string data = "NoteData/" + dataName;
-	musicDataSet.push_back({ music, data });
+	musicDataSet.push_back({ musicName, dataName });
 }
 
 void TitlePage::PrintMusicData() const
