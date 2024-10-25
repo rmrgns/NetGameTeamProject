@@ -58,7 +58,7 @@ class TitlePage : GameObject {
 
 	// 노래 이름과 노트파일 이름을 저장하는 벡터
 	vector<MusicData> musicDataSet;
-
+	int musicIndex = 0;
 public:
 	TitlePage();
 
@@ -87,7 +87,7 @@ public:
 	void AddMusicData(const string& musicName, const string& dataName); // 쌍 추가 함수 선언
 	void PrintMusicData() const; // 저장된 쌍을 출력하는 함수 선언
 
-	int tempcount = 0;
+	
 };
 
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);

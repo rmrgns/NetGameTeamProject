@@ -39,10 +39,6 @@ typedef struct Note {
 	bool enable = true; // 쳐진 노트는 false처리됨.
 };
 
-typedef enum class SHOW_TYPE {
-	None = 0
-};
-
 //class Show {
 //protected:
 //	bool autoShow = false; // 노트를 치지 않아도 보여주는지..
@@ -104,8 +100,8 @@ private:
 	int nextNoteNum = 0; // 시간이 지날수록 그 시간에 맞는 노트를 가리키도록 함.
 
 	//Show* ShowArr = nullptr;
-	int showMAX = 0;
-	int nextShowNum = 0;
+	//int showMAX = 0;
+	//int nextShowNum = 0;
 
 	Sprite* BackGround;
 	float Impact = 0;
@@ -193,11 +189,11 @@ public:
 	void SetMaxNoteNum(const int& num);
 	const int& GetMaxNoteNum() const;
 
-	void SetNextShowNum(const int& num);
+	/*void SetNextShowNum(const int& num);
 	const int& GetNextShowNum() const;
 
 	void SetMaxShowNum(const int& num);
-	const int& GetMaxShowNum() const;
+	const int& GetMaxShowNum() const;*/
 
 	void SetNote(const int& index, const Note& note);
 	const Note& GetNote(const int& index) const;

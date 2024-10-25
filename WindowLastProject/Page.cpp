@@ -240,9 +240,9 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 			if (wParam >= '1' && wParam <= '9')
 			{
-				tempcount = int(wParam) - 49;
-				if (musicDataSet.size() <= tempcount)
-					tempcount = 0;
+				musicIndex = int(wParam) - 49;
+				if (musicDataSet.size() <= musicIndex)
+					musicIndex = 0;
 			}
 
 		}
@@ -333,8 +333,8 @@ void TitlePage::NextPage()
 			{
 				GameManager* GM = (GameManager*)gm;
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
-				ps->LoadMusic(musicDataSet[tempcount].musicName.c_str());
-				ps->LoadData(musicDataSet[tempcount].noteName.c_str());
+				ps->LoadMusic(musicDataSet[musicIndex].musicName.c_str());
+				ps->LoadData(musicDataSet[musicIndex].noteName.c_str());
 				//ps->LoadMusic(musicDataSet[1].musicName.c_str());
 				//ps->LoadData(musicDataSet[1].noteName.c_str());
 

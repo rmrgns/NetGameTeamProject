@@ -273,39 +273,39 @@ const int& PlayStation::GetMaxNoteNum() const
 	}
 }
 
-void PlayStation::SetNextShowNum(const int& num)
-{
-	if (enable) {
-		nextShowNum = num;
-	}
-}
+//void PlayStation::SetNextShowNum(const int& num)
+//{
+//	if (enable) {
+//		nextShowNum = num;
+//	}
+//}
+//
+//const int& PlayStation::GetNextShowNum() const
+//{
+//	if (enable) {
+//		return nextShowNum;
+//	}
+//	else {
+//		return 0;
+//	}
+//}
 
-const int& PlayStation::GetNextShowNum() const
-{
-	if (enable) {
-		return nextShowNum;
-	}
-	else {
-		return 0;
-	}
-}
-
-void PlayStation::SetMaxShowNum(const int& num)
-{
-	if (enable) {
-		showMAX = num;
-	}
-}
-
-const int& PlayStation::GetMaxShowNum() const
-{
-	if (enable) {
-		return showMAX;
-	}
-	else {
-		return 0;
-	}
-}
+//void PlayStation::SetMaxShowNum(const int& num)
+//{
+//	if (enable) {
+//		showMAX = num;
+//	}
+//}
+//
+//const int& PlayStation::GetMaxShowNum() const
+//{
+//	if (enable) {
+//		return showMAX;
+//	}
+//	else {
+//		return 0;
+//	}
+//}
 
 void PlayStation::SetNote(const int& index, const Note& note)
 {
