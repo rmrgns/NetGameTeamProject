@@ -225,7 +225,7 @@ EditStation* EditStation::Init(const shp::rect4f& loc, const int& layer)
 
 void EditStation::FirstInit()
 {
-	if (first && gm != nullptr) {
+	if (checkInitialize && gm != nullptr) {
 		shp::rect4f loc = GetLocation();
 		int layer = GetLayer();
 
@@ -307,7 +307,7 @@ void EditStation::FirstInit()
 		//EditRT
 		SetEditRT(shp::rect4f(loc.fx, loc.fy, loc.getCenter().x, loc.ly));
 
-		first = false;
+		checkInitialize = false;
 	}
 }
 
@@ -315,7 +315,7 @@ void EditStation::Update(const float& delta)
 {
 	FirstInit();
 
-	if (first == false) {
+	if (checkInitialize == false) {
 		GetDialogData(delta);
 		playStation->SetIsPlaying(bPlay);
 		if (bPlay) {
@@ -323,7 +323,7 @@ void EditStation::Update(const float& delta)
 		}
 	}
 	
-	if (enable && first == false) {
+	if (enable && checkInitialize == false) {
 
 		for (int i = 0; i < 4; ++i) {
 			RotPosButton[i]->Update(delta);
@@ -342,7 +342,7 @@ void EditStation::Update(const float& delta)
 
 void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	if (enable && first == false) {
+	if (enable && checkInitialize == false) {
 		for (int i = 0; i < 4; ++i) {
 			RotPosButton[i]->Event(hWnd, iMessage, wParam, lParam);
 		}
@@ -521,7 +521,7 @@ void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 void EditStation::Render(HDC hdc)
 {
-	if (enable && first == false) {
+	if (enable && checkInitialize == false) {
 		HPEN LargePen = CreatePen(PS_SOLID, 8, RGB(0, 255, 255));
 		HPEN BigPen = CreatePen(PS_SOLID, 5, RGB(0, 0, 0));
 		HPEN REDPen = CreatePen(PS_SOLID, 5, RGB(128, 0, 0));

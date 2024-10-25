@@ -2,97 +2,98 @@
 
 extern vector<Sprite*> SpriteData;
 extern RECT rt;
-LogoPage::LogoPage()
-{
-	SetSprite(SpriteData[15]);
-}
-
-LogoPage::~LogoPage()
-{
-}
-
-LogoPage* LogoPage::Init(const shp::rect4f& loc, const int& layer)
-{
-	SetLocation(loc);
-	SetLayer(layer);
-	return this;
-}
-
-void LogoPage::FirstInit()
-{
-	if (enable) {
-		if (first && gm != nullptr) {
-			GameManager* GM = (GameManager*)gm;
-			GM->AddObject((GameObject*)HeapDebugClass::HeapNew<FlowerEf>()->Init(GetLocation(), SpriteData[16], 2));
-
-			//int n = Music::AddSound("Sound\\LogoMusic.mp3", false, false);
-			//Music::ConnectSound(0, n);
-			//Music::PlayOnce(0);
-
-			first = false;
-		}
-	}
-}
-
-void LogoPage::Update(const float& delta)
-{
-	if (enable) {
-		FirstInit();
-
-		if (flow.x > flow.y && wait) {
-			//다음 페이지 넘어가기
-			Music::ClearSoundsAndChannels();
-			NextPage();
-			SetEnable(false);
-		}
-
-		if (flow.x > flow.y) {
-			wait = true;
-			flow.x = 0;
-		}
-		else {
-			flow.x += delta;
-		}
-	}
-}
-
-void LogoPage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
-{
-}
-
-void LogoPage::Render(HDC hdc)
-{
-	if (enable) {
-		Sprite* spr = GetSprite();
-		if (spr != nullptr) {
-			if (wait) {
-				float w = 200;
-				shp::vec2f cen = GetLocation().getCenter();
-				spr->DrawSpriteAlphaBlend(hdc, cen.x - w, cen.y - w, 2 * w, 2 * w, 255);
-			}
-			else {
-				float trate = AnimClass::EaseIn(flow.x / flow.y, 4);
-
-
-				if (trate > 1) {
-					trate = 1;
-				}
-				float w = 200;
-				shp::vec2f cen = GetLocation().getCenter();
-				spr->DrawSpriteAlphaBlend(hdc, cen.x - w, cen.y - w, 2 * w, 2 * w, 255 * (trate));
-			}
-		}
-	}
-}
-
-void LogoPage::NextPage()
-{
-	if (enable) {
-		GameManager* GM = (GameManager*)gm;
-		//GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
-		GM->AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
-	}
-}
+//LogoPage::LogoPage()
+//{
+//	SetSprite(SpriteData[15]);
+//}
+//
+//LogoPage::~LogoPage()
+//{
+//}
+//
+//LogoPage* LogoPage::Init(const shp::rect4f& loc, const int& layer)
+//{
+//	SetLocation(loc);
+//	SetLayer(layer);
+//	return this;
+//}
+//
+//void LogoPage::FirstInit()
+//{
+//	if (enable) {
+//		if (checkInitialize && gm != nullptr) {
+//			GameManager* GM = (GameManager*)gm;
+//			GM->AddObject((GameObject*)HeapDebugClass::HeapNew<FlowerEf>()->Init(GetLocation(), SpriteData[16], 2));
+//
+//			//int n = Music::AddSound("Sound\\LogoMusic.mp3", false, false);
+//			//Music::ConnectSound(0, n);
+//			//Music::PlayOnce(0);
+//
+//			checkInitialize = false;
+//		}
+//	}
+//}
+//
+//void LogoPage::Update(const float& delta)
+//{
+//	if (enable) {
+//		FirstInit();
+//
+//		//if (flow.x > flow.y && wait) {
+//		if (wait) {
+//			//다음 페이지 넘어가기
+//			Music::ClearSoundsAndChannels();
+//			NextPage();
+//			SetEnable(false);
+//		}
+//
+//		/*if (flow.x > flow.y) {
+//			wait = true;
+//			flow.x = 0;
+//		}
+//		else {
+//			flow.x += delta;
+//		}*/
+//	}
+//}
+//
+//void LogoPage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
+//{
+//}
+//
+//void LogoPage::Render(HDC hdc)
+//{
+//	if (enable) {
+//		Sprite* spr = GetSprite();
+//		if (spr != nullptr) {
+//			if (wait) {
+//				float w = 200;
+//				shp::vec2f cen = GetLocation().getCenter();
+//				spr->DrawSpriteAlphaBlend(hdc, cen.x - w, cen.y - w, 2 * w, 2 * w, 255);
+//			}
+//			else {
+//				float trate = AnimClass::EaseIn(flow.x / flow.y, 4);
+//
+//
+//				if (trate > 1) {
+//					trate = 1;
+//				}
+//				float w = 200;
+//				shp::vec2f cen = GetLocation().getCenter();
+//				spr->DrawSpriteAlphaBlend(hdc, cen.x - w, cen.y - w, 2 * w, 2 * w, 255 * (trate));
+//			}
+//		}
+//	}
+//}
+//
+//void LogoPage::NextPage()
+//{
+//	if (enable) {
+//		GameManager* GM = (GameManager*)gm;
+//		//GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+//		GM->AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+//	}
+//}
 
 /// <summary>
 /// 
@@ -134,7 +135,7 @@ TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 
 void TitlePage::FirstInit()
 {
-	if (first && gm != nullptr) {
+	if (checkInitialize && gm != nullptr) {
 		int n = Music::AddSound("Sound\\MelDrum3_Master.mp3", false, false);
 		Music::ConnectSound(0, n);
 		Music::PlayOnce(0);
@@ -181,7 +182,7 @@ void TitlePage::FirstInit()
 			}
 		}
 
-		first = false;
+		checkInitialize = false;
 	}
 }
 
@@ -258,13 +259,13 @@ void TitlePage::Render(HDC hdc)
 		float h = loc.geth() / 8;
 		shp::rect4f titlelocdest = shp::rect4f(loc.fx, loc.fy, loc.fx + 2*h, loc.fy + 2*h);
 		shp::vec2f cen = loc.getCenter();
-		shp::rect4f titlelocfirst = shp::rect4f(cen.x - 4*h, cen.y - 4*h, cen.x + 4*h, cen.y + 4*h);
+		shp::rect4f titleloccheckInitialize = shp::rect4f(cen.x - 4*h, cen.y - 4*h, cen.x + 4*h, cen.y + 4*h);
 
 		shp::rect4f rrt = shp::rect4f(
-			titlelocfirst.fx + trate*(titlelocdest.fx- titlelocfirst.fx), 
-			titlelocfirst.fy + trate * (titlelocdest.fy - titlelocfirst.fy),
-			titlelocfirst.lx + trate * (titlelocdest.lx - titlelocfirst.lx),
-			titlelocfirst.ly + trate * (titlelocdest.ly - titlelocfirst.ly)
+			titleloccheckInitialize.fx + trate*(titlelocdest.fx- titleloccheckInitialize.fx), 
+			titleloccheckInitialize.fy + trate * (titlelocdest.fy - titleloccheckInitialize.fy),
+			titleloccheckInitialize.lx + trate * (titlelocdest.lx - titleloccheckInitialize.lx),
+			titleloccheckInitialize.ly + trate * (titlelocdest.ly - titleloccheckInitialize.ly)
 		);
 		TitleSprite->DrawSprite(hdc, rrt.fx, rrt.fy, rrt.getw(), rrt.geth());
 

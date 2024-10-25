@@ -13,31 +13,31 @@ typedef struct MusicData {
 };
 
 
-class LogoPage : GameObject{
-	bool first = true;
-	bool wait = false;
-	shp::vec2f flow = shp::vec2f(0, 3);
-public:
-	LogoPage();
-
-	virtual ~LogoPage();
-
-	LogoPage* Init(const shp::rect4f& loc, const int& layer);
-	void FirstInit();
-
-	virtual void Update(const float& delta) override;
-
-	virtual void Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) override;
-
-	virtual void Render(HDC hdc) override;
-
-	void NextPage();
-};
+//class LogoPage : GameObject{
+//	bool checkInitialize = true;
+//	bool wait = false;
+//	//shp::vec2f flow = shp::vec2f(0, 3);
+//public:
+//	LogoPage();
+//
+//	virtual ~LogoPage();
+//
+//	LogoPage* Init(const shp::rect4f& loc, const int& layer);
+//	void FirstInit();
+//
+//	virtual void Update(const float& delta) override;
+//
+//	virtual void Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) override;
+//
+//	virtual void Render(HDC hdc) override;
+//
+//	void NextPage();
+//};
 
 class TitlePage : GameObject {
-	bool first = true;
-	bool wait = false;
-	shp::vec2f flow = shp::vec2f(0, 3);
+	bool checkInitialize = true;
+	//bool wait = false;
+	//shp::vec2f flow = shp::vec2f(0, 3);
 
 	Sprite* TitleSprite = nullptr;
 	shp::vec2f TitleAppearFlow = shp::vec2f(0, 1);

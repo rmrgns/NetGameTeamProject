@@ -18,7 +18,7 @@ class EditStation : GameObject{
 	GameButton* LevelSaveButton; // 레벨을 저장하는 버튼
 	GameButton* LoadMusicButton; // 음악을 로드하는 버튼
 
-	bool first = true;
+	bool checkInitialize = true;
 	bool bPlay = false;
 
 	shp::rect4f EditRt;

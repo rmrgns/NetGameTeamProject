@@ -43,26 +43,26 @@ typedef enum class SHOW_TYPE {
 	None = 0
 };
 
-class Show {
-protected:
-	bool autoShow = false; // 노트를 치지 않아도 보여주는지..
-	int nodenum; // 어떤 노트를 쳐야 보여주는지
-	float time; // 언제 보여주는지
-	SHOW_TYPE stype; // 무엇을 보여주는 지
-	float param[10]; // 파라미터
-public:
-	Show() {
-
-	}
-
-	virtual ~Show() {
-
-	}
-
-	virtual void Render(HDC hdc) {
-
-	}
-};
+//class Show {
+//protected:
+//	bool autoShow = false; // 노트를 치지 않아도 보여주는지..
+//	int nodenum; // 어떤 노트를 쳐야 보여주는지
+//	float time; // 언제 보여주는지
+//	SHOW_TYPE stype; // 무엇을 보여주는 지
+//	float param[10]; // 파라미터
+//public:
+//	Show() {
+//
+//	}
+//
+//	virtual ~Show() {
+//
+//	}
+//
+//	virtual void Render(HDC hdc) {
+//
+//	}
+//};
 
 typedef struct KeyData {
 	bool S_pressed = false;
@@ -103,7 +103,7 @@ private:
 	int noteMAX = 0;
 	int nextNoteNum = 0; // 시간이 지날수록 그 시간에 맞는 노트를 가리키도록 함.
 
-	Show* ShowArr = nullptr;
+	//Show* ShowArr = nullptr;
 	int showMAX = 0;
 	int nextShowNum = 0;
 
@@ -202,8 +202,8 @@ public:
 	void SetNote(const int& index, const Note& note);
 	const Note& GetNote(const int& index) const;
 
-	void SetShow(const int& index, const Show& show);
-	const Show& GetShow(const int& index) const;
+	/*void SetShow(const int& index, const Show& show);
+	const Show& GetShow(const int& index) const;*/
 
 	shp::rect4f GetPlayLoc() {
 		shp::rect4f wloc = GetLocation();

@@ -160,7 +160,7 @@ private:
 	static constexpr int OBJ_MAX = 2000;
 	GameObject* objPool[OBJ_MAX] = {};
 
-	shp::vec2f HeapCheckFlow = shp::vec2f(0, 10);
+	//shp::vec2f HeapCheckFlow = shp::vec2f(0, 10);
 public:
 	int objup = 0;
 
@@ -252,11 +252,11 @@ public:
 		
 		Music::Update();
 
-		HeapCheckFlow.x += delta;
+		/*HeapCheckFlow.x += delta;
 		if (HeapCheckFlow.x > HeapCheckFlow.y) {
 			HeapCheckFlow.x = 0;
 			HeapDebugClass::MapClear();
-		}
+		}*/
 
 		for (int i = 0; i < objup; ++i) {
 			if (objPool[i] != nullptr && HeapDebugClass::HeapDebug[objPool[i]] == true)

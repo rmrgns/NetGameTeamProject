@@ -22,10 +22,10 @@ PlayStation::~PlayStation()
 		noteArr = nullptr;
 	}
 
-	if (ShowArr != nullptr && HeapDebugClass::HeapDebug[ShowArr] == true) {
+	/*if (ShowArr != nullptr && HeapDebugClass::HeapDebug[ShowArr] == true) {
 		HeapDebugClass::HeapArrDelete<Show>(ShowArr);
 		ShowArr = nullptr;
-	}
+	}*/
 
 	if (NE != nullptr && HeapDebugClass::HeapDebug[NE] == true) {
 		NE->Clear();
@@ -330,30 +330,30 @@ const Note& PlayStation::GetNote(const int& index) const
 	}
 }
 
-void PlayStation::SetShow(const int& index, const Show& show)
-{
-	if (enable) {
-		if (ShowArr != nullptr && index < showMAX) {
-			ShowArr[index] = show;
-		}
-	}
-}
-
-const Show& PlayStation::GetShow(const int& index) const
-{
-	Show zero;
-	if (enable) {
-		if (ShowArr != nullptr && index < showMAX) {
-			return ShowArr[index];
-		}
-		else {
-			return zero;
-		}
-	}
-	else {
-		return zero;
-	}
-}
+//void PlayStation::SetShow(const int& index, const Show& show)
+//{
+//	if (enable) {
+//		if (ShowArr != nullptr && index < showMAX) {
+//			ShowArr[index] = show;
+//		}
+//	}
+//}
+//
+//const Show& PlayStation::GetShow(const int& index) const
+//{
+//	Show zero;
+//	if (enable) {
+//		if (ShowArr != nullptr && index < showMAX) {
+//			return ShowArr[index];
+//		}
+//		else {
+//			return zero;
+//		}
+//	}
+//	else {
+//		return zero;
+//	}
+//}
 
 const shp::vec2f PlayStation::GetSPos(ROTPOS rot, int pos, const shp::rect4f& playloc)
 {
@@ -828,7 +828,9 @@ void PlayStation::SaveData(const char* filename)
 {
 	if (enable) {
 		ofstream out;
-		out.open(filename);
+		string name = filename;
+		name = name + ".txt";
+		out.open(name.c_str());
 
 		out << GetMaxNoteNum();
 		out << '\n';
