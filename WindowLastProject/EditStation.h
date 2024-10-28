@@ -29,6 +29,10 @@ class EditStation : GameObject{
 	shp::vec2f noteAddFlow = shp::vec2f(0, 0.2f);
 
 	int NoteSelected = 0;
+
+	char* musicName;
+	char* noteName;
+
 public:
 	static bool SetTempoDialogOpen;
 	static int STD_Out_SetTempo;

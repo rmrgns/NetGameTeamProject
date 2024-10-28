@@ -53,8 +53,8 @@ class TitlePage : GameObject {
 	int mdir = 1;
 	int iconNum = 0;
 
-	bool ismenu = false;
-	char nextChar = 'p';
+	bool checkGameStart = false;
+	char selectCommand = 'p';
 
 	// 노래 이름과 노트파일 이름을 저장하는 벡터
 	vector<MusicData> musicDataSet;

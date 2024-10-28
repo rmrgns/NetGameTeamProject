@@ -39,27 +39,6 @@ typedef struct Note {
 	bool enable = true; // 쳐진 노트는 false처리됨.
 };
 
-//class Show {
-//protected:
-//	bool autoShow = false; // 노트를 치지 않아도 보여주는지..
-//	int nodenum; // 어떤 노트를 쳐야 보여주는지
-//	float time; // 언제 보여주는지
-//	SHOW_TYPE stype; // 무엇을 보여주는 지
-//	float param[10]; // 파라미터
-//public:
-//	Show() {
-//
-//	}
-//
-//	virtual ~Show() {
-//
-//	}
-//
-//	virtual void Render(HDC hdc) {
-//
-//	}
-//};
-
 typedef struct KeyData {
 	bool S_pressed = false;
 	shp::vec2f S_dut = shp::vec2f(0, 0);
@@ -88,9 +67,9 @@ private:
 	bool autoplaying = false; // true면 input이 없어도 자동으로 쳐짐
 
 	float Time;
-	int Score; // 1000000
-	int Combo;
-	int MaxCombo;
+	unsigned int Score; // 1000000
+	unsigned int Combo;
+	unsigned int MaxCombo;
 
 	int Tempo;
 	ROTPOS rotation;
@@ -107,7 +86,6 @@ private:
 	float Impact = 0;
 	float AddImpact = 0.2f;
 
-	char songName[128] = {};
 	int songSoundID = -1;
 
 	int RimSoundID = 0;
@@ -189,17 +167,8 @@ public:
 	void SetMaxNoteNum(const int& num);
 	const int& GetMaxNoteNum() const;
 
-	/*void SetNextShowNum(const int& num);
-	const int& GetNextShowNum() const;
-
-	void SetMaxShowNum(const int& num);
-	const int& GetMaxShowNum() const;*/
-
 	void SetNote(const int& index, const Note& note);
 	const Note& GetNote(const int& index) const;
-
-	/*void SetShow(const int& index, const Show& show);
-	const Show& GetShow(const int& index) const;*/
 
 	shp::rect4f GetPlayLoc() {
 		shp::rect4f wloc = GetLocation();

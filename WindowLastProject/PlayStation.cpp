@@ -763,7 +763,8 @@ void PlayStation::LoadMusic(const char* musicName)
 	if (songSoundID == -1) {
 		int n = Music::AddSound(musicName, false, true);
 		songSoundID = n;
-		strcpy_s(songName, musicName);
+
+		//strcpy_s(p_musicName, musicName);
 
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
@@ -776,7 +777,8 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ClearSound(songSoundID);
 		int n = Music::AddSound(musicName, false, true);
 		songSoundID = n;
-		strcpy_s(songName, musicName);
+
+		//strcpy_s(p_musicName, musicName);
 
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);

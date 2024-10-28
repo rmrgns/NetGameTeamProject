@@ -191,7 +191,7 @@ void TitlePage::Update(const float& delta)
 	if (enable) {
 		FirstInit();
 		
-		if (ismenu == false) {
+		if (checkGameStart == false) {
 			GameStartButton->Update(delta);
 		}
 		else {
@@ -200,7 +200,7 @@ void TitlePage::Update(const float& delta)
 			SelectBtn->Update(delta);
 		}
 
-		if (ismenu) {
+		if (checkGameStart) {
 			if (TitleAppearFlow.x + delta > TitleAppearFlow.y) {
 				TitleAppearFlow.x = TitleAppearFlow.y;
 			}
@@ -221,7 +221,7 @@ void TitlePage::Update(const float& delta)
 void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	if (enable) {
-		if (ismenu == false) {
+		if (checkGameStart == false) {
 			GameStartButton->Event(hWnd, iMessage, wParam, lParam);
 		}
 		else {
@@ -269,7 +269,7 @@ void TitlePage::Render(HDC hdc)
 		);
 		TitleSprite->DrawSprite(hdc, rrt.fx, rrt.fy, rrt.getw(), rrt.geth());
 
-		if (ismenu == false) {
+		if (checkGameStart == false) {
 			GameStartButton->RenderObject(hdc);
 		}
 		else {
@@ -318,7 +318,7 @@ void TitlePage::Render(HDC hdc)
 void TitlePage::Select(char menuChar)
 {
 	if (enable) {
-		nextChar = menuChar;
+		selectCommand = menuChar;
 		Music::ClearSoundsAndChannels();
 		NextPage();
 		SetEnable(false);
@@ -328,7 +328,7 @@ void TitlePage::Select(char menuChar)
 void TitlePage::NextPage()
 {
 	if (enable) {
-		switch(nextChar) {
+		switch(selectCommand) {
 			case 'p':
 			{
 				GameManager* GM = (GameManager*)gm;
@@ -379,7 +379,7 @@ void TitlePage::MoveMenu(int dir)
 void TitlePage::GameStart()
 {
 	if (enable) {
-		ismenu = true;
+		checkGameStart = true;
 	}
 }
 
