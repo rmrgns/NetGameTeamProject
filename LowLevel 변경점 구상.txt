@@ -1,0 +1,49 @@
+Page
+최초 한번만 진행하는 과정 묶기 SendCheckLoginAndDownloadMusic
+	SendCheckLogin
+	DownloadMusic
+
+
+Lobby
+Ready 단순화 (신호만 보내고 그 신호 기반으로 토글방식 작동) SendReadyStatus
+	SendReady
+	SendCancleReady
+
+
+PlayStation
+RequestPlayStationInfoID 필요성 문제? (로비의 유저 ID와 똑같으므로 인계 가능한지 여부 확인)
+	SendRequestPlayStationInfoID
+
+PlayStation 퇴장시 사용하는 함수 병합 SendPlayerScoreAndLeavePlayStation or SendLeavePlayStation
+	SendPlayerScore
+	SendLeavePlayStation
+
+
+Network
+Page 최초 한번만 진행하는 과정 묶기 SendCheckLoginAndDownloadMusic / ProcessCheckLoginAndDownloadMusic
+	SendCheckLogin
+	SendDownloadMusic
+-----------------------------------------------------
+	ProcessCheckLogin
+	ProcessRequestAllScore
+
+Ready 단순화 (신호만 보내고 그 신호 기반으로 토글방식 작동) SendReadyStatus
+	SendReady
+	SendCancleReady
+
+RequestPlayStationInfoID 필요성 문제? (로비의 유저 ID와 똑같으므로 인계 가능한지 여부 확인)
+	SendRequestPlayStationInfoID 
+	ProcessRequestPlayStationInfoID
+
+
+Server
+페이지 데이터 일회성 작업 RecvCheckLoginAndDownloadMusic
+	RecvCheckLogin
+	DownloadMusic
+
+SendPlayStationInfoID 필요성 문제? (로비의 유저 ID와 똑같으므로 인계 가능한지 여부 확인)
+	SendPlayStationInfoID
+
+PlayStation 퇴장시 사용하는 함수 병합 RecvPlayerScoreAndLeavePlayStation or RecvLeavePlayStation
+	RecvPlayerScore
+	RecvLeavePlayStation
