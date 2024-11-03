@@ -1,0 +1,92 @@
+Page
+데이터 다운로드 기능 병합
+DownloadMusic
++ SendRequestAllScore
+
+다음페이지 이동 관리 병합
+SendEnterLobby
+SendEnterEditStation
+
+Lobby
+로비인포 연관 기능 병합
+SendRequestLobbyInfo
+SendReady
+SendCancleReady
+SendRequestAllReadyAndMusicindex
+SendSelectMusic
+게임 시작과정 단순화
+SendGameStart
+SendEnterPlayStation
+
+PlayStation
+데이터 관련 작업 단순화
+SendRequestPlayStationInfoID
+SendRequestPlayStationInfoScore
+SendPlayerScore
+
+Network
+페이지 전환관련 기능 병합 (Status로 관리?)
+SendEnterLobby
+SendEnterEditStation
+SendLeaveLobby
+SendEnterPlayStation
+SendLeavePlayStation
+SendLeaveEditStation
+SendGameStart
+---------------------------------------------------
+ProcessEnterLobby
+ProcessEnterEditStation
+ProcessLeaveLobby
+ProcessEnterPlayStation
+ProcessLeavePlayStation
+ProcessLeaveEditStation
+ProcessGameStart
+
+데이터 다운로드 병합(Page 연동)
+SendDownloadMusic
+SendRequestAllScore
+-----------------------------------------------------
+ProcessDownloadMusic
+ProcessRequestAllScore
+
+로비 인포 관련 작업 병합
+SendRequestLobbyInfo
+SendReady
+SendCancleReady
+SendRequestAllReadyAndMusicindex
+SendSelectMusic
+--------------------------------------------------------------------
+ProcessRequestLobbyInfo
+ProcessRequestAllReadyAndMusicindex
+ProcessSelectMusic
+
+PlayStation 데이터 관련 작업 단순화
+SendRequestPlayStationInfoID
+SendRequestPlayStationInfoScore
+SendPlayerScore
+--------------------------------------------------------------------
+ProcessRequestPlayStationInfoID
+ProcessRequestPlayStationInfoScore
+
+Server
+페이지 데이터 다운로드 관련 작업
+SendAllScore
+DownloadMusic
+
+페이지 전환 관련 작업
+RecvEnterLobby
+RecvLeaveLobby
+RecvGameStart
+RecvEnterPlayStation
+RecvLeavePlayStation
+RecvEnterEditStation
+RecvLeaveEditStation
+
+로비데이터 관련 작업
+SendLobbyInfo
+SendAllReadyAndMusicindex
+
+PlayStation 데이터 관련 작업
+SendPlayStationInfoID
+SendPlayStationInfoScore
+RecvPlayerScore
