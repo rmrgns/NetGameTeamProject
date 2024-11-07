@@ -3,6 +3,7 @@
 #include "Common.h"
 
 
+
 struct LoginInfo
 {
 	char* id;
@@ -41,5 +42,8 @@ enum sendList
 
 };
 
-void CheckSendList(sendList sList);
-void RecvCheckLoginAndMusicDownload(SOCKET socket, char* name, char* password, vector<MusicData> musicDataSet);
+
+
+
+void CheckSendList(sendList sList, SOCKET socket);
+unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg);
