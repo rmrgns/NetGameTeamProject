@@ -34,3 +34,5 @@
 .vs/
 /WindowLastProject/x64
 /x64
+server/NetGameServer/x64
+server/NetGameServer/NetGameServer
