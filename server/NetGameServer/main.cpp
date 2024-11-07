@@ -1,4 +1,5 @@
 #include "Common.h"
+#include "server.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    1024
@@ -17,6 +18,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     char buf[BUFSIZE + 1]; // 가변 길이 데이터
     int localclientid;
 
+    sendList sList;
     char name[BUFSIZE + 1];
 
     // 클라이언트 정보 얻기
@@ -25,7 +27,17 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
     while (1) {
         //EnterCriticalSection(&cs);
-            
+        // sendList 확인
+        int temp;
+        retval = recv(client_sock, reinterpret_cast<char*>(&temp), sizeof(short), MSG_WAITALL);
+        if (retval == SOCKET_ERROR) {
+            err_display("recvsendlist()");
+            break;
+        }
+        else if (retval == 0)
+            break;
+        sList = static_cast<sendList>(temp);
+        CheckSendList(sList);
            
 
             
@@ -34,7 +46,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     }
     // 소켓 닫기
     closesocket(client_sock);
-
+    return 0;
 }
 
 int main() {
