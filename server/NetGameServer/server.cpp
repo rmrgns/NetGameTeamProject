@@ -16,3 +16,8 @@ void CheckSendList(sendList sList)
 		return;
 	}
 }
+
+void RecvCheckLoginAndMusicDownload(SOCKET socket, char* name, char* password, vector<MusicData> musicDataSet)
+{
+
+}
