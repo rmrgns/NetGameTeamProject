@@ -1,4 +1,3 @@
-
 #include "server.h"
 
 #define SERVERPORT 9000
@@ -6,9 +5,9 @@
 
 CRITICAL_SECTION cs;
 
-DWORD WINAPI ProcessClient(LPVOID arg)
+unsigned __stdcall ProcessClient(void* arg)
 {
-
+    
     SOCKET client_sock = (SOCKET)arg;
     int retval;
     struct sockaddr_in clientaddr;
@@ -26,23 +25,24 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     //getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
     inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
     while (1) {
-        //EnterCriticalSection(&cs);
-        // sendList 확인
+        EnterCriticalSection(&cs);
+        // sendList 확인s
         int temp;
         retval = recv(client_sock, reinterpret_cast<char*>(&temp), sizeof(short), MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvsendlist()");
+            LeaveCriticalSection(&cs);
             break;
         }
         else if (retval == 0)
+        {
+            LeaveCriticalSection(&cs);
             break;
+        }
         sList = static_cast<sendList>(temp);
-        CheckSendList(sList);
-           
+        CheckSendList(sList, client_sock);
 
-            
-        
-        //LeaveCriticalSection(&cs);
+        LeaveCriticalSection(&cs);
     }
     // 소켓 닫기
     closesocket(client_sock);
@@ -98,7 +98,7 @@ int main() {
             addr, ntohs(clientaddr.sin_port));
 
         // 스레드 생성
-        hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
+        hThread = (HANDLE)_beginthreadex(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
         if (hThread == NULL) { closesocket(client_sock); }
         else { CloseHandle(hThread); }
 
