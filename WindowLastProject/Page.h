@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-typedef struct MusicData {
+typedef struct PageMusicData {
 	string musicName;
 	string noteName;
 };
@@ -57,7 +57,7 @@ class TitlePage : GameObject {
 	char selectCommand = 'p';
 
 	// 노래 이름과 노트파일 이름을 저장하는 벡터
-	vector<MusicData> musicDataSet;
+	vector<PageMusicData> musicDataSet;
 	int musicIndex = 0;
 public:
 	TitlePage();
@@ -83,7 +83,7 @@ public:
 
 	const int& GetIconNum();
 
-	// musicDataSet 메서드
+	// PageMusicDataSet 메서드
 	void AddMusicData(const string& musicName, const string& dataName); // 쌍 추가 함수 선언
 	void PrintMusicData() const; // 저장된 쌍을 출력하는 함수 선언
 

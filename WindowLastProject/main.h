@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Network.h"
 #include <tchar.h>
 #include <time.h>
 #include <Windows.h>
@@ -15,6 +15,7 @@
 #include "EditStation.h"
 #include "HeapDebug.h"
 #include "Page.h"
+
 
 using namespace std;
 

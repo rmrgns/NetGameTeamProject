@@ -22,6 +22,10 @@ int WINAPI CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIn
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW,
 		200, 200, 1000, 700,
 		NULL, (HMENU)NULL, hInstance, NULL);
+
+	Network::GetInst()->Init();
+	Network::GetInst()->Connect();
+
 	ShowWindow(hWnd, nCmdShow);
 
 	while (GetMessage(&Message, 0, 0, 0))
