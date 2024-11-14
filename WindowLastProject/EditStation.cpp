@@ -2,6 +2,8 @@
 #include "HeapDebug.h"
 #include "Game.h"
 #include "Page.h"
+#include <commdlg.h>
+
 GameUI* GameUI::UIArr[GAMEUI_MAX] = {};
 int GameUI::GameUIUpdate = 0;
 

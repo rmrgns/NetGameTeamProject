@@ -33,6 +33,7 @@ protected:
 
 	Ptr* gm; // 이 게임오브젝트를 가진 게임 매니저
 	OBJ_TYPE type = OBJ_TYPE::None;
+
 public:
 	GameObject() {
 		spr = nullptr;
@@ -182,10 +183,12 @@ public:
 	void Clear() {
 		for (int i = 0; i < objup; ++i) {
 			GameObject* obj = GetGameObject(i);
+			
 			if (HeapDebugClass::HeapDebug[obj] == true) {
-				HeapDebugClass::HeapDelete<GameObject>(obj);
-				objPool[i] = nullptr;
-			}
+					HeapDebugClass::HeapDelete<GameObject>(obj);
+					objPool[i] = nullptr;
+				}
+			
 		}
 
 		objup = 0;

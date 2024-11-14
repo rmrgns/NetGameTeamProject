@@ -7,7 +7,7 @@ CRITICAL_SECTION cs;
 
 unsigned __stdcall ProcessClient(void* arg)
 {
-    
+    //cout << "ProcessClient" << endl;
     SOCKET client_sock = (SOCKET)arg;
     int retval;
     struct sockaddr_in clientaddr;
@@ -22,13 +22,31 @@ unsigned __stdcall ProcessClient(void* arg)
 
     // 클라이언트 정보 얻기
     addrlen = sizeof(clientaddr);
-    //getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
+    getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
     inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
     while (1) {
+
         EnterCriticalSection(&cs);
-        // sendList 확인s
-        int temp;
-        retval = recv(client_sock, reinterpret_cast<char*>(&temp), sizeof(short), MSG_WAITALL);
+
+        // sendList 확인
+        
+        //cout << "check1" << endl;
+        retval = recv(client_sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
+        if (retval == SOCKET_ERROR) {
+            err_display("recvnamesize()");
+            cout << "error1" << endl;
+            LeaveCriticalSection(&cs);
+            break;
+        }
+        else if (retval == 0)
+        {
+            cout << "error2" << endl;
+            LeaveCriticalSection(&cs);
+            break;
+        }
+
+        //cout << "check2" << endl;
+        retval = recv(client_sock, buf, len, MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvsendlist()");
             LeaveCriticalSection(&cs);
@@ -39,8 +57,19 @@ unsigned __stdcall ProcessClient(void* arg)
             LeaveCriticalSection(&cs);
             break;
         }
-        sList = static_cast<sendList>(temp);
-        CheckSendList(sList, client_sock);
+
+        // 데이터 받기
+        //retval = recv(client_sock, buf, BUFSIZE, 0);
+        //if (retval == SOCKET_ERROR) {
+        //    err_display("recv()");
+        //    break;
+        //}
+        //else if (retval == 0)
+        //    break;
+        //cout << "check3" << endl;
+        //sList = reinterpret_cast<sendList>(buf);
+        buf[retval] = '\0';
+        CheckSendList(buf, client_sock);
 
         LeaveCriticalSection(&cs);
     }
@@ -94,7 +123,7 @@ int main() {
         // 접속한 클라이언트 정보 출력
         char addr[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-        printf("\033[%d;1H[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", 0,
+        printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
             addr, ntohs(clientaddr.sin_port));
 
         // 스레드 생성

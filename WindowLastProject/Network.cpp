@@ -1,4 +1,5 @@
 #include "Network.h"
+#include "Page.h"
 
 Network* Network::m_pInst = NULL;
 
@@ -39,4 +40,31 @@ bool Network::Connect()
 		return false;
 	}
 	return true;
+}
+
+void Network::SendCheckLoginAndMusicDownload(string id, string password)
+{
+	int retval;
+	unsigned long len;
+	
+	//sendList sl = sendList::CheckLogin;	
+	//len = sizeof(sl);
+	 
+	string sl = "CheckLogin";
+	len = sl.length();
+
+	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendCheckLoginAndMusicDownload() Size");
+	}
+
+	retval = send(sock, sl.c_str(), len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendCheckLoginAndMusicDownload()");
+	}
+}
+
+void Network::ProcessCheckLoginAndMusicDownload()
+{
+
 }

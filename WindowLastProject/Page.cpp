@@ -1,4 +1,5 @@
 #include "Page.h"
+#include "Network.h"
 
 extern vector<Sprite*> SpriteData;
 extern RECT rt;
@@ -130,6 +131,7 @@ TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 	AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
 	SetLocation(loc);
 	SetLayer(layer);
+	
 	return this;
 }
 
@@ -184,10 +186,17 @@ void TitlePage::FirstInit()
 
 		checkInitialize = false;
 	}
+	string id = "1234";
+
+	SendCheckLoginAndMusicDownload(id, id);
 }
 
 void TitlePage::Update(const float& delta)
 {
+	
+	
+
+
 	if (enable) {
 		FirstInit();
 		
@@ -339,7 +348,8 @@ void TitlePage::NextPage()
 				//ps->LoadData(musicDataSet[1].noteName.c_str());
 
 				GM->AddObject((GameObject*)ps);
-			}
+					
+		}
 				break;
 			case 'e':
 			{
@@ -388,6 +398,11 @@ const int& TitlePage::GetIconNum()
 	if (enable) {
 		return iconNum;
 	}
+}
+
+void TitlePage::SendCheckLoginAndMusicDownload(string id, string password)
+{
+	Network::GetInst()->SendCheckLoginAndMusicDownload(id, password);
 }
 
 void TitlePage::AddMusicData(const string& musicName, const string& dataName)

@@ -1,7 +1,7 @@
 #pragma once
-
 #include <thread>
-#include "Common.h"
+#include "../server/NetGameServer/Common.h"
+#include "main.h"
 
 class Network
 {
@@ -47,5 +47,10 @@ public:
 	bool Init();
 	bool Connect();
 
+public:
+	//서버와 클라간의 중계함수
+
+	void SendCheckLoginAndMusicDownload(string id, string password);
+	void ProcessCheckLoginAndMusicDownload();
 };
 

@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "EditStation.h"
 
+
 #include <vector>
 #include <string>
 
@@ -82,6 +83,9 @@ public:
 	void GameStart();
 
 	const int& GetIconNum();
+
+	// Network의 CheckLoginAndMusicDownload 함수를 연결하는 함수
+	void SendCheckLoginAndMusicDownload(string id, string password);
 
 	// PageMusicDataSet 메서드
 	void AddMusicData(const string& musicName, const string& dataName); // 쌍 추가 함수 선언

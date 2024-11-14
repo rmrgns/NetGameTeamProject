@@ -1,8 +1,9 @@
 #pragma once
 #include "Network.h"
+
 #include <tchar.h>
 #include <time.h>
-#include <Windows.h>
+
 #include <vector>
 #include <fmod.hpp>
 #include <map>
