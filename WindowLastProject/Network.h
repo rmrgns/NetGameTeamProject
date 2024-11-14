@@ -1,7 +1,6 @@
 #pragma once
 #include <thread>
 #include "../server/NetGameServer/Common.h"
-#include "main.h"
 
 class Network
 {

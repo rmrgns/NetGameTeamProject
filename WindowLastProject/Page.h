@@ -4,7 +4,6 @@
 #include "Effect.h"
 #include "EditStation.h"
 
-
 #include <vector>
 #include <string>
 

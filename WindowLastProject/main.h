@@ -3,7 +3,6 @@
 
 #include <tchar.h>
 #include <time.h>
-
 #include <vector>
 #include <fmod.hpp>
 #include <map>

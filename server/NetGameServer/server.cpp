@@ -17,10 +17,10 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
-	else if (sList == sendList::EnterLobby)
+	/*else if (sList == sendList::EnterLobby)
 	{
 		
-	}
+	}*/
 	else
 	{
 		return;
