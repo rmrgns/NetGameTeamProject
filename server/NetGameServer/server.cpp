@@ -17,10 +17,10 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
-	/*else if (sList == sendList::EnterLobby)
+	else if (sList == sendList::EnterLobby)
 	{
 		
-	}*/
+	}
 	else
 	{
 		return;
@@ -29,7 +29,15 @@ void CheckSendList(string sList, SOCKET client_sock)
 
 unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 {
+
 	// send해서 네트워크쪽으로 데이터를 보낸다
 	cout << "success" << endl;
+
+	return 0;
+}
+
+unsigned __stdcall SendPlayerScore(void* arg)
+{
+
 	return 0;
 }

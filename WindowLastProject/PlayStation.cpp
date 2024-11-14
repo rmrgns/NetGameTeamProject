@@ -1,6 +1,8 @@
 #include "PlayStation.h"
+#include "Page.h"
 
 extern vector<Sprite*> SpriteData;
+extern RECT rt;
 
 PlayStation::PlayStation()
 {
@@ -1320,6 +1322,14 @@ void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_SPACE) {
 				keydata.Space_pressed = true;
 				keydata.Space_dut.x = GetTime();
+			}
+
+			if (wParam == 'P') {
+				Music::ClearSoundsAndChannels();
+				GameManager* GM = (GameManager*)gm;
+				GM->AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+				GM->Update(0);
+				SetEnable(false);
 			}
 		}
 

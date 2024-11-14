@@ -1,6 +1,7 @@
 #include "Network.h"
 #include "Page.h"
 
+
 Network* Network::m_pInst = NULL;
 
 bool Network::Init()
@@ -42,6 +43,7 @@ bool Network::Connect()
 	return true;
 }
 
+
 void Network::SendCheckLoginAndMusicDownload(string id, string password)
 {
 	int retval;
@@ -68,3 +70,14 @@ void Network::ProcessCheckLoginAndMusicDownload()
 {
 
 }
+
+void Network::SendRequestPlayerScore()
+{
+
+}
+
+void Network::ProcessRequestPlayerScore()
+{
+
+}
+
