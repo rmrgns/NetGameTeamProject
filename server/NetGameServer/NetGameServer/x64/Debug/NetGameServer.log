@@ -1,0 +1,9 @@
+﻿  common.cpp
+  main.cpp
+D:\networkelement\NetGameTeamProject\server\NetGameServer\main.cpp(16,19): warning C4101: 'len' :참조되지 않은 지역 변수입니다.
+D:\networkelement\NetGameTeamProject\server\NetGameServer\main.cpp(21,10): warning C4101: 'name' :참조되지 않은 지역 변수입니다.
+D:\networkelement\NetGameTeamProject\server\NetGameServer\main.cpp(17,10): warning C4101: 'buf' :참조되지 않은 지역 변수입니다.
+D:\networkelement\NetGameTeamProject\server\NetGameServer\main.cpp(18,9): warning C4101: 'localclientid' :참조되지 않은 지역 변수입니다.
+  server.cpp
+  코드를 생성하고 있습니다...
+  NetGameServer.vcxproj -> D:\networkelement\NetGameTeamProject\server\NetGameServer\x64\Debug\NetGameServer.exe
