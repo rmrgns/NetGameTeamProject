@@ -416,6 +416,11 @@ void TitlePage::PrintMusicData() const
 {
 }
 
+//void TitlePage::SendEnterEditStation()
+//{
+//	//Network::GetInst()->SendEnterEditStation();
+//}
+
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam)
 {
 	TitlePage* tp = (TitlePage*)obj->Parent;

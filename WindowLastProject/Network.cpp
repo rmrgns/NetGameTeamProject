@@ -73,11 +73,73 @@ void Network::ProcessCheckLoginAndMusicDownload()
 
 void Network::SendRequestPlayerScore()
 {
+	int retval;
+	unsigned long len;
 
+	string sl = "PlayerScore";
+	len = sl.length();
+
+	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendRequestPlayerScore() Size");
+	}
+
+	retval = send(sock, sl.c_str(), len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendRequestPlayerScore()");
+	}
 }
 
 void Network::ProcessRequestPlayerScore()
 {
+	
+}
+
+
+void Network::SendLeaveEditStation()
+{
+	int retval;
+	unsigned long len;
+
+	string sl = "LeaveEditStation";
+	len = sl.length();
+
+	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendLeaveEditStation() Size");
+	}
+
+	retval = send(sock, sl.c_str(), len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendLeaveEditStation()");
+	}
+}
+
+void Network::ProcessLeaveEditStation()
+{
 
 }
 
+//void Network::SendEnterEditStation()
+//{
+//	int retval;
+//	unsigned long len;
+//
+//	string sl = "EnterEditStation";
+//	len = sl.length();
+//
+//	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("SendEnterEditStation() Size");
+//	}
+//
+//	retval = send(sock, sl.c_str(), len, 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("SendEnterEditStation()");
+//	}
+//}
+//
+//void Network::ProcessEnterEditStation()
+//{
+//
+//}

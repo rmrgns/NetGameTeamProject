@@ -1,5 +1,6 @@
 #include "PlayStation.h"
 #include "Page.h"
+#include "Network.h"
 
 extern vector<Sprite*> SpriteData;
 extern RECT rt;
@@ -1292,6 +1293,10 @@ void PlayStation::Update(const float& delta)
 		if (stateFlow.x < stateFlow.y) {
 			stateFlow.x += delta;
 		}
+
+		if (GetMaxNoteNum() == perfectnum + goodnum + missnum) {
+			//SendRequestPlayerScore();
+		}
 	}
 }
 
@@ -1887,4 +1892,9 @@ void PlayStation::Render(HDC hdc)
 	}
 }
 
+
+void PlayStation::SendRequestPlayerScore()
+{
+	Network::GetInst()->SendRequestPlayerScore();
+}
 

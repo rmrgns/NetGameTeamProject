@@ -17,6 +17,30 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
+	else if (sList == "PlayerScore")
+	{
+		//SendPlayerScore()
+		hThread = (HANDLE)_beginthreadex(NULL, 0, SendPlayerScore, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+
+	}
+	else if (sList == "LeaveEditStation")
+	{
+		//RecvLeaveEditStation()
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvLeaveEditStation, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+
+	}
+	else if (sList == "EnterEditStation")
+	{
+		//RecvEnterEditStation()
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterEditStation, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+
+	}
 	/*else if (sList == sendList::EnterLobby)
 	{
 		
@@ -31,13 +55,25 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 {
 
 	// send해서 네트워크쪽으로 데이터를 보낸다
-	cout << "success" << endl;
+	//cout << "success" << endl;
 
 	return 0;
 }
 
 unsigned __stdcall SendPlayerScore(void* arg)
 {
+	//cout << "success" << endl;
+	return 0;
+}
 
+unsigned __stdcall RecvLeaveEditStation(void* arg)
+{
+	cout << "success" << endl;
+	return 0;
+}
+
+unsigned __stdcall RecvEnterEditStation(void* arg)
+{
+	cout << "success" << endl;
 	return 0;
 }
