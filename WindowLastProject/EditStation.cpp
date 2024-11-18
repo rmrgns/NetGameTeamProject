@@ -2,6 +2,7 @@
 #include "HeapDebug.h"
 #include "Game.h"
 #include "Page.h"
+#include "Network.h"
 #include <commdlg.h>
 
 GameUI* GameUI::UIArr[GAMEUI_MAX] = {};
@@ -404,6 +405,10 @@ void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 					
 				
 			}
+			if (wParam == 'P') {
+				SendLeaveEditStation();
+				SetEnable(false);
+			}
 		}
 		if (iMessage == WM_MOUSEWHEEL) {
 			((short)HIWORD(wParam) < 0) ? SetTime(GetTime() - 0.2f) : SetTime(GetTime() + 0.2f);
@@ -678,6 +683,11 @@ void EditStation::Render(HDC hdc)
 		DeleteObject(REDPen);
 		DeleteObject(SmallPen);
 	}
+}
+
+void EditStation::SendLeaveEditStation()
+{
+	Network::GetInst()->SendLeaveEditStation();
 }
 
 void EditStation::GetDialogData(float delta)
@@ -1040,3 +1050,5 @@ void IFClickLoadMusic(const GameButton* obj, const HWND& hWnd, const UINT& iMess
 		SetCurrentDirectory(originPath);
 	}
 }
+
+

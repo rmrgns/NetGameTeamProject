@@ -96,6 +96,8 @@ public:
 	virtual void Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) override;
 
 	virtual void Render(HDC hdc) override;
+
+	void SendLeaveEditStation();
 };
 
 void IFClickBottom(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);

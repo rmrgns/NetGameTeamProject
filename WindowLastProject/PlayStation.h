@@ -209,4 +209,6 @@ public:
 
 	void DrawNote(HDC hdc, shp::rect4f playloc, Note note);
 	virtual void Render(HDC hdc) override;
+
+	void SendRequestPlayerScore();
 };

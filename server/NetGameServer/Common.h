@@ -24,6 +24,8 @@ enum sendList
 	EnterLobby,
 	ReadyStatus,
 	AllReadyAndMusicIndex,
+	LeaveEditStation,
+	EnterEditStation,
 
 };
 

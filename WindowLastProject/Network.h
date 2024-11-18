@@ -54,7 +54,9 @@ public:
 	void ProcessCheckLoginAndMusicDownload();
 	void SendRequestPlayerScore();
 	void ProcessRequestPlayerScore();
-
-
+	void SendLeaveEditStation();
+	void ProcessLeaveEditStation();
+	//void SendEnterEditStation();
+	//void ProcessEnterEditStation();
 };
 
