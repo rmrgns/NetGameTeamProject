@@ -54,6 +54,15 @@ DWORD WINAPI TimeLoop(LPVOID lpParameter)
 	return 0;
 }
 
+// 네트워크 관련 동작을 위한 쓰레드함수
+DWORD WINAPI NetworkLoop(LPVOID lpParameter)
+{
+	while (1) {
+		// 네트워크 관련 동작 실행
+	}
+	return 0;
+}
+
 int mx = 0;
 int my = 0;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -93,7 +102,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			// More details can be retrieved by calling GetLastError()
 			return 1;
 		}
-
+		hNetworkLoopThread = CreateThread(
+			NULL,    // Thread attributes
+			0,       // Stack size (0 = use default)
+			NetworkLoop, // Thread start address
+			NULL,    // Parameter to pass to the thread
+			0,       // Creation flags
+			NULL);   // Thread id
+		if (hNetworkLoopThread == NULL)
+		{
+			// Thread creation failed.
+			// More details can be retrieved by calling GetLastError()
+			return 1;
+		}
 
 
 		//SetTimer(hWnd, 0, 20, NULL);
