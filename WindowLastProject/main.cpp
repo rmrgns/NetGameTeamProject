@@ -57,9 +57,18 @@ DWORD WINAPI TimeLoop(LPVOID lpParameter)
 // 네트워크 관련 동작을 위한 쓰레드함수
 DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 {
+	DWORD retval;
+	
 	while (1) {
+		retval = WaitForSingleObject(hNetworkEvent, INFINITE);
+		if (retval != WAIT_OBJECT_0) break;
+
+		EnterCriticalSection(&cs);
 		// 네트워크 관련 동작 실행
+		Network::GetInst()->Update();
+		LeaveCriticalSection(&cs);
 	}
+
 	return 0;
 }
 
@@ -102,6 +111,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			// More details can be retrieved by calling GetLastError()
 			return 1;
 		}
+
 		hNetworkLoopThread = CreateThread(
 			NULL,    // Thread attributes
 			0,       // Stack size (0 = use default)

@@ -4,6 +4,7 @@
 
 Network* Network::m_pInst = NULL;
 
+
 bool Network::Init()
 {
 	m_id = 0;
@@ -22,6 +23,8 @@ bool Network::Init()
 		err_display(WSAGetLastError());
 		return false;
 	}
+	InitializeCriticalSection(&cs);
+	hNetworkEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	return true;
 }
@@ -41,6 +44,31 @@ bool Network::Connect()
 		return false;
 	}
 	return true;
+}
+
+void Network::Update()
+{
+	int retval = 0;
+	char buf[256];
+
+	// 데이터 받기
+	retval = recv(sock, buf, retval, MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		return;
+	}
+	else if (retval == 0)
+		return;
+
+	if (sl == sendList::CheckLogin)
+	{
+
+		ResetEvent(hNetworkEvent);
+	}
+	else
+	{
+		return;
+	}
 }
 
 
@@ -64,11 +92,12 @@ void Network::SendCheckLoginAndMusicDownload(string id, string password)
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload()");
 	}
+	SetEvent(hNetworkEvent);
 }
 
 void Network::ProcessCheckLoginAndMusicDownload()
 {
-
+	
 }
 
 void Network::SendRequestPlayerScore()

@@ -14,6 +14,18 @@
 
 using namespace std;
 
+enum sendList
+{
+	CheckLogin = 0,
+	EnterPlayStation,
+	PlayerScore,
+	LeavePlayStation,
+	EnterLobby,
+	ReadyStatus,
+	AllReadyAndMusicIndex,
+
+};
+
 struct LoginInfo
 {
 	char* id;
