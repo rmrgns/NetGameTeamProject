@@ -68,12 +68,22 @@ unsigned __stdcall SendPlayerScore(void* arg)
 
 unsigned __stdcall RecvLeaveEditStation(void* arg)
 {
-	cout << "success" << endl;
+	int retval;
+	unsigned long len;
+
+	bool sl = TRUE;
+	len = sizeof(bool);
+
+	//cout << "success3" << endl;
+	retval = send(client_sock, (char*)&len, sizeof(unsigned long), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvLeaveEditStation()");
+	}
 	return 0;
 }
 
 unsigned __stdcall RecvEnterEditStation(void* arg)
 {
-	cout << "success" << endl;
+	cout << "success2" << endl;
 	return 0;
 }

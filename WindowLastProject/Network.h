@@ -56,7 +56,7 @@ public:
 	void ProcessRequestPlayerScore();
 	void SendLeaveEditStation();
 	void ProcessLeaveEditStation();
-	//void SendEnterEditStation();
-	//void ProcessEnterEditStation();
+	void SendEnterEditStation();
+	void ProcessEnterEditStation();
 };
 

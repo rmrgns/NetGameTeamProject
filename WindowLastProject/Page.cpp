@@ -330,6 +330,7 @@ void TitlePage::Select(char menuChar)
 		selectCommand = menuChar;
 		Music::ClearSoundsAndChannels();
 		NextPage();
+		SendEnterEditStation();
 		SetEnable(false);
 	}
 }
@@ -339,7 +340,7 @@ void TitlePage::NextPage()
 	if (enable) {
 		switch(selectCommand) {
 			case 'p':
-			{
+			{				
 				GameManager* GM = (GameManager*)gm;
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
 				ps->LoadMusic(musicDataSet[musicIndex].musicName.c_str());
@@ -348,7 +349,6 @@ void TitlePage::NextPage()
 				//ps->LoadData(musicDataSet[1].noteName.c_str());
 
 				GM->AddObject((GameObject*)ps);
-					
 		}
 				break;
 			case 'e':
@@ -416,10 +416,10 @@ void TitlePage::PrintMusicData() const
 {
 }
 
-//void TitlePage::SendEnterEditStation()
-//{
-//	//Network::GetInst()->SendEnterEditStation();
-//}
+void TitlePage::SendEnterEditStation()
+{
+	Network::GetInst()->SendEnterEditStation();
+}
 
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam)
 {

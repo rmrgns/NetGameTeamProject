@@ -8,7 +8,7 @@ CRITICAL_SECTION cs;
 unsigned __stdcall ProcessClient(void* arg)
 {
     //cout << "ProcessClient" << endl;
-    SOCKET client_sock = (SOCKET)arg;
+    client_sock = (SOCKET)arg;
     int retval;
     struct sockaddr_in clientaddr;
     char addr[INET_ADDRSTRLEN];
@@ -105,7 +105,7 @@ int main() {
     if (retval == SOCKET_ERROR) err_quit("listen()");
 
     // 데이터 통신에 사용할 변수
-    SOCKET client_sock;
+    
     struct sockaddr_in clientaddr;
     int addrlen;
     HANDLE hThread;
