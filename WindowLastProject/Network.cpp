@@ -24,14 +24,12 @@ bool Network::Init()
 		return false;
 	}
 	InitializeCriticalSection(&cs);
-	hNetworkEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	return true;
 }
 
 bool Network::Connect()
 {
-	int retval;
 
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
@@ -48,49 +46,24 @@ bool Network::Connect()
 
 void Network::Update()
 {
-	int retval = 0;
-	int len;
+
 	char buf[256];
 	if (processSendList == sendList::CheckLogin)
 	{
-		// 데이터 받기
-		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
-		if (retval == SOCKET_ERROR) {
-			err_display("recvnamesize()");
-			cout << "error1" << endl;
-			LeaveCriticalSection(&cs);
-			return;
-		}
-		else if (retval == 0)
-		{
-			cout << "error2" << endl;
-			LeaveCriticalSection(&cs);
-			return;
-		}
-
-		retval = recv(sock, buf, len, MSG_WAITALL);
-		if (retval == SOCKET_ERROR) {
-			err_display("recvsendlist()");
-			LeaveCriticalSection(&cs);
-			return;
-		}
-		else if (retval == 0)
-		{
-			LeaveCriticalSection(&cs);
-			return;
-		}
-		buf[retval] = '\0';
-		cout << buf << endl;
-		processSendList = sendList::None;
+		ProcessCheckLoginAndMusicDownload();
 	}
+	else
+	{
+		return;
+	}
+	processSendList = sendList::None;
 }
 
 
 void Network::SendCheckLoginAndMusicDownload(string id, string password)
 {
-	
-	int retval;
-	int len;
+	ResumeThread(hNetworkLoopThread);
+
 	string sl = "CheckLogin";
 	len = sl.length();
 	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
@@ -102,15 +75,39 @@ void Network::SendCheckLoginAndMusicDownload(string id, string password)
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload()");
 	}
-	//EnterCriticalSection(&cs);
-	//SetEvent(hNetworkEvent);
-	//LeaveCriticalSection(&cs);
+
 	processSendList = sendList::CheckLogin;
 }
 
 void Network::ProcessCheckLoginAndMusicDownload()
 {
-	
+
+	char buf[256];
+	// 데이터 받기
+	retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvnamesize()");
+		cout << "error1" << endl;
+		return;
+	}
+	else if (retval == 0)
+	{
+		cout << "error2" << endl;
+		return;
+	}
+
+	retval = recv(sock, buf, len, MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvsendlist()");
+		return;
+	}
+	else if (retval == 0)
+	{
+		return;
+	}
+	buf[retval] = '\0';
+	cout << buf << endl;
+
 }
 
 void Network::SendRequestPlayerScore()

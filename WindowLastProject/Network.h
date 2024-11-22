@@ -4,6 +4,8 @@
 
 static CRITICAL_SECTION cs;
 
+static HANDLE hNetworkLoopThread;
+
 class Network
 {
 private:
@@ -27,7 +29,6 @@ public:
 private:
 	SOCKET sock;
 	HANDLE hd;
-	HANDLE hNetworkEvent;
 	// 클라에서 전달한 sendList
 	sendList processSendList;
 
@@ -37,14 +38,14 @@ private:
 	int m_prev_size = 0;
 	bool m_iswork = true;
 	const char* SERVERIP = (char*)"127.0.0.1";
-
+	int retval;
+	int len;
 	int SERVERPORT = 9000;
 	int BUFSIZE = 1024;
 public:
 	Network() {};
 	~Network() {
 		DeleteCriticalSection(&cs);
-		CloseHandle(hNetworkEvent);
 		closesocket(sock);
 		WSACleanup();
 
@@ -63,6 +64,6 @@ public:
 	void ProcessRequestPlayerScore();
 
 	// 메서드
-	HANDLE getNetworkEvent() const { return hNetworkEvent; }
+
 };
 

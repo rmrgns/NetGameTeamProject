@@ -65,16 +65,12 @@ DWORD WINAPI TimeLoop(LPVOID lpParameter)
 DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 {
 	DWORD retval;
-	HANDLE hd = Network::GetInst()->getNetworkEvent();
+	// 초당 패킷수 정하기 (30개가 적당)
 	while (1) {
 		{
-
-			EnterCriticalSection(&cs);
 			// 네트워크 관련 동작 실행
 			Network::GetInst()->Update();
-			LeaveCriticalSection(&cs);
 		}
-
 	}
 
 	return 0;
