@@ -67,15 +67,12 @@ DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 	DWORD retval;
 	HANDLE hd = Network::GetInst()->getNetworkEvent();
 	while (1) {
-		//retval = WaitForSingleObject(hd, INFINITE);
-		//if (retval == WAIT_OBJECT_0) 
 		{
-			
-			//cout << "networkloop" << endl;
-			//EnterCriticalSection(&cs);
+
+			EnterCriticalSection(&cs);
 			// 네트워크 관련 동작 실행
 			Network::GetInst()->Update();
-			//LeaveCriticalSection(&cs);
+			LeaveCriticalSection(&cs);
 		}
 
 	}

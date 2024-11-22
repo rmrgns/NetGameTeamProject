@@ -24,10 +24,7 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
-	/*else if (sList == sendList::EnterLobby)
-	{
-		
-	}*/
+
 	else
 	{
 		return;
@@ -36,7 +33,9 @@ void CheckSendList(string sList, SOCKET client_sock)
 
 unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 {
+	// 사용할 소켓은 이렇게 받아온다
 	SOCKET sock = (SOCKET)arg;
+	
 	// send해서 네트워크쪽으로 데이터를 보낸다
 	int retval;
 	int len;
