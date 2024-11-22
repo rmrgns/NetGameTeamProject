@@ -14,9 +14,10 @@
 
 using namespace std;
 
-enum sendList
+enum class sendList : unsigned short
 {
-	CheckLogin = 0,
+	None = 0,
+	CheckLogin,
 	EnterPlayStation,
 	PlayerScore,
 	LeavePlayStation,

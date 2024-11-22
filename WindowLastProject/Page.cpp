@@ -186,9 +186,7 @@ void TitlePage::FirstInit()
 
 		checkInitialize = false;
 	}
-	string id = "1234";
-
-	SendCheckLoginAndMusicDownload(id, id);
+	
 }
 
 void TitlePage::Update(const float& delta)
@@ -253,7 +251,12 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				if (musicDataSet.size() <= musicIndex)
 					musicIndex = 0;
 			}
-
+			if (wParam == 'q')
+			{
+				string id = "1234";
+				
+				SendCheckLoginAndMusicDownload(id, id);
+			}
 		}
 	}
 }

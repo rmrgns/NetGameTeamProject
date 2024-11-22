@@ -24,7 +24,7 @@ bool Network::Init()
 		return false;
 	}
 	InitializeCriticalSection(&cs);
-	hNetworkEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	hNetworkEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	return true;
 }
@@ -49,40 +49,50 @@ bool Network::Connect()
 void Network::Update()
 {
 	int retval = 0;
+	int len;
 	char buf[256];
-
-	// 데이터 받기
-	retval = recv(sock, buf, retval, MSG_WAITALL);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-		return;
-	}
-	else if (retval == 0)
-		return;
-
-	if (sl == sendList::CheckLogin)
+	if (processSendList == sendList::CheckLogin)
 	{
+		// 데이터 받기
+		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
+		if (retval == SOCKET_ERROR) {
+			err_display("recvnamesize()");
+			cout << "error1" << endl;
+			LeaveCriticalSection(&cs);
+			return;
+		}
+		else if (retval == 0)
+		{
+			cout << "error2" << endl;
+			LeaveCriticalSection(&cs);
+			return;
+		}
 
-		ResetEvent(hNetworkEvent);
-	}
-	else
-	{
-		return;
+		retval = recv(sock, buf, len, MSG_WAITALL);
+		if (retval == SOCKET_ERROR) {
+			err_display("recvsendlist()");
+			LeaveCriticalSection(&cs);
+			return;
+		}
+		else if (retval == 0)
+		{
+			LeaveCriticalSection(&cs);
+			return;
+		}
+		buf[retval] = '\0';
+		cout << buf << endl;
+		processSendList = sendList::None;
 	}
 }
 
 
 void Network::SendCheckLoginAndMusicDownload(string id, string password)
 {
-	int retval;
-	unsigned long len;
 	
-	//sendList sl = sendList::CheckLogin;	
-	//len = sizeof(sl);
-	 
+	int retval;
+	int len;
 	string sl = "CheckLogin";
 	len = sl.length();
-
 	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload() Size");
@@ -92,7 +102,10 @@ void Network::SendCheckLoginAndMusicDownload(string id, string password)
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload()");
 	}
-	SetEvent(hNetworkEvent);
+	//EnterCriticalSection(&cs);
+	//SetEvent(hNetworkEvent);
+	//LeaveCriticalSection(&cs);
+	processSendList = sendList::CheckLogin;
 }
 
 void Network::ProcessCheckLoginAndMusicDownload()

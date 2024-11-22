@@ -1,5 +1,9 @@
 #include "main.h"
 
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 int WINAPI CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpszCmdParam, _In_ int nCmdShow)
 {
 	MSG Message;
@@ -23,10 +27,13 @@ int WINAPI CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIn
 		200, 200, 1000, 700,
 		NULL, (HMENU)NULL, hInstance, NULL);
 
+
 	Network::GetInst()->Init();
 	Network::GetInst()->Connect();
 
 	ShowWindow(hWnd, nCmdShow);
+
+	
 
 	while (GetMessage(&Message, 0, 0, 0))
 	{
@@ -58,15 +65,19 @@ DWORD WINAPI TimeLoop(LPVOID lpParameter)
 DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 {
 	DWORD retval;
-	
+	HANDLE hd = Network::GetInst()->getNetworkEvent();
 	while (1) {
-		retval = WaitForSingleObject(hNetworkEvent, INFINITE);
-		if (retval != WAIT_OBJECT_0) break;
+		//retval = WaitForSingleObject(hd, INFINITE);
+		//if (retval == WAIT_OBJECT_0) 
+		{
+			
+			//cout << "networkloop" << endl;
+			//EnterCriticalSection(&cs);
+			// 네트워크 관련 동작 실행
+			Network::GetInst()->Update();
+			//LeaveCriticalSection(&cs);
+		}
 
-		EnterCriticalSection(&cs);
-		// 네트워크 관련 동작 실행
-		Network::GetInst()->Update();
-		LeaveCriticalSection(&cs);
 	}
 
 	return 0;
@@ -111,6 +122,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			// More details can be retrieved by calling GetLastError()
 			return 1;
 		}
+
+		
 
 		hNetworkLoopThread = CreateThread(
 			NULL,    // Thread attributes
@@ -188,13 +201,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			DeleteObject(hBit);
 		}
 		CloseHandle(hTimeLoopThread);
-
+		CloseHandle(hNetworkLoopThread);
 		gm.Clear();
 
 		{
 			TCHAR tstr[128] = {};
 			wsprintf(tstr, L"Non Release Heap Num : %d", HeapDebugClass::GetPresentHeapDataCount());
-			MessageBox(hWnd, tstr, L"해제되지 않은 힙 메모리 확인", MB_OK);
+			//MessageBox(hWnd, tstr, L"해제되지 않은 힙 메모리 확인", MB_OK);
 		}
 		PostQuitMessage(0);
 		break;

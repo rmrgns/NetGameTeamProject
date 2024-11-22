@@ -3,8 +3,6 @@
 #include "../server/NetGameServer/Common.h"
 
 static CRITICAL_SECTION cs;
-static HANDLE hNetworkEvent;
-static HANDLE hReadEvent;
 
 class Network
 {
@@ -29,9 +27,9 @@ public:
 private:
 	SOCKET sock;
 	HANDLE hd;
-
+	HANDLE hNetworkEvent;
 	// 클라에서 전달한 sendList
-	sendList sl;
+	sendList processSendList;
 
 	std::thread worker;
 
@@ -46,6 +44,7 @@ public:
 	Network() {};
 	~Network() {
 		DeleteCriticalSection(&cs);
+		CloseHandle(hNetworkEvent);
 		closesocket(sock);
 		WSACleanup();
 
@@ -63,6 +62,7 @@ public:
 	void SendRequestPlayerScore();
 	void ProcessRequestPlayerScore();
 
-
+	// 메서드
+	HANDLE getNetworkEvent() const { return hNetworkEvent; }
 };
 
