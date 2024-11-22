@@ -27,7 +27,7 @@ unsigned __stdcall ProcessClient(void* arg)
         EnterCriticalSection(&cs);
 
         // sendList »Æ¿Œ
-
+        
         retval = recv(client_sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvnamesize()");

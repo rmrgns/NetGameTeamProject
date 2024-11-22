@@ -12,6 +12,9 @@
 #include <iostream>
 #include <vector>
 #include <process.h>
+#include <atomic>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
