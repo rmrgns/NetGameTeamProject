@@ -103,9 +103,12 @@ clock_t prec, savec;
 int stackTime = 0;
 constexpr int TIME_UPDATE = 15;
 
+
 DWORD WINAPI TimeLoop(LPVOID lpParameter);
+DWORD WINAPI NetworkLoop(LPVOID lpParameter);
 
 HANDLE hTimeLoopThread;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
 
 GameManager gm;

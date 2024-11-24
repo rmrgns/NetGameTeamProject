@@ -12,12 +12,16 @@
 #include <iostream>
 #include <vector>
 #include <process.h>
+#include <atomic>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
-enum sendList
+enum class sendList : unsigned short
 {
-	CheckLogin = 0,
+	None = 0,
+	CheckLogin,
 	EnterPlayStation,
 	PlayerScore,
 	LeavePlayStation,
@@ -51,8 +55,8 @@ struct LobbyInfo
 
 struct MusicData
 {
-	char* musicName;
-	char* noteName;
+	string musicName;
+	string noteName;
 };
 
 #pragma comment(lib, "ws2_32") // ws2_32.lib ¸µÅ©

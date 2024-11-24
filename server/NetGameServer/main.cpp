@@ -7,7 +7,6 @@ CRITICAL_SECTION cs;
 
 unsigned __stdcall ProcessClient(void* arg)
 {
-    //cout << "ProcessClient" << endl;
     SOCKET client_sock = (SOCKET)arg;
     int retval;
     struct sockaddr_in clientaddr;
@@ -17,20 +16,18 @@ unsigned __stdcall ProcessClient(void* arg)
     char buf[BUFSIZE + 1]; // 가변 길이 데이터
     int localclientid;
 
-    sendList sList;
     char name[BUFSIZE + 1];
 
     // 클라이언트 정보 얻기
     addrlen = sizeof(clientaddr);
     getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
     inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
+   
     while (1) {
-
         EnterCriticalSection(&cs);
 
         // sendList 확인
         
-        //cout << "check1" << endl;
         retval = recv(client_sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvnamesize()");
@@ -45,7 +42,6 @@ unsigned __stdcall ProcessClient(void* arg)
             break;
         }
 
-        //cout << "check2" << endl;
         retval = recv(client_sock, buf, len, MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvsendlist()");
@@ -58,16 +54,6 @@ unsigned __stdcall ProcessClient(void* arg)
             break;
         }
 
-        // 데이터 받기
-        //retval = recv(client_sock, buf, BUFSIZE, 0);
-        //if (retval == SOCKET_ERROR) {
-        //    err_display("recv()");
-        //    break;
-        //}
-        //else if (retval == 0)
-        //    break;
-        //cout << "check3" << endl;
-        //sList = reinterpret_cast<sendList>(buf);
         buf[retval] = '\0';
         CheckSendList(buf, client_sock);
 
@@ -81,7 +67,7 @@ unsigned __stdcall ProcessClient(void* arg)
 int main() {
     int retval;
     InitializeCriticalSection(&cs);
-
+    InitMusicData();
     // 윈속 초기화
     WSADATA wsa;
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
