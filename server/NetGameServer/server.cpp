@@ -19,10 +19,6 @@ void InitMusicData()
 		temp.noteName = " ";
 		musicDataSet.push_back(temp);
 	}
-	for (const auto& f : musicDataSet)
-	{
-		cout << f.musicName << endl;
-	}
 }
 
 string WStringToString(const wstring& wstr) 
@@ -114,20 +110,65 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 	
 	// send해서 네트워크쪽으로 데이터를 보낸다
 	int retval;
-	int len;
-	string sl = "CheckLogin";
-	len = sl.length();
+	int len = 0;
+	char buf[BUFSIZE];
 
-	ThrottlePackets();
-	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	/*unsigned int size = 0;
+	retval = send(sock, (char*)&size, sizeof(unsigned int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload() Size");
-	}
+	}*/
 
-	ThrottlePackets();
-	retval = send(sock, sl.c_str(), len, 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload()");
+	for (const auto& m : musicDataSet)
+	{
+		string path = "Sound/" + m.musicName;
+		// 파일을 소켓을 통해 전송
+		FILE* send_file = fopen(path.c_str(), "rb");  // 파일을 이진 모드로 열기
+		if (send_file == NULL) {
+			printf("파일 열기 실패 %s\n", path.c_str());
+			break;
+		}
+		cout << path << endl;
+		unsigned long fileSize;
+		fseek(send_file, 0, SEEK_END);	// 파일 포인터를 파일 끝으로 이동
+		fileSize = ftell(send_file);	// 현재 파일 포인터 위치를 얻음 (파일 크기)
+		rewind(send_file);				// 파일 포인터를 다시 파일의 시작으로 복원
+		int len = (int)strlen(path.c_str());
+		strncpy(buf, path.c_str(), len);
+		//ThrottlePackets();
+		// 파일 이름 텍스트 크기 보내기(고정 길이)
+		retval = send(sock, (char*)&len, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("sendnamesize()");
+			break;
+		}
+
+		//ThrottlePackets();
+		// 파일 이름 텍스트 보내기(가변 길이)
+		retval = send(sock, buf, len, 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("sendname()");
+			break;
+		}
+
+		//ThrottlePackets();
+		// 파일 데이터 크기 보내기(고정 길이)
+		retval = send(sock, (char*)&fileSize, sizeof(unsigned long), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("sendfileSize()");
+			break;
+		}
+
+		// 파일 데이터 보내기(가변 길이)
+		int retvalRead;
+		//ThrottlePackets();
+		while ((retvalRead = fread(buf, 1, BUFSIZE, send_file)) > 0) {
+			retval = send(sock, buf, retvalRead, 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("sendfile()");
+				break;
+			}
+		}
 	}
 	return 0;
 }

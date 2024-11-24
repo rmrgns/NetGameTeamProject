@@ -254,6 +254,7 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (wParam == 'q')
 			{
 				string id = "1234";
+				cout << id << endl;
 				SendCheckLoginAndMusicDownload(id, id);
 			}
 		}
