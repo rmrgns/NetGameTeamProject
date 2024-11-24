@@ -62,7 +62,6 @@ void Network::Update()
 
 void Network::SendCheckLoginAndMusicDownload(string id, string password)
 {
-	ResumeThread(hNetworkLoopThread);
 
 	string sl = "CheckLogin";
 	len = sl.length();

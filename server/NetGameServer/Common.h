@@ -53,8 +53,8 @@ struct LobbyInfo
 
 struct MusicData
 {
-	char* musicName;
-	char* noteName;
+	string musicName;
+	string noteName;
 };
 
 #pragma comment(lib, "ws2_32") // ws2_32.lib ¸µÅ©

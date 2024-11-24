@@ -9,6 +9,56 @@ std::atomic<int> packet_count(0);
 const int MAX_PACKETS_PER_SECOND = 30; // 초당 100개의 패킷 제한
 std::chrono::steady_clock::time_point last_reset_time = std::chrono::steady_clock::now();
 
+void InitMusicData()
+{
+	vector<string>fileNames = GetFileNamesFromFolder();
+	for (const auto& f : fileNames)
+	{
+		MusicData temp;
+		temp.musicName = f;
+		temp.noteName = " ";
+		musicDataSet.push_back(temp);
+	}
+	for (const auto& f : musicDataSet)
+	{
+		cout << f.musicName << endl;
+	}
+}
+
+string WStringToString(const wstring& wstr) 
+{
+	string str(wstr.begin(), wstr.end());
+	return str;
+}
+
+vector<string> GetFileNamesFromFolder() 
+{
+	vector<string> fileNames;
+	WIN32_FIND_DATAW findFileData;
+	HANDLE hFind;
+	string str;
+	wstring searchPath = L"Sound\\*"; // 모든 파일 검색
+	//wstring wsearchPath = wstring(searchPath.begin(), searchPath.end());
+	hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		//cerr << "Failed to open folder: " << folderPath << endl;
+		return fileNames;
+	}
+
+	do 
+	{
+		// 디렉토리 제외
+		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+		{
+			fileNames.emplace_back(WStringToString(findFileData.cFileName));
+		}
+	} while (FindNextFileW(hFind, &findFileData) != 0);
+
+	FindClose(hFind);
+	return fileNames;
+}
+
 void CheckSendList(string sList, SOCKET client_sock)
 {
 	HANDLE hThread;
@@ -16,9 +66,6 @@ void CheckSendList(string sList, SOCKET client_sock)
 	// 소켓의 sendList를 확인해서 해당 server 함수 호출
 	if (sList == "CheckLogin")
 	{
-		int retval;
-		unsigned long len;
-
 		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvCheckLoginAndMusicDownload, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
