@@ -2,6 +2,10 @@
 #include <thread>
 #include "../server/NetGameServer/Common.h"
 
+static CRITICAL_SECTION cs;
+
+static HANDLE hNetworkLoopThread;
+
 class Network
 {
 private:
@@ -25,6 +29,8 @@ public:
 private:
 	SOCKET sock;
 	HANDLE hd;
+	// 클라에서 전달한 sendList
+	sendList processSendList;
 
 	std::thread worker;
 
@@ -32,12 +38,14 @@ private:
 	int m_prev_size = 0;
 	bool m_iswork = true;
 	const char* SERVERIP = (char*)"127.0.0.1";
-
+	int retval;
+	int len;
 	int SERVERPORT = 9000;
 	int BUFSIZE = 1024;
 public:
 	Network() {};
 	~Network() {
+		DeleteCriticalSection(&cs);
 		closesocket(sock);
 		WSACleanup();
 
@@ -45,7 +53,7 @@ public:
 
 	bool Init();
 	bool Connect();
-
+	void Update();	// 서버에서 보내는 데이터 전송받는 함수
 
 public:
 	//서버와 클라간의 중계함수
@@ -56,7 +64,7 @@ public:
 	void ProcessRequestPlayerScore();
 	void SendLeaveEditStation();
 	void ProcessLeaveEditStation();
-	void SendEnterEditStation();
-	void ProcessEnterEditStation();
+	// 메서드
+
 };
 

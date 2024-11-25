@@ -124,11 +124,11 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
-	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
-	AddMusicData("otherOperation5.mp3", "momi.txt");
-	AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
-	AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
-	AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
+	//AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
+	//AddMusicData("otherOperation5.mp3", "momi.txt");
+	//AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
+	//AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
+	//AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
 	SetLocation(loc);
 	SetLayer(layer);
 	
@@ -186,9 +186,7 @@ void TitlePage::FirstInit()
 
 		checkInitialize = false;
 	}
-	string id = "1234";
-
-	SendCheckLoginAndMusicDownload(id, id);
+	
 }
 
 void TitlePage::Update(const float& delta)
@@ -253,7 +251,12 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				if (musicDataSet.size() <= musicIndex)
 					musicIndex = 0;
 			}
-
+			if (wParam == 'q')
+			{
+				string id = "1234";
+				cout << id << endl;
+				SendCheckLoginAndMusicDownload(id, id);
+			}
 		}
 	}
 }
