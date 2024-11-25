@@ -66,7 +66,12 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
-
+	else if (sList == "EnterPlayStation")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterPlayStation, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+	}
 	else
 	{
 		return;
@@ -176,5 +181,24 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 unsigned __stdcall SendPlayerScore(void* arg)
 {
 
+	return 0;
+}
+
+unsigned __stdcall RecvEnterPlayStation(void* arg)
+{
+	// 사용할 소켓은 이렇게 받아온다
+	SOCKET sock = (SOCKET)arg;
+
+	// 추후 업데이트 내용
+	// 로비에 대기중인 플레이어가 2명일때 입장을 허가한다
+
+	// send해서 네트워크쪽으로 데이터를 보낸다
+	int retval;
+
+	unsigned char check = 'p';
+	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvEnterPlayStation() Size");
+	}
 	return 0;
 }

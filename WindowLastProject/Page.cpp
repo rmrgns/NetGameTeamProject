@@ -125,10 +125,17 @@ TitlePage::~TitlePage()
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
 	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
+<<<<<<< Updated upstream
 	AddMusicData("otherOperation5.mp3", "momi.txt");
 	AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
 	AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
 	AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
+=======
+	//AddMusicData("otherOperation5.mp3", "momi.txt");
+	//AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
+	//AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
+	//AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
+>>>>>>> Stashed changes
 	SetLocation(loc);
 	SetLayer(layer);
 	
@@ -347,8 +354,6 @@ void TitlePage::NextPage()
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
 				ps->LoadMusic(musicDataSet[musicIndex].musicName.c_str());
 				ps->LoadData(musicDataSet[musicIndex].noteName.c_str());
-				//ps->LoadMusic(musicDataSet[1].musicName.c_str());
-				//ps->LoadData(musicDataSet[1].noteName.c_str());
 
 				GM->AddObject((GameObject*)ps);
 					
@@ -408,6 +413,11 @@ void TitlePage::SendCheckLoginAndMusicDownload(string id, string password)
 	Network::GetInst()->SendCheckLoginAndMusicDownload(id, password);
 }
 
+void TitlePage::SendEnterPlayStation()
+{
+	Network::GetInst()->SendEnterPlayStation(this);
+}
+
 void TitlePage::AddMusicData(const string& musicName, const string& dataName)
 {
 	string music = "Sound/" + musicName;
@@ -444,7 +454,7 @@ void IFClickSelect(const GameButton* obj, const HWND& hWnd, const UINT& iMessage
 	GameUI::LBtnPressed = false;
 	TitlePage* tp = (TitlePage*)obj->Parent;
 	if (tp->GetIconNum() % 2 == 0) {
-		tp->Select('p');
+		tp->SendEnterPlayStation();
 	}
 	else {
 		tp->Select('e');

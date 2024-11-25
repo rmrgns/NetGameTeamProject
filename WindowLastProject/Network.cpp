@@ -2,8 +2,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS // 구형 소켓 API 사용 시 경고 끄기
 
 #include "Network.h"
-#include "Page.h"
-#include <cstring>
+
 
 
 Network* Network::m_pInst = NULL;
@@ -55,6 +54,10 @@ void Network::Update()
 	if (processSendList == sendList::CheckLogin)
 	{
 		ProcessCheckLoginAndMusicDownload();
+	}
+	else if (processSendList == sendList::EnterPlayStation)
+	{
+		ProcessEnterPlayStation();
 	}
 	else
 	{
@@ -168,3 +171,81 @@ void Network::ProcessRequestPlayerScore()
 
 }
 
+<<<<<<< Updated upstream
+=======
+void Network::SendEnterPlayStation(TitlePage* go)
+{
+	int retval;
+	unsigned long len;
+
+	string sl = "EnterPlayStation";
+	len = sl.length();
+
+	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendEnterPlayStation() Size");
+	}
+
+	retval = send(sock, sl.c_str(), len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendEnterPlayStation()");
+	}
+	tp = go;
+	processSendList = sendList::EnterPlayStation;
+}
+
+void Network::ProcessEnterPlayStation()
+{
+	int retval;
+	unsigned char check;
+
+	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("ProcessEnterPlayStation");
+	}
+
+	if (check == 'p')
+	{
+		// PlayerStation 입장
+		tp->setSelectCommand(check);
+		tp->NextPage();
+		//cout << check << endl;
+	}
+}
+
+void Network::SendPlayerScore(unsigned int score)
+{
+	int retval;
+
+	retval = send(sock, (char*)&score, sizeof(unsigned int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendPlayerScore()");
+	}
+
+	
+}
+
+//void Network::SendEnterEditStation()
+//{
+//	int retval;
+//	unsigned long len;
+//
+//	string sl = "EnterEditStation";
+//	len = sl.length();
+//
+//	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("SendEnterEditStation() Size");
+//	}
+//
+//	retval = send(sock, sl.c_str(), len, 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("SendEnterEditStation()");
+//	}
+//}
+//
+//void Network::ProcessEnterEditStation()
+//{
+//
+//}
+>>>>>>> Stashed changes

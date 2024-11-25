@@ -86,6 +86,10 @@ public:
 	// Network의 CheckLoginAndMusicDownload 함수를 연결하는 함수
 	void SendCheckLoginAndMusicDownload(string id, string password);
 
+	// Network의 SendEnterPlayStation 함수를 연결하는 함수
+	void SendEnterPlayStation();
+	void setSelectCommand(char cmd) { selectCommand = cmd; }
+
 	// PageMusicDataSet 메서드
 	void AddMusicData(const string& musicName, const string& dataName); // 쌍 추가 함수 선언
 	void PrintMusicData() const; // 저장된 쌍을 출력하는 함수 선언

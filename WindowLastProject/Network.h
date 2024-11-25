@@ -1,6 +1,10 @@
 #pragma once
 #include <thread>
 #include "../server/NetGameServer/Common.h"
+#include "Page.h"
+#include "Game.h"
+#include "HeapDebug.h"
+#include <cstring>
 
 static CRITICAL_SECTION cs;
 
@@ -31,7 +35,7 @@ private:
 	HANDLE hd;
 	// 클라에서 전달한 sendList
 	sendList processSendList;
-
+	TitlePage* tp;
 	std::thread worker;
 
 	int m_id;
@@ -62,6 +66,18 @@ public:
 	void ProcessCheckLoginAndMusicDownload();
 	void SendRequestPlayerScore();
 	void ProcessRequestPlayerScore();
+<<<<<<< Updated upstream
+=======
+	void SendLeaveEditStation();
+	void ProcessLeaveEditStation();
+
+	// PlayStation입장 함수
+	void SendEnterPlayStation(TitlePage* go);
+	void ProcessEnterPlayStation();
+
+	// Player의 점수를 서버에 업데이트하는 함수
+	//void SendPlayerScore(unsigned int score);
+>>>>>>> Stashed changes
 
 	// 메서드
 
