@@ -15,10 +15,6 @@ vector<string> GetFileNamesFromFolder();
 // 네트워크 클래스에서 전달한 sendList 체크
 void CheckSendList(string sList, SOCKET socket);
 
-<<<<<<< Updated upstream
-unsigned __stdcall SendPlayerScore(void* arg);
-unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg);
-=======
 // 로그인확인 및 서버의 MusicData 송신 함수
 unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg);
 
@@ -28,4 +24,4 @@ unsigned __stdcall RecvEnterEditStation(void* arg);
 
 // PlayStation 입장함수
 unsigned __stdcall RecvEnterPlayStation(void* arg);
->>>>>>> Stashed changes
+

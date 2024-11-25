@@ -66,8 +66,7 @@ public:
 	void ProcessCheckLoginAndMusicDownload();
 	void SendRequestPlayerScore();
 	void ProcessRequestPlayerScore();
-<<<<<<< Updated upstream
-=======
+
 	void SendLeaveEditStation();
 	void ProcessLeaveEditStation();
 
@@ -77,7 +76,7 @@ public:
 
 	// Player의 점수를 서버에 업데이트하는 함수
 	//void SendPlayerScore(unsigned int score);
->>>>>>> Stashed changes
+
 
 	// 메서드
 

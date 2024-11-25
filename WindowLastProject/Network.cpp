@@ -171,8 +171,6 @@ void Network::ProcessRequestPlayerScore()
 
 }
 
-<<<<<<< Updated upstream
-=======
 void Network::SendEnterPlayStation(TitlePage* go)
 {
 	int retval;
@@ -213,17 +211,17 @@ void Network::ProcessEnterPlayStation()
 	}
 }
 
-void Network::SendPlayerScore(unsigned int score)
-{
-	int retval;
-
-	retval = send(sock, (char*)&score, sizeof(unsigned int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendPlayerScore()");
-	}
-
-	
-}
+//void Network::SendPlayerScore(unsigned int score)
+//{
+//	int retval;
+//
+//	retval = send(sock, (char*)&score, sizeof(unsigned int), 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("SendPlayerScore()");
+//	}
+//
+//	
+//}
 
 //void Network::SendEnterEditStation()
 //{
@@ -248,4 +246,3 @@ void Network::SendPlayerScore(unsigned int score)
 //{
 //
 //}
->>>>>>> Stashed changes
