@@ -243,7 +243,7 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				IFClickNext(NextMenu, hWnd, iMessage, wParam, lParam);
 			}
 			if (wParam == VK_SPACE) {
-				//IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
+				IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
 			}
 			if (wParam >= '1' && wParam <= '9')
 			{

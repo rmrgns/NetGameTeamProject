@@ -196,8 +196,8 @@ void Network::ProcessEnterPlayStation()
 	if (check == 'p')
 	{
 		// PlayerStation ÀÔÀå
-		tp->setSelectCommand(check);
-		tp->NextPage();
+		//tp->setSelectCommand(check);
+		tp->Select(check);
 		cout << check << endl;
 	}
 }
