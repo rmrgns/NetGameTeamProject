@@ -57,12 +57,6 @@ struct MusicData
 	string noteName;
 };
 
-struct PlayerScorePacket
-{
-	unsigned int index = 0;
-	unsigned int score = 0;
-};
-
 #pragma comment(lib, "ws2_32") // ws2_32.lib ¸µÅ©
 
 

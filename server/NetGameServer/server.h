@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "packet.h"
 
 extern atomic<int> packet_count; // 송신된 패킷 수
 extern const int MAX_PACKETS_PER_SECOND; // 초당 허용 패킷 수

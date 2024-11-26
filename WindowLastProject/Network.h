@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include "../server/NetGameServer/Common.h"
+#include "../server/NetGameServer/packet.h"
 #include "Page.h"
 #include "Game.h"
 #include "HeapDebug.h"
