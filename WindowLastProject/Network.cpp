@@ -67,22 +67,27 @@ void Network::Update()
 }
 
 
-void Network::SendCheckLoginAndMusicDownload(string id, string password)
+void Network::SendCommand(string cmd)
 {
-
-	string sl = "CheckLogin";
+	string sl = cmd;
 	len = sl.length();
+
 	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
 	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload() Size");
-		return;
+		err_display("SendCommand() Size");
 	}
 
 	retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload()");
-		return;
+		err_display("SendCommand()");
 	}
+}
+
+void Network::SendCheckLoginAndMusicDownload(string id, string password)
+{
+
+	string sl = "CheckLogin";
+	SendCommand(sl);
 
 	processSendList = sendList::CheckLogin;
 }
@@ -173,28 +178,14 @@ void Network::ProcessRequestPlayerScore()
 
 void Network::SendEnterPlayStation(TitlePage* go)
 {
-	int retval;
-	unsigned long len;
-
 	string sl = "EnterPlayStation";
-	len = sl.length();
-
-	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendEnterPlayStation() Size");
-	}
-
-	retval = send(sock, sl.c_str(), len, 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendEnterPlayStation()");
-	}
+	SendCommand(sl);
 	tp = go;
 	processSendList = sendList::EnterPlayStation;
 }
 
 void Network::ProcessEnterPlayStation()
 {
-	int retval;
 	unsigned char check;
 
 	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
@@ -207,21 +198,26 @@ void Network::ProcessEnterPlayStation()
 		// PlayerStation ÀÔÀå
 		tp->setSelectCommand(check);
 		tp->NextPage();
-		//cout << check << endl;
+		cout << check << endl;
 	}
 }
 
-//void Network::SendPlayerScore(unsigned int score)
-//{
-//	int retval;
-//
-//	retval = send(sock, (char*)&score, sizeof(unsigned int), 0);
-//	if (retval == SOCKET_ERROR) {
-//		err_display("SendPlayerScore()");
-//	}
-//
-//	
-//}
+void Network::SendPlayerScore(unsigned int score)
+{
+	string sl = "SendPlayerScore";
+	SendCommand(sl);
+	PlayerScorePacket p;
+	p.index = m_index;
+	p.score = score;
+
+	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendPlayerScore() score");
+	}
+
+	processSendList = sendList::PlayerScore;
+
+}
 
 //void Network::SendEnterEditStation()
 //{

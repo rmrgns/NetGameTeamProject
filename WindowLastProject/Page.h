@@ -56,9 +56,7 @@ class TitlePage : GameObject {
 	bool checkGameStart = false;
 	char selectCommand = 'p';
 
-	// 노래 이름과 노트파일 이름을 저장하는 벡터
-	vector<PageMusicData> musicDataSet;
-	int musicIndex = 0;
+	
 public:
 	TitlePage();
 

@@ -31,16 +31,10 @@ unsigned __stdcall ProcessClient(void* arg)
         retval = recv(client_sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvnamesize()");
-            cout << "error1" << endl;
             LeaveCriticalSection(&cs);
             break;
         }
-        else if (retval == 0)
-        {
-            cout << "error2" << endl;
-            LeaveCriticalSection(&cs);
-            break;
-        }
+
 
         retval = recv(client_sock, buf, len, MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
@@ -48,11 +42,7 @@ unsigned __stdcall ProcessClient(void* arg)
             LeaveCriticalSection(&cs);
             break;
         }
-        else if (retval == 0)
-        {
-            LeaveCriticalSection(&cs);
-            break;
-        }
+
 
         buf[retval] = '\0';
         CheckSendList(buf, client_sock);

@@ -39,13 +39,13 @@ struct LoginInfo
 
 struct UserInfo
 {
-	char* id;
+	string id;
 	unsigned int maxScore;
 };
 
 struct LobbyInfo
 {
-	char* id;
+	string id;
 	bool isReady;
 	unsigned int musicIndex;
 	unsigned int score;
@@ -55,6 +55,12 @@ struct MusicData
 {
 	string musicName;
 	string noteName;
+};
+
+struct PlayerScorePacket
+{
+	unsigned int index = 0;
+	unsigned int score = 0;
 };
 
 #pragma comment(lib, "ws2_32") // ws2_32.lib ¸µÅ©

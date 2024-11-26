@@ -243,13 +243,13 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				IFClickNext(NextMenu, hWnd, iMessage, wParam, lParam);
 			}
 			if (wParam == VK_SPACE) {
-				IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
+				//IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
 			}
 			if (wParam >= '1' && wParam <= '9')
 			{
-				musicIndex = int(wParam) - 49;
-				if (musicDataSet.size() <= musicIndex)
-					musicIndex = 0;
+				Network::GetInst()->musicIndex = int(wParam) - 49;
+				if (Network::GetInst()->musicDataSet.size() <= Network::GetInst()->musicIndex)
+					Network::GetInst()->musicIndex = 0;
 			}
 			if (wParam == 'q')
 			{
@@ -344,9 +344,10 @@ void TitlePage::NextPage()
 			case 'p':
 			{
 				GameManager* GM = (GameManager*)gm;
+				//GM->Clear();
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
-				ps->LoadMusic(musicDataSet[musicIndex].musicName.c_str());
-				ps->LoadData(musicDataSet[musicIndex].noteName.c_str());
+				ps->LoadMusic(Network::GetInst()->musicDataSet[Network::GetInst()->musicIndex].musicName.c_str());
+				ps->LoadData(Network::GetInst()->musicDataSet[Network::GetInst()->musicIndex].noteName.c_str());
 
 				GM->AddObject((GameObject*)ps);
 					
@@ -415,7 +416,7 @@ void TitlePage::AddMusicData(const string& musicName, const string& dataName)
 {
 	string music = "Sound/" + musicName;
 	string data = "NoteData/" + dataName;
-	musicDataSet.push_back({ music, data });
+	Network::GetInst()->musicDataSet.push_back({ music, data });
 }
 
 void TitlePage::PrintMusicData() const
@@ -448,6 +449,7 @@ void IFClickSelect(const GameButton* obj, const HWND& hWnd, const UINT& iMessage
 	TitlePage* tp = (TitlePage*)obj->Parent;
 	if (tp->GetIconNum() % 2 == 0) {
 		tp->SendEnterPlayStation();
+		//tp->Select('p');
 	}
 	else {
 		tp->Select('e');

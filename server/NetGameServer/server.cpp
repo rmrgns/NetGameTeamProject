@@ -58,7 +58,7 @@ vector<string> GetFileNamesFromFolder()
 void CheckSendList(string sList, SOCKET client_sock)
 {
 	HANDLE hThread;
-	
+	cout << "명령어 수신:" << sList << endl;
 	// 소켓의 sendList를 확인해서 해당 server 함수 호출
 	if (sList == "CheckLogin")
 	{
@@ -72,10 +72,18 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
+	else if (sList == "SendPlayerScore")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvPlayerScore, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+	}
 	else
 	{
+		cout << "failed" << endl;
 		return;
 	}
+	cout << "success" << endl;
 }
 
 void ThrottlePackets() 
@@ -198,7 +206,30 @@ unsigned __stdcall RecvEnterPlayStation(void* arg)
 	unsigned char check = 'p';
 	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
-		err_display("RecvEnterPlayStation() Size");
+		err_display("RecvEnterPlayStation()");
 	}
+	return 0;
+}
+
+unsigned __stdcall RecvPlayerScore(void* arg)
+{
+	// 사용할 소켓은 이렇게 받아온다
+	SOCKET sock = (SOCKET)arg;
+
+	
+	// recv한 플레이어 점수를 저장한다
+	int retval;
+
+	// 플레이어 점수 받아오는 코드
+	PlayerScorePacket p;
+	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvPlayerScore()");
+	}
+
+	// 추후 업데이트 내용
+	// 플레이어 id를 받아서 해당 플레이어의 점수에 업데이트한다
+	cout << p.index << ": " << p.score << endl;
+
 	return 0;
 }

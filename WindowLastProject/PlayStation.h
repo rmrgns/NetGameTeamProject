@@ -91,7 +91,7 @@ private:
 	int RimSoundID = 0;
 
 	//감춰진 데이터--------------------------------------------
-	int addScore = 1000000000;
+	int addScore = 1;
 	int perfectnum = 0;
 	int goodnum = 0;
 	int missnum = 0;
@@ -209,4 +209,6 @@ public:
 
 	void DrawNote(HDC hdc, shp::rect4f playloc, Note note);
 	virtual void Render(HDC hdc) override;
+
+	void SendPlayerScore();
 };

@@ -25,3 +25,6 @@ unsigned __stdcall RecvEnterEditStation(void* arg);
 // PlayStation 입장함수
 unsigned __stdcall RecvEnterPlayStation(void* arg);
 
+// 클라에서 보낸 플레이어 점수를 저장
+unsigned __stdcall RecvPlayerScore(void* arg);
+
