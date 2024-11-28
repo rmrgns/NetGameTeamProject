@@ -1,19 +1,29 @@
 #pragma once
 
 #include "Common.h"
+#include "packet.h"
 
-extern atomic<int> packet_count; // 송신된 패킷 수
-extern const int MAX_PACKETS_PER_SECOND; // 초당 허용 패킷 수
-extern chrono::steady_clock::time_point last_reset_time; // 타이머 리셋 시간
 
-#define BUFSIZE 1024
 
+#define BUFSIZE 1024	// ??? ????
+
+// ?????? MusicDataSet ????
 void InitMusicData();
 vector<string> GetFileNamesFromFolder();
 
+// ?????크 클???????? ????? sendList 체크
 void CheckSendList(string sList, SOCKET socket);
 
-unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg);
+
+// ?慣????? ?? ?????? MusicData ?蚌? ???
+void RecvCheckLoginAndMusicDownload(SOCKET sock);
+
 unsigned __stdcall SendPlayerScore(void* arg);
 unsigned __stdcall RecvLeaveEditStation(void* arg);
 unsigned __stdcall RecvEnterEditStation(void* arg);
+
+// PlayStation ???獨?
+unsigned __stdcall RecvEnterPlayStation(void* arg);
+
+// 클?璨【? ???? ????潔? ?????? ????
+unsigned __stdcall RecvPlayerScore(void* arg);

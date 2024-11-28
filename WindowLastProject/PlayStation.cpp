@@ -908,7 +908,6 @@ void PlayStation::Update(const float& delta)
 		//		Music::Play(0, true);
 		//	}
 		//}
-
 		shp::rect4f playloc = GetPlayLoc();
 
 		Impact -= delta;
@@ -941,8 +940,8 @@ void PlayStation::Update(const float& delta)
 		if (GetIsPlaying() == true) {
 			SetTime(GetTime() + delta);
 
-			if (GetMaxNoteNum() == 0) return;
-			addScore = 1000000000 / GetMaxNoteNum();
+			//if (GetMaxNoteNum() == 0) return;
+			//addScore = 1000000000 / GetMaxNoteNum();
 
 			for (int i = GetNextNoteNum(); i < GetMaxNoteNum(); ++i) {
 				Note note = GetNote(i);
@@ -1367,7 +1366,9 @@ void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				keydata.Space_pressed = false;
 				keydata.Space_dut.y = GetTime();
 				keydata.SpaceHit = false;
+				
 			}
+			SendPlayerScore();
 		}
 	}
 }
@@ -1890,6 +1891,11 @@ void PlayStation::Render(HDC hdc)
 		}
 		
 	}
+}
+
+void PlayStation::SendPlayerScore()
+{
+	Network::GetInst()->SendPlayerScore(Score);
 }
 
 

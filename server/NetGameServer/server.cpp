@@ -1,13 +1,10 @@
 #include "server.h"
+#include "packet.h"
 
 vector<MusicData> musicDataSet;
 vector<LoginInfo> loginInfoSet;
 vector<UserInfo> userInfoSet;
 vector<LobbyInfo> lobbyInfoSet;
-
-std::atomic<int> packet_count(0);
-const int MAX_PACKETS_PER_SECOND = 30; // 초당 30개의 패킷 제한
-std::chrono::steady_clock::time_point last_reset_time = std::chrono::steady_clock::now();
 
 void InitMusicData()
 {
@@ -58,67 +55,47 @@ vector<string> GetFileNamesFromFolder()
 void CheckSendList(string sList, SOCKET client_sock)
 {
 	HANDLE hThread;
-	
+	cout << "명령어 수신:" << sList << endl;
 	// 소켓의 sendList를 확인해서 해당 server 함수 호출
 	if (sList == "CheckLogin")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvCheckLoginAndMusicDownload, (LPVOID)client_sock, 0, NULL);
+		/*hThread = (HANDLE)_beginthreadex(NULL, 0, RecvCheckLoginAndMusicDownload, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }*/
+		RecvCheckLoginAndMusicDownload(client_sock);
+	}
+	else if (sList == "EnterPlayStation")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterPlayStation, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
-
+	else if (sList == "SendPlayerScore")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvPlayerScore, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+	}
 	else
 	{
+		cout << "failed" << endl;
 		return;
 	}
+	cout << "success" << endl;
 }
 
-void ThrottlePackets() 
+void RecvCheckLoginAndMusicDownload(SOCKET sock)
 {
-	using namespace std::chrono;
-	steady_clock::time_point now = steady_clock::now();
-
-	// 지난 시간 계산 (초 단위)
-	double elapsed_seconds = duration_cast<seconds>(now - last_reset_time).count();
-
-	// 1초가 지났다면 패킷 카운트를 초기화
-	if (elapsed_seconds >= 1.0) {
-		packet_count = 0;
-		last_reset_time = now;
-	}
-
-	// 현재 송신 패킷 수가 초당 최대치를 넘으면 대기
-	while (packet_count >= MAX_PACKETS_PER_SECOND) {
-		std::this_thread::sleep_for(milliseconds(1)); // 1ms 대기
-		now = steady_clock::now();
-		elapsed_seconds = duration_cast<seconds>(now - last_reset_time).count();
-		if (elapsed_seconds >= 1.0) {
-			packet_count = 0;
-			last_reset_time = now;
-		}
-	}
-
-	// 패킷 카운트 증가
-	packet_count++;
-}
-
-
-unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
-{
-	// 사용할 소켓은 이렇게 받아온다
-	SOCKET sock = (SOCKET)arg;
-	
 	// send해서 네트워크쪽으로 데이터를 보낸다
 	int retval;
-	int len = 0;
 	char buf[BUFSIZE];
 
-	/*unsigned int size = 0;
-	retval = send(sock, (char*)&size, sizeof(unsigned int), 0);
+	/*int num = 0;
+	retval = recv(sock, (char*)&num, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload() Size");
 	}*/
-
+	//cout << size << endl;
 	for (const auto& m : musicDataSet)
 	{
 		string path = "Sound/" + m.musicName;
@@ -126,32 +103,40 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 		FILE* send_file = fopen(path.c_str(), "rb");  // 파일을 이진 모드로 열기
 		if (send_file == NULL) {
 			printf("파일 열기 실패 %s\n", path.c_str());
-			break;
+			//break;
 		}
-		cout << path << endl;
+		//cout << path << endl;
 		unsigned long fileSize;
 		fseek(send_file, 0, SEEK_END);	// 파일 포인터를 파일 끝으로 이동
 		fileSize = ftell(send_file);	// 현재 파일 포인터 위치를 얻음 (파일 크기)
 		rewind(send_file);				// 파일 포인터를 다시 파일의 시작으로 복원
-		int len = (int)strlen(path.c_str());
+
+		unsigned int len = static_cast<unsigned int>(strlen(path.c_str()));
+
 		strncpy(buf, path.c_str(), len);
-		//ThrottlePackets();
+		ThrottlePackets();
+
 		// 파일 이름 텍스트 크기 보내기(고정 길이)
-		retval = send(sock, (char*)&len, sizeof(int), 0);
+		
+		retval = send(sock, (char*)&len, sizeof(unsigned int), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendnamesize()");
 			break;
 		}
+		cout << len << endl;
+		buf[len] = '\0';
+		cout << buf << endl;
 
-		//ThrottlePackets();
+		ThrottlePackets();
 		// 파일 이름 텍스트 보내기(가변 길이)
 		retval = send(sock, buf, len, 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendname()");
 			break;
 		}
+		cout << fileSize << endl;
 
-		//ThrottlePackets();
+		ThrottlePackets();
 		// 파일 데이터 크기 보내기(고정 길이)
 		retval = send(sock, (char*)&fileSize, sizeof(unsigned long), 0);
 		if (retval == SOCKET_ERROR) {
@@ -161,7 +146,7 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 
 		// 파일 데이터 보내기(가변 길이)
 		int retvalRead;
-		//ThrottlePackets();
+		ThrottlePackets();
 		while ((retvalRead = fread(buf, 1, BUFSIZE, send_file)) > 0) {
 			retval = send(sock, buf, retvalRead, 0);
 			if (retval == SOCKET_ERROR) {
@@ -169,12 +154,55 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 				break;
 			}
 		}
+		cout << "successSV" << endl;
 	}
-	return 0;
 }
 
 unsigned __stdcall SendPlayerScore(void* arg)
 {
+
+	return 0;
+}
+
+unsigned __stdcall RecvEnterPlayStation(void* arg)
+{
+	// 사용할 소켓은 이렇게 받아온다
+	SOCKET sock = (SOCKET)arg;
+
+	// 추후 업데이트 내용
+	// 로비에 대기중인 플레이어가 2명일때 입장을 허가한다
+
+	// send해서 네트워크쪽으로 데이터를 보낸다
+	int retval;
+
+	unsigned char check = 'p';
+	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvEnterPlayStation()");
+	}
+	return 0;
+}
+
+unsigned __stdcall RecvPlayerScore(void* arg)
+{
+	// 사용할 소켓은 이렇게 받아온다
+	SOCKET sock = (SOCKET)arg;
+
+	
+	// recv한 플레이어 점수를 저장한다
+	int retval;
+
+	// 플레이어 점수 받아오는 코드
+	PlayerScorePacket p;
+	ThrottlePackets();
+	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvPlayerScore()");
+	}
+
+	// 추후 업데이트 내용
+	// 플레이어 id를 받아서 해당 플레이어의 점수에 업데이트한다
+	cout << p.index << ": " << p.score << endl;
 
 	return 0;
 }
