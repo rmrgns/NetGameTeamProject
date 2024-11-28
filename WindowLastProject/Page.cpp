@@ -247,7 +247,7 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 			if (wParam >= '1' && wParam <= '9')
 			{
-				Network::GetInst()->musicIndex = int(wParam) - 49;
+				Network::GetInst()->temp = int(wParam) - 49;
 				if (Network::GetInst()->musicDataSet.size() <= Network::GetInst()->musicIndex)
 					Network::GetInst()->musicIndex = 0;
 			}

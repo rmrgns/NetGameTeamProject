@@ -47,6 +47,11 @@ bool Network::Connect()
 	return true;
 }
 
+void Network::SendUpdate()
+{
+	if(cmd == 'S')
+}
+
 void Network::Update()
 {
 
@@ -72,11 +77,12 @@ void Network::SendCommand(string cmd)
 	string sl = cmd;
 	len = sl.length();
 
-	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	ThrottlePackets();
+	retval = send(sock, (char*)&len, sizeof(unsigned int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCommand() Size");
 	}
-
+	ThrottlePackets();
 	retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCommand()");
@@ -85,40 +91,39 @@ void Network::SendCommand(string cmd)
 
 void Network::SendCheckLoginAndMusicDownload(string id, string password)
 {
-
 	string sl = "CheckLogin";
 	SendCommand(sl);
-
 	processSendList = sendList::CheckLogin;
 }
 
 void Network::ProcessCheckLoginAndMusicDownload()
 {
-	char buf[1024];
-	char name[1024 + 1];
+	char buf[BUFSIZ];
+	char name[BUFSIZ + 1];
 
 	unsigned int size = 0;
 	
-	/*retval = recv(sock, (char*)&size, sizeof(unsigned int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload() Size");
-		return;
-	}*/
 
 	/*retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload()");
 	}*/
-	for (int i{}; i < 12; i++)
+	//for (int i{}; i < 12; i++)
+
+	/*retval = send(sock, (char*)&temp, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendCheckLoginAndMusicDownload()");
+	}*/
+	//len = 0;
+	// 파일 이름 텍스트 크기 받기(고정 길이)
+	for (int i{}; i < 11; i++)
 	{
-		// 파일 이름 텍스트 크기 받기(고정 길이)
-		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
+		retval = recv(sock, (char*)&len, sizeof(unsigned int), MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvnamesize()");
 			return;
 		}
-		else if (retval == 0)
-			return;
+		cout << len << endl;
 
 		// 파일 이름 텍스트 받기(가변 길이)
 
@@ -127,12 +132,10 @@ void Network::ProcessCheckLoginAndMusicDownload()
 			err_display("recvname()");
 			return;
 		}
-		else if (retval == 0)
-			return;
 
 		buf[retval] = '\0';
 		strcpy(name, buf);
-		FILE* recvFile = fopen(buf, "wb"); // 전송받을 파일 선택(없으면 생성)
+		FILE* recvFile = fopen(name, "wb"); // 전송받을 파일 선택(없으면 생성)
 		if (recvFile == NULL) {
 			printf("파일 열기 불가\n");
 			return;
@@ -144,14 +147,13 @@ void Network::ProcessCheckLoginAndMusicDownload()
 			err_display("recvfilesize()");
 			return;
 		}
-		else if (retval == 0)
-			return;
+		cout << len << endl;
 
 		// 파일 데이터 받기(가변 길이)      
 		unsigned long totalBytesReceived = 0;
 
 		while (totalBytesReceived < len) {
-			retval = recv(sock, buf, BUFSIZE, MSG_WAITALL);
+			retval = recv(sock, buf, BUFSIZ, MSG_WAITALL);
 
 			if (retval == SOCKET_ERROR) {
 				err_display("recvfile()");
@@ -161,7 +163,7 @@ void Network::ProcessCheckLoginAndMusicDownload()
 			fwrite(buf, 1, retval, recvFile);
 			totalBytesReceived += retval;
 		}
-
+		cout << "successNT" << endl;
 		fclose(recvFile);  // 파일 닫기
 	}
 }
@@ -209,7 +211,7 @@ void Network::SendPlayerScore(unsigned int score)
 	PlayerScorePacket p;
 	p.index = m_index;
 	p.score = score;
-
+	ThrottlePackets();
 	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendPlayerScore() score");

@@ -1,5 +1,5 @@
 #pragma once
-#include <thread>
+
 #include "../server/NetGameServer/Common.h"
 #include "../server/NetGameServer/packet.h"
 #include "Page.h"
@@ -46,16 +46,17 @@ private:
 
 	const char* SERVERIP = (char*)"127.0.0.1";
 	int retval;
-	unsigned long len;
+	unsigned int len;
 	int SERVERPORT = 9000;
 	int BUFSIZE = 1024;
 
-	
+	string cmd = " ";
 
 public:
 	// 노래 이름과 노트파일 이름을 저장하는 벡터
 	vector<PageMusicData> musicDataSet;
 	int musicIndex = 0;
+	int temp = 0;
 	Network() {};
 	~Network() {
 		DeleteCriticalSection(&cs);
@@ -66,6 +67,7 @@ public:
 
 	bool Init();
 	bool Connect();
+	void SendUpdate();
 	void Update();	// 서버에서 보내는 데이터 전송받는 함수
 
 public:
@@ -88,6 +90,6 @@ public:
 	void SendPlayerScore(unsigned int score);
 
 	// 메서드
-
+	void setCommand(string s) { cmd = s; }
 };
 

@@ -1,7 +1,7 @@
 #include "server.h"
 
 #define SERVERPORT 9000
-#define BUFSIZE    1024
+#define BUFSIZE    512
 
 CRITICAL_SECTION cs;
 
@@ -12,7 +12,7 @@ unsigned __stdcall ProcessClient(void* arg)
     struct sockaddr_in clientaddr;
     char addr[INET_ADDRSTRLEN];
     int addrlen;
-    unsigned long len; // 고정 길이 데이터
+    unsigned int len; // 고정 길이 데이터
     char buf[BUFSIZE + 1]; // 가변 길이 데이터
     int localclientid;
 
@@ -28,7 +28,7 @@ unsigned __stdcall ProcessClient(void* arg)
 
         // sendList 확인
         
-        retval = recv(client_sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
+        retval = recv(client_sock, (char*)&len, sizeof(unsigned int), MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvnamesize()");
             LeaveCriticalSection(&cs);
