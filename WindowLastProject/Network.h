@@ -1,6 +1,10 @@
 #pragma once
 #include <thread>
 #include "../server/NetGameServer/Common.h"
+#include "Page.h"
+#include "Game.h"
+#include "HeapDebug.h"
+#include <cstring>
 
 static CRITICAL_SECTION cs;
 
@@ -31,6 +35,8 @@ private:
 	HANDLE hd;
 	// 클라에서 전달한 sendList
 	sendList processSendList;
+	TitlePage* TitleTemp;
+	EditStation* EditTemp;
 
 	std::thread worker;
 
@@ -62,7 +68,9 @@ public:
 	void ProcessCheckLoginAndMusicDownload();
 	void SendRequestPlayerScore();
 	void ProcessRequestPlayerScore();
-	void SendLeaveEditStation();
+	void SendEnterEditStation(TitlePage* tp);
+	void ProcessEnterEditStation();
+	void SendLeaveEditStation(EditStation* es);
 	void ProcessLeaveEditStation();
 	// 메서드
 

@@ -407,7 +407,7 @@ void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 			if (wParam == 'P') {
 				SendLeaveEditStation();
-				SetEnable(false);
+				//SetEnable(false);
 			}
 		}
 		if (iMessage == WM_MOUSEWHEEL) {
@@ -687,7 +687,12 @@ void EditStation::Render(HDC hdc)
 
 void EditStation::SendLeaveEditStation()
 {
-	Network::GetInst()->SendLeaveEditStation();
+	Network::GetInst()->SendLeaveEditStation(this);
+}
+
+void EditStation::LeaveEditStation()
+{
+	SetEnable(false);
 }
 
 void EditStation::GetDialogData(float delta)

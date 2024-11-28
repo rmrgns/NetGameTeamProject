@@ -333,7 +333,6 @@ void TitlePage::Select(char menuChar)
 		selectCommand = menuChar;
 		Music::ClearSoundsAndChannels();
 		NextPage();
-		SendEnterEditStation();
 		SetEnable(false);
 	}
 }
@@ -350,18 +349,24 @@ void TitlePage::NextPage()
 				ps->LoadData(musicDataSet[musicIndex].noteName.c_str());
 				//ps->LoadMusic(musicDataSet[1].musicName.c_str());
 				//ps->LoadData(musicDataSet[1].noteName.c_str());
-
 				GM->AddObject((GameObject*)ps);
 		}
 				break;
 			case 'e':
 			{
-				GameManager* GM = (GameManager*)gm;
-				GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+				SendEnterEditStation();
+				//GameManager* GM = (GameManager*)gm;
+				//GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 			}
 				break;
 		}
 	}
+}
+
+void TitlePage::EnterEditStation()
+{
+	GameManager* GM = (GameManager*)gm;
+	GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 }
 
 void TitlePage::MoveMenu(int dir)
@@ -421,7 +426,7 @@ void TitlePage::PrintMusicData() const
 
 void TitlePage::SendEnterEditStation()
 {
-	Network::GetInst()->SendEnterEditStation();
+	Network::GetInst()->SendEnterEditStation(this);
 }
 
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam)

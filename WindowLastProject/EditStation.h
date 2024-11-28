@@ -98,6 +98,7 @@ public:
 	virtual void Render(HDC hdc) override;
 
 	void SendLeaveEditStation();
+	void LeaveEditStation();
 };
 
 void IFClickBottom(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);

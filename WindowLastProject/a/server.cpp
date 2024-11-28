@@ -66,9 +66,24 @@ void CheckSendList(string sList, SOCKET client_sock)
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
+
+	else if (sList == "EnterPlayStation")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterPlayStation, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+	}
+
 	else if (sList == "PlayerScore")
 	{
 		hThread = (HANDLE)_beginthreadex(NULL, 0, SendPlayerScore, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+	}
+
+	else if (sList == "LeavePlayStation")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvLeavePlayStation, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
@@ -193,6 +208,18 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 	return 0;
 }
 
+unsigned __stdcall RecvEnterPlayStation(void* arg)
+{
+
+	return 0;
+}
+
+unsigned __stdcall RecvLeavePlayStation(void* arg)
+{
+
+	return 0;
+}
+
 unsigned __stdcall SendPlayerScore(void* arg)
 {
 
@@ -212,9 +239,10 @@ unsigned __stdcall RecvLeaveEditStation(void* arg)
 	retval = send(sock, (char*)&checkLeaveEditStation, sizeof(bool), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("RecvLeaveEditStation()");
+
+		//cout << "success3" << endl;
+		return 0;
 	}
-	//cout << "success3" << endl;
-	return 0;
 }
 
 unsigned __stdcall RecvEnterEditStation(void* arg)
@@ -230,8 +258,10 @@ unsigned __stdcall RecvEnterEditStation(void* arg)
 	retval = send(sock, (char*)&checkEnterEditStation, sizeof(bool), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("RecvEnterEditStation()");
+
+		//cout << "success3" << endl;
+		return 0;
 	}
-	//cout << "success3" << endl;
 	return 0;
 
 }

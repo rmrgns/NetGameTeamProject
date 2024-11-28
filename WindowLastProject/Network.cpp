@@ -8,7 +8,6 @@
 
 Network* Network::m_pInst = NULL;
 
-
 bool Network::Init()
 {
 	m_id = 0;
@@ -55,6 +54,14 @@ void Network::Update()
 	if (processSendList == sendList::CheckLogin)
 	{
 		ProcessCheckLoginAndMusicDownload();
+	}
+	else if (processSendList == sendList::EnterEditStation)
+	{
+		ProcessEnterEditStation();
+	}
+	else if (processSendList == sendList::LeaveEditStation)
+	{
+		ProcessLeaveEditStation();
 	}
 	else
 	{
@@ -183,7 +190,7 @@ void Network::ProcessRequestPlayerScore()
 }
 
 
-void Network::SendLeaveEditStation()
+void Network::SendLeaveEditStation(EditStation* es)
 {
 	int retval;
 	unsigned long len;
@@ -200,33 +207,65 @@ void Network::SendLeaveEditStation()
 	if (retval == SOCKET_ERROR) {
 		err_display("SendLeaveEditStation()");
 	}
+	EditTemp = es;
+	processSendList = sendList::LeaveEditStation;
 }
 
 void Network::ProcessLeaveEditStation()
 {
+	int retval;
+	bool check = FALSE;
 
+	retval = recv(sock, (char*)&check, sizeof(bool), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvnamesize()");
+		return;
+	}
+	else if (retval == 0)
+		return;
+
+
+	if (check == TRUE) {
+		EditTemp->LeaveEditStation();
+	}
 }
 
-//void Network::SendEnterEditStation()
-//{
-//	int retval;
-//	unsigned long len;
-//
-//	string sl = "EnterEditStation";
-//	len = sl.length();
-//
-//	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
-//	if (retval == SOCKET_ERROR) {
-//		err_display("SendEnterEditStation() Size");
-//	}
-//
-//	retval = send(sock, sl.c_str(), len, 0);
-//	if (retval == SOCKET_ERROR) {
-//		err_display("SendEnterEditStation()");
-//	}
-//}
-//
-//void Network::ProcessEnterEditStation()
-//{
-//
-//}
+void Network::SendEnterEditStation(TitlePage* tp)
+{	
+	int retval;
+	unsigned long len;
+
+	string sl = "EnterEditStation";
+	len = sl.length();
+
+	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendEnterEditStation() Size");
+	}
+
+	retval = send(sock, sl.c_str(), len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendEnterEditStation()");
+	}
+	TitleTemp = tp;
+	processSendList = sendList::EnterEditStation;
+}
+
+void Network::ProcessEnterEditStation()
+{
+	int retval;
+	bool check;
+
+	retval = recv(sock, (char*)&check, sizeof(bool), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvnamesize()");
+		return;
+	}
+	else if (retval == 0)
+		return;
+
+
+	if (check == TRUE) {
+		TitleTemp->EnterEditStation();
+	}
+}
