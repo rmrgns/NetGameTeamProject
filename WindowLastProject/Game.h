@@ -20,7 +20,9 @@ public:
 typedef enum class OBJ_TYPE {
 	None = 0,
 	PlayStation = 1,
-	EditStation = 2
+	EditStation = 2,
+	Page = 3,
+
 };
 
 class GameObject {
@@ -212,6 +214,25 @@ public:
 			for (int i = 0; i < OBJ_MAX; ++i) {
 				if (objPool[i] == nullptr) {
 					objPool[i] = go;
+					objPool[i]->SetGameManager((Ptr*)this);
+					break;
+				}
+			}
+		}
+
+	}
+
+	void AddObjectByType(GameObject* const go, OBJ_TYPE type) {
+		if (objup + 1 < OBJ_MAX) {
+			objPool[objup] = go;
+			objPool[objup]->SetGameManager((Ptr*)this);
+			objup += 1;
+		}
+		else {
+			for (int i = 0; i < OBJ_MAX; ++i) {
+				if (objPool[i] == nullptr) {
+					objPool[i] = go;
+					//objPool[i].
 					objPool[i]->SetGameManager((Ptr*)this);
 					break;
 				}

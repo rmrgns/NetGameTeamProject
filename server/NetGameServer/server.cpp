@@ -1,13 +1,10 @@
 #include "server.h"
+#include "packet.h"
 
 vector<MusicData> musicDataSet;
 vector<LoginInfo> loginInfoSet;
 vector<UserInfo> userInfoSet;
 vector<LobbyInfo> lobbyInfoSet;
-
-std::atomic<int> packet_count(0);
-const int MAX_PACKETS_PER_SECOND = 30; // ÃÊ´ç 30°³ÀÇ ÆÐÅ¶ Á¦ÇÑ
-std::chrono::steady_clock::time_point last_reset_time = std::chrono::steady_clock::now();
 
 void InitMusicData()
 {
@@ -33,7 +30,7 @@ vector<string> GetFileNamesFromFolder()
 	WIN32_FIND_DATAW findFileData;
 	HANDLE hFind;
 	string str;
-	wstring searchPath = L"Sound\\*"; // ¸ðµç ÆÄÀÏ °Ë»ö
+	wstring searchPath = L"Sound\\*"; // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
 	//wstring wsearchPath = wstring(searchPath.begin(), searchPath.end());
 	hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
@@ -44,7 +41,7 @@ vector<string> GetFileNamesFromFolder()
 
 	do 
 	{
-		// µð·ºÅä¸® Á¦¿Ü
+		// ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½
 		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
 		{
 			fileNames.emplace_back(WStringToString(findFileData.cFileName));
@@ -58,11 +55,24 @@ vector<string> GetFileNamesFromFolder()
 void CheckSendList(string sList, SOCKET client_sock)
 {
 	HANDLE hThread;
-	
-	// ¼ÒÄÏÀÇ sendList¸¦ È®ÀÎÇØ¼­ ÇØ´ç server ÇÔ¼ö È£Ãâ
+	cout << "ï¿½ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ï¿½:" << sList << endl;
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ sendListï¿½ï¿½ È®ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Ø´ï¿½ server ï¿½Ô¼ï¿½ È£ï¿½ï¿½
 	if (sList == "CheckLogin")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvCheckLoginAndMusicDownload, (LPVOID)client_sock, 0, NULL);
+		/*hThread = (HANDLE)_beginthreadex(NULL, 0, RecvCheckLoginAndMusicDownload, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }*/
+		RecvCheckLoginAndMusicDownload(client_sock);
+	}
+	else if (sList == "EnterPlayStation")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterPlayStation, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { closesocket(client_sock); }
+		else { CloseHandle(hThread); }
+	}
+	else if (sList == "SendPlayerScore")
+	{
+		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvPlayerScore, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
@@ -89,99 +99,75 @@ void CheckSendList(string sList, SOCKET client_sock)
 
 	else
 	{
+		cout << "failed" << endl;
 		return;
 	}
+	cout << "success" << endl;
 }
 
-void ThrottlePackets() 
+void RecvCheckLoginAndMusicDownload(SOCKET sock)
 {
-	using namespace std::chrono;
-	steady_clock::time_point now = steady_clock::now();
-
-	// Áö³­ ½Ã°£ °è»ê (ÃÊ ´ÜÀ§)
-	double elapsed_seconds = duration_cast<seconds>(now - last_reset_time).count();
-
-	// 1ÃÊ°¡ Áö³µ´Ù¸é ÆÐÅ¶ Ä«¿îÆ®¸¦ ÃÊ±âÈ­
-	if (elapsed_seconds >= 1.0) {
-		packet_count = 0;
-		last_reset_time = now;
-	}
-
-	// ÇöÀç ¼Û½Å ÆÐÅ¶ ¼ö°¡ ÃÊ´ç ÃÖ´ëÄ¡¸¦ ³ÑÀ¸¸é ´ë±â
-	while (packet_count >= MAX_PACKETS_PER_SECOND) {
-		std::this_thread::sleep_for(milliseconds(1)); // 1ms ´ë±â
-		now = steady_clock::now();
-		elapsed_seconds = duration_cast<seconds>(now - last_reset_time).count();
-		if (elapsed_seconds >= 1.0) {
-			packet_count = 0;
-			last_reset_time = now;
-		}
-	}
-
-	// ÆÐÅ¶ Ä«¿îÆ® Áõ°¡
-	packet_count++;
-}
-
-
-unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
-{
-	// »ç¿ëÇÒ ¼ÒÄÏÀº ÀÌ·¸°Ô ¹Þ¾Æ¿Â´Ù
-	SOCKET sock = (SOCKET)arg;
-	
-	// sendÇØ¼­ ³×Æ®¿öÅ©ÂÊÀ¸·Î µ¥ÀÌÅÍ¸¦ º¸³½´Ù
+	// sendï¿½Ø¼ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int retval;
-	int len = 0;
 	char buf[BUFSIZE];
 
-	/*unsigned int size = 0;
-	retval = send(sock, (char*)&size, sizeof(unsigned int), 0);
+	/*int num = 0;
+	retval = recv(sock, (char*)&num, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload() Size");
 	}*/
-
+	//cout << size << endl;
 	for (const auto& m : musicDataSet)
 	{
 		string path = "Sound/" + m.musicName;
-		// ÆÄÀÏÀ» ¼ÒÄÏÀ» ÅëÇØ Àü¼Û
-		FILE* send_file = fopen(path.c_str(), "rb");  // ÆÄÀÏÀ» ÀÌÁø ¸ðµå·Î ¿­±â
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		FILE* send_file = fopen(path.c_str(), "rb");  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (send_file == NULL) {
-			printf("ÆÄÀÏ ¿­±â ½ÇÆÐ %s\n", path.c_str());
-			break;
+			printf("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %s\n", path.c_str());
+			//break;
 		}
-		cout << path << endl;
+		//cout << path << endl;
 		unsigned long fileSize;
-		fseek(send_file, 0, SEEK_END);	// ÆÄÀÏ Æ÷ÀÎÅÍ¸¦ ÆÄÀÏ ³¡À¸·Î ÀÌµ¿
-		fileSize = ftell(send_file);	// ÇöÀç ÆÄÀÏ Æ÷ÀÎÅÍ À§Ä¡¸¦ ¾òÀ½ (ÆÄÀÏ Å©±â)
-		rewind(send_file);				// ÆÄÀÏ Æ÷ÀÎÅÍ¸¦ ´Ù½Ã ÆÄÀÏÀÇ ½ÃÀÛÀ¸·Î º¹¿ø
-		int len = (int)strlen(path.c_str());
+		fseek(send_file, 0, SEEK_END);	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+		fileSize = ftell(send_file);	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½)
+		rewind(send_file);				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+
+		unsigned int len = static_cast<unsigned int>(strlen(path.c_str()));
+
 		strncpy(buf, path.c_str(), len);
-		//ThrottlePackets();
-		// ÆÄÀÏ ÀÌ¸§ ÅØ½ºÆ® Å©±â º¸³»±â(°íÁ¤ ±æÀÌ)
-		retval = send(sock, (char*)&len, sizeof(int), 0);
+		ThrottlePackets();
+
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½Ø½ï¿½Æ® Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+		
+		retval = send(sock, (char*)&len, sizeof(unsigned int), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendnamesize()");
 			break;
 		}
+		cout << len << endl;
+		buf[len] = '\0';
+		cout << buf << endl;
 
-		//ThrottlePackets();
-		// ÆÄÀÏ ÀÌ¸§ ÅØ½ºÆ® º¸³»±â(°¡º¯ ±æÀÌ)
+		ThrottlePackets();
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		retval = send(sock, buf, len, 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendname()");
 			break;
 		}
+		cout << fileSize << endl;
 
-		//ThrottlePackets();
-		// ÆÄÀÏ µ¥ÀÌÅÍ Å©±â º¸³»±â(°íÁ¤ ±æÀÌ)
+		ThrottlePackets();
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		retval = send(sock, (char*)&fileSize, sizeof(unsigned long), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendfileSize()");
 			break;
 		}
 
-		// ÆÄÀÏ µ¥ÀÌÅÍ º¸³»±â(°¡º¯ ±æÀÌ)
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		int retvalRead;
-		//ThrottlePackets();
+		ThrottlePackets();
 		while ((retvalRead = fread(buf, 1, BUFSIZE, send_file)) > 0) {
 			retval = send(sock, buf, retvalRead, 0);
 			if (retval == SOCKET_ERROR) {
@@ -189,8 +175,8 @@ unsigned __stdcall RecvCheckLoginAndMusicDownload(void* arg)
 				break;
 			}
 		}
+		cout << "successSV" << endl;
 	}
-	return 0;
 }
 
 unsigned __stdcall SendPlayerScore(void* arg)
@@ -199,12 +185,13 @@ unsigned __stdcall SendPlayerScore(void* arg)
 	return 0;
 }
 
+
 unsigned __stdcall RecvLeaveEditStation(void* arg)
 {
-	// »ç¿ëÇÒ ¼ÒÄÏÀº ÀÌ·¸°Ô ¹Þ¾Æ¿Â´Ù
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¿Â´ï¿½
 	SOCKET sock = (SOCKET)arg;
 
-	// sendÇØ¼­ ³×Æ®¿öÅ©ÂÊÀ¸·Î µ¥ÀÌÅÍ¸¦ º¸³½´Ù
+	// sendï¿½Ø¼ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int retval;
 	bool checkLeaveEditStation = TRUE;
 
@@ -217,12 +204,27 @@ unsigned __stdcall RecvLeaveEditStation(void* arg)
 	return 0;
 }
 
+unsigned __stdcall RecvEnterPlayStation(void* arg)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+	// ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ 2ï¿½ï¿½ï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ã°¡ï¿½Ñ´ï¿½
+
+	// sendï¿½Ø¼ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	int retval;
+
+	unsigned char check = 'p';
+	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvEnterPlayStation()");
+	}
+	return 0;
+}
+
 unsigned __stdcall RecvEnterEditStation(void* arg)
 {
-	// »ç¿ëÇÒ ¼ÒÄÏÀº ÀÌ·¸°Ô ¹Þ¾Æ¿Â´Ù
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¿Â´ï¿½
 	SOCKET sock = (SOCKET)arg;
 
-	// sendÇØ¼­ ³×Æ®¿öÅ©ÂÊÀ¸·Î µ¥ÀÌÅÍ¸¦ º¸³½´Ù
+	// sendï¿½Ø¼ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int retval;
 	bool checkEnterEditStation = TRUE;
 
@@ -234,4 +236,23 @@ unsigned __stdcall RecvEnterEditStation(void* arg)
 	//cout << "success3" << endl;
 	return 0;
 
+}
+unsigned __stdcall RecvPlayerScore(void* arg)
+{
+	// recvï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
+	int retval;
+
+	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½ ï¿½Úµï¿½
+	PlayerScorePacket p;
+	ThrottlePackets();
+	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvPlayerScore()");
+	}
+
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ idï¿½ï¿½ ï¿½Þ¾Æ¼ï¿½ ï¿½Ø´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ñ´ï¿½
+	cout << p.index << ": " << p.score << endl;
+
+	return 0;
 }

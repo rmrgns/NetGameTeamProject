@@ -42,7 +42,7 @@ extern RECT rt;
 //
 //		//if (flow.x > flow.y && wait) {
 //		if (wait) {
-//			//´ÙÀ½ ÆäÀÌÁö ³Ñ¾î°¡±â
+//			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½
 //			Music::ClearSoundsAndChannels();
 //			NextPage();
 //			SetEnable(false);
@@ -124,7 +124,8 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
-	//AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
+
+	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
 	//AddMusicData("otherOperation5.mp3", "momi.txt");
 	//AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
 	//AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
@@ -247,9 +248,9 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 			if (wParam >= '1' && wParam <= '9')
 			{
-				musicIndex = int(wParam) - 49;
-				if (musicDataSet.size() <= musicIndex)
-					musicIndex = 0;
+				Network::GetInst()->temp = int(wParam) - 49;
+				if (Network::GetInst()->musicDataSet.size() <= Network::GetInst()->musicIndex)
+					Network::GetInst()->musicIndex = 0;
 			}
 			if (wParam == 'q')
 			{
@@ -344,11 +345,11 @@ void TitlePage::NextPage()
 			case 'p':
 			{				
 				GameManager* GM = (GameManager*)gm;
+				//GM->Clear();
 				PlayStation* ps = HeapDebugClass::HeapNew<PlayStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false, 1);
-				ps->LoadMusic(musicDataSet[musicIndex].musicName.c_str());
-				ps->LoadData(musicDataSet[musicIndex].noteName.c_str());
-				//ps->LoadMusic(musicDataSet[1].musicName.c_str());
-				//ps->LoadData(musicDataSet[1].noteName.c_str());
+				ps->LoadMusic(Network::GetInst()->musicDataSet[Network::GetInst()->musicIndex].musicName.c_str());
+				ps->LoadData(Network::GetInst()->musicDataSet[Network::GetInst()->musicIndex].noteName.c_str());
+
 				GM->AddObject((GameObject*)ps);
 		}
 				break;
@@ -413,11 +414,16 @@ void TitlePage::SendCheckLoginAndMusicDownload(string id, string password)
 	Network::GetInst()->SendCheckLoginAndMusicDownload(id, password);
 }
 
+void TitlePage::SendEnterPlayStation()
+{
+	Network::GetInst()->SendEnterPlayStation(this);
+}
+
 void TitlePage::AddMusicData(const string& musicName, const string& dataName)
 {
 	string music = "Sound/" + musicName;
 	string data = "NoteData/" + dataName;
-	musicDataSet.push_back({ music, data });
+	Network::GetInst()->musicDataSet.push_back({ music, data });
 }
 
 void TitlePage::PrintMusicData() const
@@ -454,7 +460,8 @@ void IFClickSelect(const GameButton* obj, const HWND& hWnd, const UINT& iMessage
 	GameUI::LBtnPressed = false;
 	TitlePage* tp = (TitlePage*)obj->Parent;
 	if (tp->GetIconNum() % 2 == 0) {
-		tp->Select('p');
+		tp->SendEnterPlayStation();
+		//tp->Select('p');
 	}
 	else {
 		tp->Select('e');

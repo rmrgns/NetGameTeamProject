@@ -56,9 +56,7 @@ class TitlePage : GameObject {
 	bool checkGameStart = false;
 	char selectCommand = 'p';
 
-	// 노래 이름과 노트파일 이름을 저장하는 벡터
-	vector<PageMusicData> musicDataSet;
-	int musicIndex = 0;
+	
 public:
 	TitlePage();
 
@@ -85,6 +83,10 @@ public:
 
 	// Network의 CheckLoginAndMusicDownload 함수를 연결하는 함수
 	void SendCheckLoginAndMusicDownload(string id, string password);
+
+	// Network의 SendEnterPlayStation 함수를 연결하는 함수
+	void SendEnterPlayStation();
+	void setSelectCommand(char cmd) { selectCommand = cmd; }
 
 	// PageMusicDataSet 메서드
 	void AddMusicData(const string& musicName, const string& dataName); // 쌍 추가 함수 선언

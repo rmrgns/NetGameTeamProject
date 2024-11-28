@@ -1,6 +1,7 @@
 #pragma once
-#include <thread>
+
 #include "../server/NetGameServer/Common.h"
+#include "../server/NetGameServer/packet.h"
 #include "Page.h"
 #include "Game.h"
 #include "HeapDebug.h"
@@ -33,22 +34,31 @@ public:
 private:
 	SOCKET sock;
 	HANDLE hd;
-	// Å¬¶ó¿¡¼­ Àü´ÞÇÑ sendList
+	// Å¬ï¿½ó¿¡¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ sendList
 	sendList processSendList;
 	TitlePage* TitleTemp;
 	EditStation* EditTemp;
-
+	
 	std::thread worker;
 
 	int m_id;
 	int m_prev_size = 0;
 	bool m_iswork = true;
+	int m_index = 1;
+
 	const char* SERVERIP = (char*)"127.0.0.1";
 	int retval;
-	int len;
+	unsigned int len;
 	int SERVERPORT = 9000;
 	int BUFSIZE = 1024;
+
+	string cmd = " ";
+
 public:
+	// ï¿½ë·¡ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
+	vector<PageMusicData> musicDataSet;
+	int musicIndex = 0;
+	int temp = 0;
 	Network() {};
 	~Network() {
 		DeleteCriticalSection(&cs);
@@ -59,10 +69,13 @@ public:
 
 	bool Init();
 	bool Connect();
-	void Update();	// ¼­¹ö¿¡¼­ º¸³»´Â µ¥ÀÌÅÍ Àü¼Û¹Þ´Â ÇÔ¼ö
+	void SendUpdate();
+	void Update();	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û¹Þ´ï¿½ ï¿½Ô¼ï¿½
 
 public:
-	//¼­¹ö¿Í Å¬¶ó°£ÀÇ Áß°èÇÔ¼ö
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ô¼ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
+	void SendCommand(string cmd);
 
 	void SendCheckLoginAndMusicDownload(string id, string password);
 	void ProcessCheckLoginAndMusicDownload();
@@ -72,7 +85,15 @@ public:
 	void ProcessEnterEditStation();
 	void SendLeaveEditStation(EditStation* es);
 	void ProcessLeaveEditStation();
-	// ¸Þ¼­µå
 
+	// PlayStationï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
+	void SendEnterPlayStation(TitlePage* go);
+	void ProcessEnterPlayStation();
+
+	// Playerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
+	void SendPlayerScore(unsigned int score);
+
+	// ï¿½Þ¼ï¿½ï¿½ï¿½
+	void setCommand(string s) { cmd = s; }
 };
 

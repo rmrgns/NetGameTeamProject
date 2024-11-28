@@ -1,9 +1,8 @@
-#define _CRT_SECURE_NO_WARNINGS // 구형 C 함수 사용 시 경고 끄기
-#define _WINSOCK_DEPRECATED_NO_WARNINGS // 구형 소켓 API 사용 시 경고 끄기
+#define _CRT_SECURE_NO_WARNINGS // ??? C ??? ?? ?? ?? ???
+#define _WINSOCK_DEPRECATED_NO_WARNINGS // ??? ??? API ?? ?? ?? ???
 
 #include "Network.h"
-#include "Page.h"
-#include <cstring>
+
 
 
 Network* Network::m_pInst = NULL;
@@ -47,6 +46,11 @@ bool Network::Connect()
 	return true;
 }
 
+void Network::SendUpdate()
+{
+	//if(cmd == 'S')
+}
+
 void Network::Update()
 {
 
@@ -62,6 +66,9 @@ void Network::Update()
 	else if (processSendList == sendList::LeaveEditStation)
 	{
 		ProcessLeaveEditStation();
+	else if (processSendList == sendList::EnterPlayStation)
+	{
+		ProcessEnterPlayStation();
 	}
 	else
 	{
@@ -71,86 +78,89 @@ void Network::Update()
 }
 
 
-void Network::SendCheckLoginAndMusicDownload(string id, string password)
+void Network::SendCommand(string cmd)
 {
-
-	string sl = "CheckLogin";
+	string sl = cmd;
 	len = sl.length();
-	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
+
+	ThrottlePackets();
+	retval = send(sock, (char*)&len, sizeof(unsigned int), 0);
 	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload() Size");
-		return;
+		err_display("SendCommand() Size");
 	}
 
+	ThrottlePackets();
 	retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload()");
-		return;
+		err_display("SendCommand()");
 	}
+}
 
+void Network::SendCheckLoginAndMusicDownload(string id, string password)
+{
+	string sl = "CheckLogin";
+	SendCommand(sl);
 	processSendList = sendList::CheckLogin;
 }
 
 void Network::ProcessCheckLoginAndMusicDownload()
 {
-	char buf[1024];
-	char name[1024 + 1];
+	char buf[BUFSIZ];
+	char name[BUFSIZ + 1];
 
 	unsigned int size = 0;
 	
-	/*retval = recv(sock, (char*)&size, sizeof(unsigned int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendCheckLoginAndMusicDownload() Size");
-		return;
-	}*/
 
 	/*retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload()");
 	}*/
-	for (int i{}; i < 12; i++)
+	//for (int i{}; i < 12; i++)
+
+	/*retval = send(sock, (char*)&temp, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendCheckLoginAndMusicDownload()");
+	}*/
+	//len = 0;
+	// ??? ?見? ???트 크?? ?檳?(??? ???)
+	for (int i{}; i < 11; i++)
 	{
-		// 파일 이름 텍스트 크기 받기(고정 길이)
-		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
+		retval = recv(sock, (char*)&len, sizeof(unsigned int), MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvnamesize()");
 			return;
 		}
-		else if (retval == 0)
-			return;
+		cout << len << endl;
 
-		// 파일 이름 텍스트 받기(가변 길이)
+		// ??? ?見? ???트 ?檳?(???? ???)
 
 		retval = recv(sock, buf, len, MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvname()");
 			return;
 		}
-		else if (retval == 0)
-			return;
 
 		buf[retval] = '\0';
 		strcpy(name, buf);
-		FILE* recvFile = fopen(buf, "wb"); // 전송받을 파일 선택(없으면 생성)
+		FILE* recvFile = fopen(name, "wb"); // ???膀?? ??? ???(?????? ????)
 		if (recvFile == NULL) {
-			printf("파일 열기 불가\n");
+			printf("??? ???? ?柰?\n");
 			return;
 		}
 		cout << name << endl;
-		// 파일 데이터 크기 받기(고정 길이)
+		// ??? ????? 크?? ?檳?(??? ???)
 		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvfilesize()");
 			return;
 		}
-		else if (retval == 0)
-			return;
+		cout << len << endl;
 
-		// 파일 데이터 받기(가변 길이)      
+		// ??? ????? ?檳?(???? ???)      
 		unsigned long totalBytesReceived = 0;
 
 		while (totalBytesReceived < len) {
-			retval = recv(sock, buf, BUFSIZE, MSG_WAITALL);
+			retval = recv(sock, buf, BUFSIZ, MSG_WAITALL);
 
 			if (retval == SOCKET_ERROR) {
 				err_display("recvfile()");
@@ -160,8 +170,8 @@ void Network::ProcessCheckLoginAndMusicDownload()
 			fwrite(buf, 1, retval, recvFile);
 			totalBytesReceived += retval;
 		}
-
-		fclose(recvFile);  // 파일 닫기
+		cout << "successNT" << endl;
+		fclose(recvFile);  // ??? ?膚?
 	}
 }
 
@@ -268,4 +278,47 @@ void Network::ProcessEnterEditStation()
 	if (check == TRUE) {
 		TitleTemp->EnterEditStation();
 	}
+}
+void Network::SendEnterPlayStation(TitlePage* go)
+{
+	string sl = "EnterPlayStation";
+	SendCommand(sl);
+	tp = go;
+	processSendList = sendList::EnterPlayStation;
+}
+
+void Network::ProcessEnterPlayStation()
+{
+	unsigned char check;
+
+	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("ProcessEnterPlayStation");
+	}
+
+	if (check == 'p')
+	{
+		// PlayerStation ???
+		//tp->setSelectCommand(check);
+		tp->Select(check);
+		cout << check << endl;
+	}
+}
+
+void Network::SendPlayerScore(unsigned int score)
+{
+	string sl = "SendPlayerScore";
+	SendCommand(sl);
+	PlayerScorePacket p;
+	p.index = m_index;
+	p.score = score;
+
+	ThrottlePackets();
+	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("SendPlayerScore() score");
+	}
+
+	processSendList = sendList::PlayerScore;
+
 }
