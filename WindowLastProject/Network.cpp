@@ -66,6 +66,7 @@ void Network::Update()
 	else if (processSendList == sendList::LeaveEditStation)
 	{
 		ProcessLeaveEditStation();
+	}
 	else if (processSendList == sendList::EnterPlayStation)
 	{
 		ProcessEnterPlayStation();
@@ -283,7 +284,7 @@ void Network::SendEnterPlayStation(TitlePage* go)
 {
 	string sl = "EnterPlayStation";
 	SendCommand(sl);
-	tp = go;
+	TitleTemp = go;
 	processSendList = sendList::EnterPlayStation;
 }
 
@@ -300,7 +301,7 @@ void Network::ProcessEnterPlayStation()
 	{
 		// PlayerStation ???
 		//tp->setSelectCommand(check);
-		tp->Select(check);
+		TitleTemp->Select(check);
 		cout << check << endl;
 	}
 }

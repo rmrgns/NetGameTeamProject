@@ -30,7 +30,7 @@ vector<string> GetFileNamesFromFolder()
 	WIN32_FIND_DATAW findFileData;
 	HANDLE hFind;
 	string str;
-	wstring searchPath = L"Sound\\*"; // ��� ���� �˻�
+	wstring searchPath = L"Sound\\*"; // ���?���� �˻�
 	//wstring wsearchPath = wstring(searchPath.begin(), searchPath.end());
 	hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
@@ -188,7 +188,7 @@ unsigned __stdcall SendPlayerScore(void* arg)
 
 unsigned __stdcall RecvLeaveEditStation(void* arg)
 {
-	// ����� ������ �̷��� �޾ƿ´�
+	// �����?������ �̷��� �޾ƿ´�
 	SOCKET sock = (SOCKET)arg;
 
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
@@ -205,8 +205,10 @@ unsigned __stdcall RecvLeaveEditStation(void* arg)
 }
 
 unsigned __stdcall RecvEnterPlayStation(void* arg)
+{
 	// ���� ������Ʈ ����
-	// �κ� ������� �÷��̾ 2���϶� ������ �㰡�Ѵ�
+	SOCKET sock = (SOCKET)arg;
+	// �κ� �������?�÷��̾ 2���϶� ������ �㰡�Ѵ�
 
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
 	int retval;
@@ -221,7 +223,7 @@ unsigned __stdcall RecvEnterPlayStation(void* arg)
 
 unsigned __stdcall RecvEnterEditStation(void* arg)
 {
-	// ����� ������ �̷��� �޾ƿ´�
+	// �����?������ �̷��� �޾ƿ´�
 	SOCKET sock = (SOCKET)arg;
 
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
@@ -240,6 +242,7 @@ unsigned __stdcall RecvEnterEditStation(void* arg)
 unsigned __stdcall RecvPlayerScore(void* arg)
 {
 	// recv�� �÷��̾� ������ �����Ѵ�
+	SOCKET sock = (SOCKET)arg;
 	int retval;
 
 	// �÷��̾� ���� �޾ƿ��� �ڵ�
