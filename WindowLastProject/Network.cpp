@@ -49,7 +49,7 @@ bool Network::Connect()
 
 void Network::SendUpdate()
 {
-	if(cmd == 'S')
+	//if(cmd == 'S')
 }
 
 void Network::Update()
@@ -82,6 +82,7 @@ void Network::SendCommand(string cmd)
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCommand() Size");
 	}
+
 	ThrottlePackets();
 	retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
@@ -211,6 +212,7 @@ void Network::SendPlayerScore(unsigned int score)
 	PlayerScorePacket p;
 	p.index = m_index;
 	p.score = score;
+
 	ThrottlePackets();
 	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
 	if (retval == SOCKET_ERROR) {
