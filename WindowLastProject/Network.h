@@ -36,14 +36,15 @@ private:
 	HANDLE hd;
 	// Ŭ�󿡼� ������ sendList
 	sendList processSendList;
-	TitlePage* TitleTemp;
-	EditStation* EditTemp;
-	PlayStation* PlayTemp;
+	TitlePage* TitleTemp = nullptr;
+	EditStation* EditTemp = nullptr;
+	PlayStation* PlayTemp = nullptr;
 
 	int m_id;
 	int m_prev_size = 0;
 	bool m_iswork = true;
 	int m_index = 1;
+	unsigned int m_score = 0;
 
 	const char* SERVERIP = (char*)"127.0.0.1";
 	int retval;
@@ -51,7 +52,7 @@ private:
 	int SERVERPORT = 9000;
 	int BUFSIZE = 1024;
 
-	string cmd = " ";
+	string cmd = "None";
 
 public:
 	// �뷡 �̸��� ��Ʈ���� �̸��� �����ϴ� ����

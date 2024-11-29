@@ -70,6 +70,7 @@ DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 		{
 			// 네트워크 관련 동작 실행
 			Network::GetInst()->Update();
+			Network::GetInst()->SendUpdate();
 		}
 	}
 

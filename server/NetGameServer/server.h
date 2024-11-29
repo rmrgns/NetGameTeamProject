@@ -27,4 +27,5 @@ unsigned __stdcall RecvEnterPlayStation(void* arg);
 void RecvLeavePlayStation(SOCKET sock);
 
 // Ŭ?󿡼? ???? ????̾? ?????? ????
-unsigned __stdcall RecvPlayerScore(void* arg);
+//unsigned __stdcall RecvPlayerScore(void* arg);
+void RecvPlayerScore(SOCKET sock);

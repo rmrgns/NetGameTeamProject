@@ -48,7 +48,23 @@ bool Network::Connect()
 
 void Network::SendUpdate()
 {
-	//if(cmd == 'S')
+	cout << cmd << endl;
+	if (cmd == "SendPlayerScore")
+	{
+		string sl = "SendPlayerScore";
+		SendCommand(sl);
+		PlayerScorePacket p;
+		p.index = m_index;
+		p.score = m_score;
+
+		ThrottlePackets();
+		retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("SendPlayerScore() score");
+		}
+		cout << p.score << ": " <<m_score << endl;
+		//processSendList = sendList::PlayerScore;
+	}
 }
 
 void Network::Update()
@@ -306,6 +322,7 @@ void Network::ProcessEnterPlayStation()
 		// PlayerStation ???
 		//tp->setSelectCommand(check);
 		TitleTemp->Select(check);
+		cmd = "EnterPlayStation";
 		cout << check << endl;
 	}
 }
@@ -330,24 +347,13 @@ void Network::ProcessLeavePlayStation()
 	if (check == '4')
 	{
 		PlayTemp->LeavePlayStation();
-		
+		cmd = "None";
 	}
 }
 
 void Network::SendPlayerScore(unsigned int score)
 {
-	string sl = "SendPlayerScore";
-	SendCommand(sl);
-	PlayerScorePacket p;
-	p.index = m_index;
-	p.score = score;
-
-	ThrottlePackets();
-	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("SendPlayerScore() score");
-	}
-
-	processSendList = sendList::PlayerScore;
-
+	m_score = score;
+	if(cmd == "EnterPlayStation")
+		cmd = "SendPlayerScore";
 }

@@ -1286,6 +1286,7 @@ void PlayStation::Update(const float& delta)
 					}
 				}
 			}
+			
 		}
 
 		
@@ -1296,6 +1297,7 @@ void PlayStation::Update(const float& delta)
 		if (GetMaxNoteNum() == perfectnum + goodnum + missnum) {
 			//SendRequestPlayerScore();
 		}
+		SendPlayerScore();
 	}
 }
 
@@ -1366,7 +1368,6 @@ void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				SendLeavePlayStation();
 				
 			}
-			SendPlayerScore();
 		}
 	}
 }

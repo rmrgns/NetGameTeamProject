@@ -72,9 +72,10 @@ void CheckSendList(string sList, SOCKET client_sock)
 	}
 	else if (sList == "SendPlayerScore")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvPlayerScore, (LPVOID)client_sock, 0, NULL);
+		/*hThread = (HANDLE)_beginthreadex(NULL, 0, RecvPlayerScore, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hThread); }
+		else { CloseHandle(hThread); }*/
+		RecvPlayerScore(client_sock);
 	}
 	else if (sList == "PlayerScore")
 	{
@@ -238,6 +239,24 @@ void RecvLeavePlayStation(SOCKET sock)
 	}
 }
 
+void RecvPlayerScore(SOCKET sock)
+{
+	int retval;
+
+	// �÷��̾� ���� �޾ƿ��� �ڵ�
+	PlayerScorePacket p;
+	ThrottlePackets();
+	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvPlayerScore()");
+	}
+
+	// ���� ������Ʈ ����
+	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
+	cout << p.index << ": " << p.score << endl;
+
+}
+
 unsigned __stdcall RecvEnterEditStation(void* arg)
 {
 	// �����?������ �̷��� �޾ƿ´�
@@ -256,23 +275,23 @@ unsigned __stdcall RecvEnterEditStation(void* arg)
 	return 0;
 
 }
-unsigned __stdcall RecvPlayerScore(void* arg)
-{
-	// recv�� �÷��̾� ������ �����Ѵ�
-	SOCKET sock = (SOCKET)arg;
-	int retval;
-
-	// �÷��̾� ���� �޾ƿ��� �ڵ�
-	PlayerScorePacket p;
-	ThrottlePackets();
-	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("RecvPlayerScore()");
-	}
-
-	// ���� ������Ʈ ����
-	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
-	cout << p.index << ": " << p.score << endl;
-
-	return 0;
-}
+//unsigned __stdcall RecvPlayerScore(void* arg)
+//{
+//	// recv�� �÷��̾� ������ �����Ѵ�
+//	SOCKET sock = (SOCKET)arg;
+//	int retval;
+//
+//	// �÷��̾� ���� �޾ƿ��� �ڵ�
+//	PlayerScorePacket p;
+//	ThrottlePackets();
+//	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("RecvPlayerScore()");
+//	}
+//
+//	// ���� ������Ʈ ����
+//	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
+//	cout << p.index << ": " << p.score << endl;
+//
+//	return 0;
+//}
