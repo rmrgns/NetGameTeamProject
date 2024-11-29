@@ -24,7 +24,7 @@ unsigned __stdcall RecvLeaveEditStation(void* arg);
 unsigned __stdcall RecvEnterEditStation(void* arg);
 
 // PlayStation ???Լ?
-unsigned __stdcall RecvEnterPlayStation(void* arg);
+void RecvEnterPlayStation(SOCKET sock);
 void RecvLeavePlayStation(SOCKET sock);
 
 // Ŭ?󿡼? ???? ????̾? ?????? ????

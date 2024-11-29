@@ -66,9 +66,7 @@ void CheckSendList(string sList, SOCKET client_sock)
 	}
 	else if (sList == "EnterPlayStation")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterPlayStation, (LPVOID)client_sock, 0, NULL);
-		if (hThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hThread); }
+		RecvEnterPlayStation(client_sock);
 	}
 	else if (sList == "SendPlayerScore")
 	{
@@ -217,10 +215,9 @@ unsigned __stdcall RecvLeaveEditStation(void* arg)
 	return 0;
 }
 
-unsigned __stdcall RecvEnterPlayStation(void* arg)
+void RecvEnterPlayStation(SOCKET sock)
 {
-	// ���� ������Ʈ ����
-	SOCKET sock = (SOCKET)arg;
+
 	// �κ� �������?�÷��̾ 2���϶� ������ �㰡�Ѵ�
 
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
@@ -231,7 +228,6 @@ unsigned __stdcall RecvEnterPlayStation(void* arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("RecvEnterPlayStation()");
 	}
-	return 0;
 }
 
 void RecvLeavePlayStation(SOCKET sock)
@@ -260,7 +256,7 @@ void RecvPlayerScore(SOCKET sock)
 
 	// ���� ������Ʈ ����
 	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
-	cout << p.index << ": " << p.score << endl;
+	cout << "score: " << p.score << endl;
 
 }
 

@@ -4,9 +4,11 @@
 #define BUFSIZE    512
 
 CRITICAL_SECTION cs;
+//static int num = 0;
 
 unsigned __stdcall ProcessClient(void* arg)
 {
+    //num++;
     SOCKET client_sock = (SOCKET)arg;
     int retval;
     struct sockaddr_in clientaddr;
@@ -22,32 +24,23 @@ unsigned __stdcall ProcessClient(void* arg)
     addrlen = sizeof(clientaddr);
     getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
     inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-   
+    //cout << num << endl;
     while (1) {
-        EnterCriticalSection(&cs);
-
         // sendList 확인
-        
         retval = recv(client_sock, (char*)&len, sizeof(unsigned int), MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvnamesize()");
-            LeaveCriticalSection(&cs);
             break;
         }
-
 
         retval = recv(client_sock, buf, len, MSG_WAITALL);
         if (retval == SOCKET_ERROR) {
             err_display("recvsendlist()");
-            LeaveCriticalSection(&cs);
             break;
         }
 
-
         buf[retval] = '\0';
         CheckSendList(buf, client_sock);
-
-        LeaveCriticalSection(&cs);
     }
     // 소켓 닫기
     closesocket(client_sock);

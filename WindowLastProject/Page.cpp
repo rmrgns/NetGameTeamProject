@@ -474,9 +474,9 @@ void IFClickSelect(const GameButton* obj, const HWND& hWnd, const UINT& iMessage
 	GameUI::LBtnPressed = false;
 	TitlePage* tp = (TitlePage*)obj->Parent;
 	if (tp->GetIconNum() % 2 == 0) {
-		//tp->SendEnterPlayStation();
+		tp->SendEnterPlayStation();
 		//tp->Select('p');
-		tp->SendEnterLobbyAndInfo();
+		//tp->SendEnterLobbyAndInfo();
 	}
 	else {
 		tp->Select('e');
