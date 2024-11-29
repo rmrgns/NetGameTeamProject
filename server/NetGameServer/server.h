@@ -3,7 +3,8 @@
 #include "Common.h"
 #include "packet.h"
 
-
+// lobby information
+static vector<LobbyInfo> lobbyData;
 
 #define BUFSIZE 4096	// ??? ????
 

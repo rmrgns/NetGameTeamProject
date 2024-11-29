@@ -15,6 +15,7 @@
 #include <atomic>
 #include <chrono>
 #include <thread>
+#include <array>
 
 using namespace std;
 
@@ -47,10 +48,11 @@ struct UserInfo
 
 struct LobbyInfo
 {
-	string id;
-	bool isReady;
-	unsigned int musicIndex;
-	unsigned int score;
+	unsigned short playerNum = 0;
+	array<string, 2> id = { "","" };
+	bool isReady=false;
+	unsigned int musicIndex=0;
+	array<unsigned int, 2> score = { 0,0 };
 };
 
 struct MusicData

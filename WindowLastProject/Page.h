@@ -57,7 +57,7 @@ class TitlePage : GameObject {
 	bool checkGameStart = false;
 	char selectCommand = 'p';
 
-	
+	string id = "test11";
 public:
 	TitlePage();
 
@@ -98,6 +98,7 @@ public:
 
 	// EnterLobby
 	void SendEnterLobbyAndInfo();
+	string getUserID() const { return id; }
 };
 
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);

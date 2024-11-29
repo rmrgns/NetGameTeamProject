@@ -86,7 +86,6 @@ int main() {
     int addrlen;
     HANDLE hThread;
 
-
     while (1) {
         // accept()
         addrlen = sizeof(clientaddr);

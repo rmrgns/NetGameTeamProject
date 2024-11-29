@@ -55,7 +55,7 @@ vector<string> GetFileNamesFromFolder()
 void CheckSendList(string sList, SOCKET client_sock)
 {
 	HANDLE hThread;
-	cout << "���ɾ� ����:" << sList << endl;
+
 	// ������ sendList�� Ȯ���ؼ� �ش� server �Լ� ȣ��
 	if (sList == "CheckLogin")
 	{
@@ -113,7 +113,6 @@ void CheckSendList(string sList, SOCKET client_sock)
 		cout << "failed" << endl;
 		return;
 	}
-	cout << "success" << endl;
 }
 
 void RecvCheckLoginAndMusicDownload(SOCKET sock)
@@ -268,12 +267,63 @@ void RecvPlayerScore(SOCKET sock)
 void RecvEnterLobbyAndInfo(SOCKET sock)
 {
 	int retval;
+	unsigned int len = 0;
+	char buf[BUFSIZE];
 
+	// send file name size
+	ThrottlePackets();
+	retval = recv(sock, (char*)&len, sizeof(unsigned int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvIDSIzeAtEnterLobby");
+		return;
+	}
+	cout << len << endl;
+	
+
+	// send file name
+	ThrottlePackets();
+	retval = recv(sock, buf, len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvIDAtEnterLobby");
+		return;
+	}
+	buf[len] = '\0';
+	cout << buf << endl;
+
+	// input userData -> lobbyData
+	if (lobbyData.empty())
+	{
+		LobbyInfo lf;
+		lobbyData.push_back(lf);
+		lobbyData.back().id[0] = buf;
+		lobbyData.back().musicIndex = 0;
+	}
+	else
+	{
+		unsigned short num = lobbyData.back().playerNum;
+		if (num < 2)
+		{
+			lobbyData.back().id[num] = buf;
+		}
+		else
+		{
+			LobbyInfo lf;
+			lobbyData.push_back(lf);
+			lobbyData.back().id[0] = buf;
+			lobbyData.back().musicIndex = 0;
+		}
+
+	}	
+	
 	unsigned char check = '5';
+	ThrottlePackets();
 	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("RecvEnterLobbyAndInfo");
+		return;
 	}
+
+	lobbyData.back().playerNum += 1;
 }
 
 unsigned __stdcall RecvEnterEditStation(void* arg)
@@ -294,23 +344,3 @@ unsigned __stdcall RecvEnterEditStation(void* arg)
 	return 0;
 
 }
-//unsigned __stdcall RecvPlayerScore(void* arg)
-//{
-//	// recv�� �÷��̾� ������ �����Ѵ�
-//	SOCKET sock = (SOCKET)arg;
-//	int retval;
-//
-//	// �÷��̾� ���� �޾ƿ��� �ڵ�
-//	PlayerScorePacket p;
-//	ThrottlePackets();
-//	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
-//	if (retval == SOCKET_ERROR) {
-//		err_display("RecvPlayerScore()");
-//	}
-//
-//	// ���� ������Ʈ ����
-//	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
-//	cout << p.index << ": " << p.score << endl;
-//
-//	return 0;
-//}

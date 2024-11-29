@@ -391,6 +391,26 @@ void Network::SendEnterLobbyAndInfo(TitlePage* go)
 	string sl = "EnterLobbyAndInfo";
 	SendCommand(sl);
 	TitleTemp = go;
+
+	string id = TitleTemp->getUserID();
+	len = id.length();
+	// send file name size
+	ThrottlePackets();
+	retval = send(sock, (char*)&len, sizeof(unsigned int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvIDSIzeAtEnterLobby");
+		return;
+	}
+	cout << len << endl;
+
+
+	// send file name
+	ThrottlePackets();
+	retval = send(sock, id.c_str(), len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvIDAtEnterLobby");
+		return;
+	}
 	processSendList = sendList::EnterLobby;
 }
 
