@@ -68,7 +68,7 @@ DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 	Network::GetInst()->Connect();
 	string id = "전송시작";
 	cout << id << endl;
-	Network::GetInst()->SendCheckLoginAndMusicDownload(id, id);
+	//Network::GetInst()->SendCheckLoginAndMusicDownload(id, id);
 	// 초당 패킷수 정하기 (30개가 적당)
 	while (1) {
 		{

@@ -103,6 +103,11 @@ void CheckSendList(string sList, SOCKET client_sock)
 		RecvLeavePlayStation(client_sock);
 	}
 
+	else if (sList == "EnterLobbyAndInfo")
+	{
+		RecvEnterLobbyAndInfo(client_sock);
+	}
+
 	else
 	{
 		cout << "failed" << endl;
@@ -258,6 +263,17 @@ void RecvPlayerScore(SOCKET sock)
 	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
 	cout << p.index << ": " << p.score << endl;
 
+}
+
+void RecvEnterLobbyAndInfo(SOCKET sock)
+{
+	int retval;
+
+	unsigned char check = '5';
+	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvEnterLobbyAndInfo");
+	}
 }
 
 unsigned __stdcall RecvEnterEditStation(void* arg)

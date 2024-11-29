@@ -357,6 +357,18 @@ void TitlePage::NextPage()
 				//GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 			}
 				break;
+
+			case 'l': // "Lobby"
+			{
+				GameManager* GM = (GameManager*)gm;
+				//GM->Clear();
+				Lobby* ps = HeapDebugClass::HeapNew<Lobby>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), false);
+				//ps->LoadMusic(Network::GetInst()->musicDataSet[Network::GetInst()->musicIndex].musicName.c_str());
+				//ps->LoadData(Network::GetInst()->musicDataSet[Network::GetInst()->musicIndex].noteName.c_str());
+
+				GM->AddObject((GameObject*)ps);
+			}
+			break;
 		}
 	}
 }
@@ -462,8 +474,9 @@ void IFClickSelect(const GameButton* obj, const HWND& hWnd, const UINT& iMessage
 	GameUI::LBtnPressed = false;
 	TitlePage* tp = (TitlePage*)obj->Parent;
 	if (tp->GetIconNum() % 2 == 0) {
-		tp->SendEnterPlayStation();
+		//tp->SendEnterPlayStation();
 		//tp->Select('p');
+		tp->SendEnterLobbyAndInfo();
 	}
 	else {
 		tp->Select('e');

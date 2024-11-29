@@ -97,6 +97,10 @@ void Network::Update()
 	{
 		ProcessLeavePlayStation();
 	}
+	else if (processSendList == sendList::EnterLobby)
+	{
+		ProcessEnterLobbyAndInfo();
+	}
 	else
 	{
 		return;
@@ -384,7 +388,7 @@ void Network::SendPlayerScore(unsigned int score)
 
 void Network::SendEnterLobbyAndInfo(TitlePage* go)
 {
-	string sl = "EnterLobby";
+	string sl = "EnterLobbyAndInfo";
 	SendCommand(sl);
 	TitleTemp = go;
 	processSendList = sendList::EnterLobby;
@@ -397,12 +401,15 @@ void Network::ProcessEnterLobbyAndInfo()
 	ThrottlePackets();
 	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
-		err_display("ProcessLeavePlayStation");
+		err_display("ProcessEnterLobbyAndInfo");
 	}
+
 	cout << check << endl;
+
 	if (check == '5')
 	{
-		//PlayTemp->LeavePlayStation();
+		TitleTemp->Select('l');
+		cout << "success" << endl;
 		cmd = "None";
 	}
 }

@@ -3,6 +3,7 @@
 #include "GameUI.h"
 #include "Effect.h"
 #include "EditStation.h"
+#include "Lobby.h"
 
 #include <vector>
 #include <string>
