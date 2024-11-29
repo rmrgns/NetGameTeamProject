@@ -214,4 +214,7 @@ public:
 	void SendRequestPlayerScore();
 	void SendPlayerScore();
 
+	// LeavePlayStation
+	void SendLeavePlayStation();
+	void LeavePlayStation();
 };

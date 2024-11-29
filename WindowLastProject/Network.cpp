@@ -71,6 +71,10 @@ void Network::Update()
 	{
 		ProcessEnterPlayStation();
 	}
+	else if (processSendList == sendList::LeavePlayStation)
+	{
+		ProcessLeavePlayStation();
+	}
 	else
 	{
 		return;
@@ -303,6 +307,30 @@ void Network::ProcessEnterPlayStation()
 		//tp->setSelectCommand(check);
 		TitleTemp->Select(check);
 		cout << check << endl;
+	}
+}
+
+void Network::SendLeavePlayStation(PlayStation* go)
+{
+	string sl = "LeavePlayStation";
+	SendCommand(sl);
+	PlayTemp = go;
+	processSendList = sendList::LeavePlayStation;
+}
+
+void Network::ProcessLeavePlayStation()
+{
+	unsigned char check;
+
+	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("ProcessLeavePlayStation");
+	}
+	cout << check << endl;
+	if (check == '4')
+	{
+		PlayTemp->LeavePlayStation();
+		
 	}
 }
 

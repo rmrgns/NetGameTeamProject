@@ -38,8 +38,7 @@ private:
 	sendList processSendList;
 	TitlePage* TitleTemp;
 	EditStation* EditTemp;
-	
-	std::thread worker;
+	PlayStation* PlayTemp;
 
 	int m_id;
 	int m_prev_size = 0;
@@ -86,9 +85,11 @@ public:
 	void SendLeaveEditStation(EditStation* es);
 	void ProcessLeaveEditStation();
 
-	// PlayStation���� �Լ�
+	// PlayStation 함수
 	void SendEnterPlayStation(TitlePage* go);
 	void ProcessEnterPlayStation();
+	void SendLeavePlayStation(PlayStation* go);
+	void ProcessLeavePlayStation();
 
 	// Player�� ������ ������ ������Ʈ�ϴ� �Լ�
 	void SendPlayerScore(unsigned int score);

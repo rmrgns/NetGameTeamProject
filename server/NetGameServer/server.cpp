@@ -97,6 +97,11 @@ void CheckSendList(string sList, SOCKET client_sock)
 		else { CloseHandle(hThread); }
 	}
 
+	else if (sList == "LeavePlayStation")
+	{
+		RecvLeavePlayStation(client_sock);
+	}
+
 	else
 	{
 		cout << "failed" << endl;
@@ -219,6 +224,18 @@ unsigned __stdcall RecvEnterPlayStation(void* arg)
 		err_display("RecvEnterPlayStation()");
 	}
 	return 0;
+}
+
+void RecvLeavePlayStation(SOCKET sock)
+{
+	int retval;
+
+	unsigned char check = '4';
+
+	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvLeavePlayStation()");
+	}
 }
 
 unsigned __stdcall RecvEnterEditStation(void* arg)

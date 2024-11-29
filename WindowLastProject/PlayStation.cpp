@@ -1328,13 +1328,7 @@ void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				keydata.Space_dut.x = GetTime();
 			}
 
-			if (wParam == 'P') {
-				Music::ClearSoundsAndChannels();
-				GameManager* GM = (GameManager*)gm;
-				GM->AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
-				GM->Update(0);
-				SetEnable(false);
-			}
+			
 		}
 
 		if (iMessage == WM_KEYUP) {
@@ -1366,6 +1360,10 @@ void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				keydata.Space_pressed = false;
 				keydata.Space_dut.y = GetTime();
 				keydata.SpaceHit = false;
+				
+			}
+			if (wParam == 'P') {
+				SendLeavePlayStation();
 				
 			}
 			SendPlayerScore();
@@ -1896,6 +1894,20 @@ void PlayStation::Render(HDC hdc)
 void PlayStation::SendPlayerScore()
 {
 	Network::GetInst()->SendPlayerScore(Score);
+}
+
+void PlayStation::SendLeavePlayStation()
+{
+	Network::GetInst()->SendLeavePlayStation(this);
+}
+
+void PlayStation::LeavePlayStation()
+{
+	Music::ClearSoundsAndChannels();
+	GameManager* GM = (GameManager*)gm;
+	GM->AddObject((GameObject*)HeapDebugClass::HeapNew<TitlePage>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+	GM->Update(0);
+	SetEnable(false);
 }
 
 
