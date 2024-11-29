@@ -28,8 +28,7 @@ int WINAPI CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIn
 		NULL, (HMENU)NULL, hInstance, NULL);
 
 
-	Network::GetInst()->Init();
-	Network::GetInst()->Connect();
+	
 
 	ShowWindow(hWnd, nCmdShow);
 
@@ -65,6 +64,11 @@ DWORD WINAPI TimeLoop(LPVOID lpParameter)
 DWORD WINAPI NetworkLoop(LPVOID lpParameter)
 {
 	DWORD retval;
+	Network::GetInst()->Init();
+	Network::GetInst()->Connect();
+	string id = "전송시작";
+	cout << id << endl;
+	Network::GetInst()->SendCheckLoginAndMusicDownload(id, id);
 	// 초당 패킷수 정하기 (30개가 적당)
 	while (1) {
 		{

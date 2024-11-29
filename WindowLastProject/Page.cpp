@@ -124,7 +124,7 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
-
+	
 	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
 	//AddMusicData("otherOperation5.mp3", "momi.txt");
 	//AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
@@ -192,10 +192,6 @@ void TitlePage::FirstInit()
 
 void TitlePage::Update(const float& delta)
 {
-	
-	
-
-
 	if (enable) {
 		FirstInit();
 		
@@ -254,9 +250,10 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 			if (wParam == 'q')
 			{
-				string id = "1234";
+				string id = "전송시작";
 				cout << id << endl;
-				SendCheckLoginAndMusicDownload(id, id);
+				//SendCheckLoginAndMusicDownload(id, id);
+				//Network::GetInst()->temp = 'z';
 			}
 		}
 	}
@@ -368,6 +365,11 @@ void TitlePage::EnterEditStation()
 {
 	GameManager* GM = (GameManager*)gm;
 	GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+}
+
+void TitlePage::SendEnterLobbyAndInfo()
+{
+	Network::GetInst()->SendEnterLobbyAndInfo(this);
 }
 
 void TitlePage::MoveMenu(int dir)

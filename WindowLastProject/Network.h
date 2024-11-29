@@ -39,6 +39,7 @@ private:
 	TitlePage* TitleTemp = nullptr;
 	EditStation* EditTemp = nullptr;
 	PlayStation* PlayTemp = nullptr;
+	LobbyInfo* LobbyTemp = nullptr;
 
 	int m_id;
 	int m_prev_size = 0;
@@ -48,13 +49,13 @@ private:
 
 	const char* SERVERIP = (char*)"127.0.0.1";
 	int retval;
-	unsigned int len;
+	unsigned long len;
 	int SERVERPORT = 9000;
-	int BUFSIZE = 1024;
 
 	string cmd = "None";
-
+	
 public:
+	//char temp = 'z';
 	// �뷡 �̸��� ��Ʈ���� �̸��� �����ϴ� ����
 	vector<PageMusicData> musicDataSet;
 	int musicIndex = 0;
@@ -92,9 +93,12 @@ public:
 	void SendLeavePlayStation(PlayStation* go);
 	void ProcessLeavePlayStation();
 
-	// Player�� ������ ������ ������Ʈ�ϴ� �Լ�
+	// PlayerScore
 	void SendPlayerScore(unsigned int score);
 
+	// Lobby func
+	void SendEnterLobbyAndInfo(TitlePage* go);
+	void ProcessEnterLobbyAndInfo();
 	// �޼���
 	void setCommand(string s) { cmd = s; }
 };

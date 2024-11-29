@@ -114,8 +114,7 @@ void CheckSendList(string sList, SOCKET client_sock)
 void RecvCheckLoginAndMusicDownload(SOCKET sock)
 {
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
-	int retval;
-	char buf[BUFSIZE];
+	
 
 	/*int num = 0;
 	retval = recv(sock, (char*)&num, sizeof(int), 0);
@@ -125,11 +124,14 @@ void RecvCheckLoginAndMusicDownload(SOCKET sock)
 	//cout << size << endl;
 	for (const auto& m : musicDataSet)
 	{
+		int retval;
+		char buf[BUFSIZE];
+
 		string path = "Sound/" + m.musicName;
 		// ������ ������ ���� ����
 		FILE* send_file = fopen(path.c_str(), "rb");  // ������ ���� ���� ����
 		if (send_file == NULL) {
-			printf("���� ���� ���� %s\n", path.c_str());
+			printf("file open error %s\n", path.c_str());
 			//break;
 		}
 		//cout << path << endl;
@@ -138,14 +140,12 @@ void RecvCheckLoginAndMusicDownload(SOCKET sock)
 		fileSize = ftell(send_file);	// ���� ���� ������ ��ġ�� ���� (���� ũ��)
 		rewind(send_file);				// ���� �����͸� �ٽ� ������ �������� ����
 
-		unsigned int len = static_cast<unsigned int>(strlen(path.c_str()));
-
+		unsigned long len= static_cast<unsigned long>(strlen(path.c_str()));
 		strncpy(buf, path.c_str(), len);
-		ThrottlePackets();
-
-		// ���� �̸� �ؽ�Ʈ ũ�� ������(���� ����)
 		
-		retval = send(sock, (char*)&len, sizeof(unsigned int), 0);
+		// send file name size
+		ThrottlePackets();
+		retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendnamesize()");
 			break;
@@ -154,8 +154,9 @@ void RecvCheckLoginAndMusicDownload(SOCKET sock)
 		buf[len] = '\0';
 		cout << buf << endl;
 
+		
+		// send file name
 		ThrottlePackets();
-		// ���� �̸� �ؽ�Ʈ ������(���� ����)
 		retval = send(sock, buf, len, 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendname()");
@@ -163,18 +164,20 @@ void RecvCheckLoginAndMusicDownload(SOCKET sock)
 		}
 		cout << fileSize << endl;
 
+		
+		// send file size
 		ThrottlePackets();
-		// ���� ������ ũ�� ������(���� ����)
 		retval = send(sock, (char*)&fileSize, sizeof(unsigned long), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("sendfileSize()");
 			break;
 		}
 
-		// ���� ������ ������(���� ����)
+		// send file
 		int retvalRead;
-		ThrottlePackets();
+		
 		while ((retvalRead = fread(buf, 1, BUFSIZE, send_file)) > 0) {
+			ThrottlePackets();
 			retval = send(sock, buf, retvalRead, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("sendfile()");

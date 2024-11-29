@@ -152,6 +152,7 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="HeapDebug.cpp" />
+    <ClCompile Include="Lobby.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Music.cpp" />
     <ClCompile Include="Network.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="HeapDebug.h" />
+    <ClInclude Include="Lobby.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="Network.h" />

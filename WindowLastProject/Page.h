@@ -94,6 +94,9 @@ public:
 
 	void SendEnterEditStation();
 	void EnterEditStation();
+
+	// EnterLobby
+	void SendEnterLobbyAndInfo();
 };
 
 void IFClickGameStart(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);

@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS // ??? C ??? ?? ?? ?? ???
 #define _WINSOCK_DEPRECATED_NO_WARNINGS // ??? ??? API ?? ?? ?? ???
+#define BUFSIZE 4096
 
 #include "Network.h"
 
@@ -48,7 +49,7 @@ bool Network::Connect()
 
 void Network::SendUpdate()
 {
-	cout << cmd << endl;
+	//cout << cmd << endl;
 	if (cmd == "SendPlayerScore")
 	{
 		string sl = "SendPlayerScore";
@@ -62,14 +63,19 @@ void Network::SendUpdate()
 		if (retval == SOCKET_ERROR) {
 			err_display("SendPlayerScore() score");
 		}
-		cout << p.score << ": " <<m_score << endl;
+		//cout << p.score << ": " <<m_score << endl;
 		//processSendList = sendList::PlayerScore;
 	}
 }
 
 void Network::Update()
 {
-
+	/*if (temp == 'z')
+	{
+		string a ="a";
+		string b ="b";
+		SendCheckLoginAndMusicDownload(a,b);
+	}*/
 	char buf[256];
 	if (processSendList == sendList::CheckLogin)
 	{
@@ -119,20 +125,22 @@ void Network::SendCommand(string cmd)
 
 void Network::SendCheckLoginAndMusicDownload(string id, string password)
 {
+	//temp = 'x';
 	string sl = "CheckLogin";
 	SendCommand(sl);
+	
 	processSendList = sendList::CheckLogin;
 }
 
 void Network::ProcessCheckLoginAndMusicDownload()
 {
-	char buf[BUFSIZ];
-	char name[BUFSIZ + 1];
+	char buf[BUFSIZE + 1] = {0};
+	char name[BUFSIZE + 1];
 
 	unsigned int size = 0;
-	
+	/*string sl;
 
-	/*retval = send(sock, sl.c_str(), len, 0);
+	retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendCheckLoginAndMusicDownload()");
 	}*/
@@ -146,15 +154,17 @@ void Network::ProcessCheckLoginAndMusicDownload()
 	// ??? ?̸? ???Ʈ ũ?? ?ޱ?(??? ???)
 	for (int i{}; i < 11; i++)
 	{
-		retval = recv(sock, (char*)&len, sizeof(unsigned int), MSG_WAITALL);
+		// file name size recv
+		ThrottlePackets();
+		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvnamesize()");
 			return;
 		}
 		cout << len << endl;
 
-		// ??? ?̸? ???Ʈ ?ޱ?(???? ???)
-
+		// file name recv
+		ThrottlePackets();
 		retval = recv(sock, buf, len, MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvname()");
@@ -165,11 +175,13 @@ void Network::ProcessCheckLoginAndMusicDownload()
 		strcpy(name, buf);
 		FILE* recvFile = fopen(name, "wb"); // ???۹?? ??? ???(?????? ????)
 		if (recvFile == NULL) {
-			printf("??? ???? ?Ұ?\n");
+			printf("file open error\n");
 			return;
 		}
 		cout << name << endl;
-		// ??? ????? ũ?? ?ޱ?(??? ???)
+
+		// file size recv
+		ThrottlePackets();
 		retval = recv(sock, (char*)&len, sizeof(unsigned long), MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
 			err_display("recvfilesize()");
@@ -177,11 +189,12 @@ void Network::ProcessCheckLoginAndMusicDownload()
 		}
 		cout << len << endl;
 
-		// ??? ????? ?ޱ?(???? ???)      
+		// file rev    
 		unsigned long totalBytesReceived = 0;
 
 		while (totalBytesReceived < len) {
-			retval = recv(sock, buf, BUFSIZ, MSG_WAITALL);
+			ThrottlePackets();
+			retval = recv(sock, buf, BUFSIZE, MSG_WAITALL);
 
 			if (retval == SOCKET_ERROR) {
 				err_display("recvfile()");
@@ -190,10 +203,17 @@ void Network::ProcessCheckLoginAndMusicDownload()
 
 			fwrite(buf, 1, retval, recvFile);
 			totalBytesReceived += retval;
+
+			//printf("\033[%d;1H", 1);  // 클라이언트 ID에 따라 다른 줄로 이동
+			//printf("[클라이언트 %d] 진행도: %d%% / 전체 데이터 크기: %ld, 현재 받은 크기: %ld\n",
+			//	1,
+			//	(int)(((float)totalBytesReceived / (float)len) * 100.f),
+			//	len, totalBytesReceived);
 		}
 		cout << "successNT" << endl;
 		fclose(recvFile);  // ??? ?ݱ?
 	}
+
 }
 
 void Network::SendRequestPlayerScore()
@@ -204,11 +224,13 @@ void Network::SendRequestPlayerScore()
 	string sl = "PlayerScore";
 	len = sl.length();
 
+	ThrottlePackets();
 	retval = send(sock, (char*)&len, sizeof(unsigned long), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendRequestPlayerScore() Size");
 	}
 
+	ThrottlePackets();
 	retval = send(sock, sl.c_str(), len, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("SendRequestPlayerScore()");
@@ -312,6 +334,7 @@ void Network::ProcessEnterPlayStation()
 {
 	unsigned char check;
 
+	ThrottlePackets();
 	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("ProcessEnterPlayStation");
@@ -323,7 +346,7 @@ void Network::ProcessEnterPlayStation()
 		//tp->setSelectCommand(check);
 		TitleTemp->Select(check);
 		cmd = "EnterPlayStation";
-		cout << check << endl;
+		//cout << check << endl;
 	}
 }
 
@@ -339,6 +362,7 @@ void Network::ProcessLeavePlayStation()
 {
 	unsigned char check;
 
+	ThrottlePackets();
 	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("ProcessLeavePlayStation");
@@ -356,4 +380,29 @@ void Network::SendPlayerScore(unsigned int score)
 	m_score = score;
 	if(cmd == "EnterPlayStation")
 		cmd = "SendPlayerScore";
+}
+
+void Network::SendEnterLobbyAndInfo(TitlePage* go)
+{
+	string sl = "EnterLobby";
+	SendCommand(sl);
+	TitleTemp = go;
+	processSendList = sendList::EnterLobby;
+}
+
+void Network::ProcessEnterLobbyAndInfo()
+{
+	unsigned char check;
+
+	ThrottlePackets();
+	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("ProcessLeavePlayStation");
+	}
+	cout << check << endl;
+	if (check == '5')
+	{
+		//PlayTemp->LeavePlayStation();
+		cmd = "None";
+	}
 }

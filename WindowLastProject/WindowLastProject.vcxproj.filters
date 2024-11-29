@@ -60,6 +60,9 @@
     <ClCompile Include="..\server\NetGameServer\common.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -111,6 +114,9 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="..\server\NetGameServer\Common.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Lobby.h">
       <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>

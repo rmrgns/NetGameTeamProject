@@ -21,13 +21,13 @@ using namespace std;
 enum class sendList : unsigned short
 {
 	None = 0,
-	CheckLogin,
-	EnterPlayStation,
-	PlayerScore,
-	LeavePlayStation,
-	EnterLobby,
-	ReadyStatus,
-	AllReadyAndMusicIndex,
+	CheckLogin = 1,
+	EnterPlayStation = 2,
+	PlayerScore = 3,
+	LeavePlayStation = 4,
+	EnterLobby = 5,
+	ReadyStatus = 6,
+	AllReadyAndMusicIndex = 7,
 	LeaveEditStation,
 	EnterEditStation,
 

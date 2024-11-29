@@ -22,6 +22,7 @@ typedef enum class OBJ_TYPE {
 	PlayStation = 1,
 	EditStation = 2,
 	Page = 3,
+	Lobby = 4,
 
 };
 
