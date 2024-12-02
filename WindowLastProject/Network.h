@@ -99,6 +99,8 @@ public:
 	// Lobby func
 	void SendEnterLobbyAndInfo(TitlePage* go);
 	void ProcessEnterLobbyAndInfo();
+	void SendReadyStatus();
+
 	// �޼���
 	void setCommand(string s) { cmd = s; }
 };

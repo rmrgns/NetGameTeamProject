@@ -433,3 +433,9 @@ void Network::ProcessEnterLobbyAndInfo()
 		cmd = "None";
 	}
 }
+
+void Network::SendReadyStatus()
+{
+	string sl = "ReadyStatus";
+	SendCommand(sl);
+}

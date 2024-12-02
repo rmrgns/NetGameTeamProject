@@ -106,6 +106,11 @@ void CheckSendList(string sList, SOCKET client_sock)
 		RecvEnterLobbyAndInfo(client_sock);
 	}
 
+	else if (sList == "ReadyStatus")
+	{
+
+	}
+
 	else
 	{
 		cout << "failed" << endl;
@@ -320,6 +325,15 @@ void RecvEnterLobbyAndInfo(SOCKET sock)
 	}
 
 	lobbyData.back().playerNum += 1;
+}
+
+void SendRequestAllReadyAndMusicIndex(SOCKET sock)
+{
+
+}
+
+void setReady()
+{
 }
 
 unsigned __stdcall RecvEnterEditStation(void* arg)

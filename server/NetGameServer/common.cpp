@@ -38,7 +38,7 @@ void err_display(int errcode)
 }
 
 std::atomic<int> packet_count(0);
-const int MAX_PACKETS_PER_SECOND = 60; // 초당 30개의 패킷 제한
+const int MAX_PACKETS_PER_SECOND = 30; // 초당 30개의 패킷 제한
 std::chrono::steady_clock::time_point last_reset_time = std::chrono::steady_clock::now();
 
 void ThrottlePackets()
