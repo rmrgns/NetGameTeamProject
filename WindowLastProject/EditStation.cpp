@@ -41,6 +41,11 @@ bool EditStation::LoadMusicBtn_Enable = false;
 bool EditStation::LoadMusicBtn_Load = false;
 char EditStation::LoadMusicBtn_FileName[128] = {};
 
+bool EditStation::UploadMusicBtn_Enable = false;
+bool EditStation::UploadMusicBtn_Load = false;
+bool EditStation::UMD_OUT_enable = false;
+char EditStation::UploadMusicBtn_FileName[128] = {};
+
 extern HINSTANCE g_hInst;
 extern vector<Sprite*> SpriteData;
 
@@ -83,6 +88,10 @@ EditStation::~EditStation()
 
 	if (HeapDebugClass::HeapDebug[LoadMusicButton] == true) {
 		HeapDebugClass::HeapDelete<GameButton>(LoadMusicButton);
+	}
+
+	if (HeapDebugClass::HeapDebug[UploadMusicButton] == true) {
+		HeapDebugClass::HeapDelete<GameButton>(UploadMusicButton);
 	}
 }
 
@@ -307,6 +316,12 @@ void EditStation::FirstInit()
 		LoadMusicButton->SetSTR(L"Load Music");
 		LoadMusicButton->OnClick = IFClickLoadMusic;
 
+		stbtn = shp::rect4f(psrt.fx + 3 * w, psrt.ly + 140, psrt.fx + 4 * w, psrt.ly + 210);
+		UploadMusicButton = HeapDebugClass::HeapNew<GameButton>();
+		UploadMusicButton->location = stbtn;
+		UploadMusicButton->SetSTR(L"Upload Music");
+		UploadMusicButton->OnClick = IFClickUploadMusic;
+
 		//EditRT
 		SetEditRT(shp::rect4f(loc.fx, loc.fy, loc.getCenter().x, loc.ly));
 
@@ -340,6 +355,7 @@ void EditStation::Update(const float& delta)
 		LevelLoadButton->Update(delta);
 		LevelSaveButton->Update(delta);
 		LoadMusicButton->Update(delta);
+		UploadMusicButton->Update(delta);
 	}
 }
 
@@ -358,6 +374,7 @@ void EditStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		LevelLoadButton->Event(hWnd, iMessage, wParam, lParam);
 		LevelSaveButton->Event(hWnd, iMessage, wParam, lParam);
 		LoadMusicButton->Event(hWnd, iMessage, wParam, lParam);
+		UploadMusicButton->Event(hWnd, iMessage, wParam, lParam);
 
 		if (iMessage == WM_KEYDOWN) {
 			if (wParam == VK_NUMPAD1 || wParam == 49) {
@@ -545,6 +562,7 @@ void EditStation::Render(HDC hdc)
 		LevelLoadButton->RenderObject(hdc);
 		LevelSaveButton->RenderObject(hdc);
 		LoadMusicButton->RenderObject(hdc);
+		UploadMusicButton->RenderObject(hdc);
 
 		float beatBottom = GetLocation().ly - 100;
 		int b1 = GetTime() * GetTempo() / 60;
@@ -745,6 +763,12 @@ void EditStation::GetDialogData(float delta)
 
 		playStation->LoadMusic(LoadMusicBtn_FileName);
 	}
+
+	if (UMD_OUT_enable) {
+		UMD_OUT_enable = false;
+		
+		Network::GetInst()->SendUploadMusic(UploadMusicBtn_FileName);
+	}
 }
 
 INT_PTR CALLBACK SetTempo_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
@@ -834,6 +858,47 @@ INT_PTR CALLBACK Help_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lP
 	case WM_CLOSE:
 		DestroyWindow(hDlg);
 		EditStation::HelpDialogOpen = false;
+		break;
+	}
+	return 0;
+}
+
+INT_PTR CALLBACK UploadMusic_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (iMsg) {
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDOK: //--- 버튼
+		{
+			BOOL SUCCESS = TRUE;
+			wchar_t* str = NULL;
+			char* pStr;
+			GetDlgItemText(hDlg, IDC_EDIT_MUSICNAME, str, FALSE);
+
+			int strSize = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+			pStr = HeapDebugClass::HeapArrNew<char>(strSize);
+			WideCharToMultiByte(CP_ACP, 0, str, -1, pStr, strSize, 0, 0);
+
+			if (SUCCESS == TRUE) {
+				strcpy_s(EditStation::UploadMusicBtn_FileName, pStr);
+				EditStation::UMD_OUT_enable = true;
+			}
+
+
+
+
+			HeapDebugClass::HeapArrDelete<char>(pStr);
+			SendMessage(hDlg, WM_CLOSE, 0, 0);
+			break;
+		}
+		case IDCANCEL: //--- 버튼
+			SendMessage(hDlg, WM_CLOSE, 0, 0);
+			break;
+		}
+		break;
+	case WM_CLOSE:
+		DestroyWindow(hDlg);
+		EditStation::UploadMusicBtn_Enable = false;
 		break;
 	}
 	return 0;
@@ -1056,4 +1121,13 @@ void IFClickLoadMusic(const GameButton* obj, const HWND& hWnd, const UINT& iMess
 	}
 }
 
+void IFClickUploadMusic(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam)
+{
+	if (EditStation::UploadMusicBtn_Enable == false) {
+		EditStation::UploadMusicBtn_Enable = true;
+		DLGPROC func = UploadMusic_Dlalog_Proc;
+		HWND hDlg = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_DIALOG_UPLOAD_MUSIC), hWnd, func);
+		ShowWindow(hDlg, SW_SHOW);
+	}
+}
 

@@ -250,7 +250,7 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 			if (wParam == 'q')
 			{
-				string id = "ì „ì†¡ì‹œìž‘";
+				string id = "Àü¼Û½ÃÀÛ";
 				cout << id << endl;
 				//SendCheckLoginAndMusicDownload(id, id);
 				//Network::GetInst()->temp = 'z';

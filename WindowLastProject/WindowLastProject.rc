@@ -94,6 +94,17 @@ BEGIN
     LTEXT           " 노트선택 \n 1 : 일반 노트 \n 2 : 롱 노트 \n 3 : 왼쪽 회전 노트 \n 4 : 스페이스 노트 \n 5 : 오른쪽 회전 노트\n",IDC_STATIC,15,42,79,61
 END
 
+IDD_DIALOG_UPLOAD_MUSIC DIALOGEX 0, 0, 251, 107
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "UploadMusic"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,131,79,50,14
+    PUSHBUTTON      "취소",IDCANCEL,187,79,50,14
+    LTEXT           "MusicName : ",IDC_STATIC,26,19,44,10
+    EDITTEXT        IDC_EDIT_MUSICNAME,67,17,51,12,ES_AUTOHSCROLL
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -126,6 +137,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 170
     END
+
+    IDD_DIALOG_UPLOAD_MUSIC, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 100
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -146,6 +165,11 @@ BEGIN
 END
 
 IDD_DIALOG_HELPTEXT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_UPLOAD_MUSIC AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

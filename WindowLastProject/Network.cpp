@@ -208,8 +208,8 @@ void Network::ProcessCheckLoginAndMusicDownload()
 			fwrite(buf, 1, retval, recvFile);
 			totalBytesReceived += retval;
 
-			//printf("\033[%d;1H", 1);  // 클라이언트 ID에 따라 다른 줄로 이동
-			//printf("[클라이언트 %d] 진행도: %d%% / 전체 데이터 크기: %ld, 현재 받은 크기: %ld\n",
+			//printf("\033[%d;1H", 1);  // ?�라?�언??ID???�라 ?�른 줄로 ?�동
+			//printf("[?�라?�언??%d] 진행?? %d%% / ?�체 ?�이???�기: %ld, ?�재 받�? ?�기: %ld\n",
 			//	1,
 			//	(int)(((float)totalBytesReceived / (float)len) * 100.f),
 			//	len, totalBytesReceived);
@@ -432,4 +432,9 @@ void Network::ProcessEnterLobbyAndInfo()
 		cout << "success" << endl;
 		cmd = "None";
 	}
+}
+
+void Network::SendUploadMusic(string musicname)
+{
+	cout << musicname << endl;
 }

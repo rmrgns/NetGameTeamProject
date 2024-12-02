@@ -19,9 +19,9 @@ void CheckSendList(string sList, SOCKET socket);
 // ?α????? ?? ?????? MusicData ?۽? ???
 void RecvCheckLoginAndMusicDownload(SOCKET sock);
 
-unsigned __stdcall SendPlayerScore(void* arg);
-unsigned __stdcall RecvLeaveEditStation(void* arg);
-unsigned __stdcall RecvEnterEditStation(void* arg);
+void SendPlayerScore(SOCKET sock);
+void RecvLeaveEditStation(SOCKET sock);
+void RecvEnterEditStation(SOCKET sock);
 
 // PlayStation ???Լ?
 void RecvEnterPlayStation(SOCKET sock);

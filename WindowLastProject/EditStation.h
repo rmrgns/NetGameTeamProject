@@ -17,6 +17,7 @@ class EditStation : GameObject{
 	GameButton* LevelLoadButton; // 만든 레벨을 로드하는 버튼
 	GameButton* LevelSaveButton; // 레벨을 저장하는 버튼
 	GameButton* LoadMusicButton; // 음악을 로드하는 버튼
+	GameButton* UploadMusicButton; // 음악을 업로드하는 버튼
 
 	bool checkInitialize = true;
 	bool bPlay = false;
@@ -62,6 +63,11 @@ public:
 	static bool LoadMusicBtn_Enable;
 	static bool LoadMusicBtn_Load;
 	static char LoadMusicBtn_FileName[128];
+
+	static bool UploadMusicBtn_Enable;
+	static bool UploadMusicBtn_Load;
+	static bool UMD_OUT_enable;
+	static char UploadMusicBtn_FileName[128];
 
 	EditStation();
 	
@@ -114,7 +120,9 @@ void IFClickPause(const GameButton* obj, const HWND& hWnd, const UINT& iMessage,
 void IFClickLoadLevel(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);
 void IFClickSaveLevel(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);
 void IFClickLoadMusic(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);
+void IFClickUploadMusic(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam);
 
 INT_PTR CALLBACK SetTempo_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK SetVariable_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK Help_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK UploadMusic_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);

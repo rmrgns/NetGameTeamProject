@@ -77,23 +77,26 @@ void CheckSendList(string sList, SOCKET client_sock)
 	}
 	else if (sList == "PlayerScore")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, SendPlayerScore, (LPVOID)client_sock, 0, NULL);
+		/*hThread = (HANDLE)_beginthreadex(NULL, 0, SendPlayerScore, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hThread); }
+		else { CloseHandle(hThread); }*/
+		SendPlayerScore(client_sock);
 	}
 
 	else if (sList == "LeaveEditStation")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvLeaveEditStation, (LPVOID)client_sock, 0, NULL);
+		/*hThread = (HANDLE)_beginthreadex(NULL, 0, RecvLeaveEditStation, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hThread); }
+		else { CloseHandle(hThread); }*/
+		RecvLeaveEditStation(client_sock);
 	}
 
 	else if (sList == "EnterEditStation")
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterEditStation, (LPVOID)client_sock, 0, NULL);
-		if (hThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hThread); }
+		//hThread = (HANDLE)_beginthreadex(NULL, 0, RecvEnterEditStation, (LPVOID)client_sock, 0, NULL);
+		//if (hThread == NULL) { closesocket(client_sock); }
+		//else { CloseHandle(hThread); }
+		RecvEnterEditStation(client_sock);
 	}
 
 	else if (sList == "LeavePlayStation")
@@ -190,17 +193,15 @@ void RecvCheckLoginAndMusicDownload(SOCKET sock)
 	}
 }
 
-unsigned __stdcall SendPlayerScore(void* arg)
+void SendPlayerScore(SOCKET sock)
 {
 
-	return 0;
+
 }
 
 
-unsigned __stdcall RecvLeaveEditStation(void* arg)
+void RecvLeaveEditStation(SOCKET sock)
 {
-	// �����?������ �̷��� �޾ƿ´�
-	SOCKET sock = (SOCKET)arg;
 
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
 	int retval;
@@ -212,7 +213,6 @@ unsigned __stdcall RecvLeaveEditStation(void* arg)
 		err_display("RecvLeaveEditStation()");
 	}
 	//cout << "success3" << endl;
-	return 0;
 }
 
 void RecvEnterPlayStation(SOCKET sock)
@@ -322,10 +322,8 @@ void RecvEnterLobbyAndInfo(SOCKET sock)
 	lobbyData.back().playerNum += 1;
 }
 
-unsigned __stdcall RecvEnterEditStation(void* arg)
+void RecvEnterEditStation(SOCKET sock)
 {
-	// �����?������ �̷��� �޾ƿ´�
-	SOCKET sock = (SOCKET)arg;
 
 	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
 	int retval;
@@ -337,6 +335,4 @@ unsigned __stdcall RecvEnterEditStation(void* arg)
 		err_display("RecvEnterEditStation()");
 	}
 	//cout << "success3" << endl;
-	return 0;
-
 }

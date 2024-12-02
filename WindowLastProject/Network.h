@@ -87,7 +87,7 @@ public:
 	void SendLeaveEditStation(EditStation* es);
 	void ProcessLeaveEditStation();
 
-	// PlayStation 함수
+	// PlayStation ?�수
 	void SendEnterPlayStation(TitlePage* go);
 	void ProcessEnterPlayStation();
 	void SendLeavePlayStation(PlayStation* go);
@@ -99,7 +99,10 @@ public:
 	// Lobby func
 	void SendEnterLobbyAndInfo(TitlePage* go);
 	void ProcessEnterLobbyAndInfo();
-	// �޼���
+	// �޼�
 	void setCommand(string s) { cmd = s; }
+
+	//EditStation func
+	void SendUploadMusic(string name);
 };
 
