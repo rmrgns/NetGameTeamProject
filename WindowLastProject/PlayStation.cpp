@@ -2,6 +2,7 @@
 #include "Page.h"
 #include "Network.h"
 
+
 extern vector<Sprite*> SpriteData;
 extern RECT rt;
 
@@ -16,6 +17,7 @@ PlayStation::PlayStation()
 	SetMaxCombo(0);
 	SetTempo(130);
 	SetRotPos(ROTPOS::bottom);
+
 }
 
 PlayStation::~PlayStation()
@@ -46,6 +48,10 @@ PlayStation* PlayStation::Init(const shp::rect4f& loc, const bool& autoplay, con
 	SetLayer(layer);
 	pnW = GetPlayLoc().getw() / 12;
 	BackGround = SpriteData[11];
+
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+	CreateScoreWindow(hInstance);
+
 	return this;
 }
 
@@ -161,6 +167,10 @@ void PlayStation::SetScore(const int& score)
 {
 	if (enable) {
 		Score = score;
+		if (m_hScoreWnd) {
+			SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // 점수 갱신
+			InvalidateRect(m_hScoreWnd, NULL, TRUE); // 화면 갱신 요청
+		}
 	}
 }
 
@@ -1299,6 +1309,8 @@ void PlayStation::Update(const float& delta)
 		}
 		
 	}
+	cout << Score << endl;
+	
 }
 
 void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -1910,6 +1922,77 @@ void PlayStation::LeavePlayStation()
 	GM->Update(0);
 	SetEnable(false);
 }
+
+void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
+{
+	std::thread([this, hInstance]() {
+		// 윈도우 클래스 등록
+		WNDCLASS wc = {};
+		wc.lpfnWndProc = ScoreWindowProc;
+		wc.hInstance = hInstance;
+		wc.lpszClassName = L"ScoreWindowClass";
+		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+		RegisterClass(&wc);
+
+		// 점수창 생성
+		m_hScoreWnd = CreateWindowEx(
+			0,
+			L"ScoreWindowClass",
+			L"점수",
+			WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
+			50, 50, 200, 100,
+			NULL, NULL, hInstance, NULL
+		);
+
+		SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // 초기 점수 설정
+		ShowWindow(m_hScoreWnd, SW_SHOW);
+
+		// 메시지 루프
+		MSG msg;
+		while (GetMessage(&msg, NULL, 0, 0)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		}).detach(); // 스레드를 분리하여 독립적으로 실행
+}
+
+void PlayStation::UpdateScoreboard()
+{
+	SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score);
+
+	// 점수창 다시 그리기 요청
+	InvalidateRect(m_hScoreWnd, NULL, TRUE);
+}
+
+LRESULT CALLBACK PlayStation::ScoreWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message) {
+	case WM_PAINT: {
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+
+		// 점수 가져오기
+		int score = (int)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+
+		// 점수 텍스트 출력
+		wchar_t scoreText[256];
+		swprintf(scoreText, 256, L"현재 점수: %d", score);
+		TextOut(hdc, 10, 10, scoreText, wcslen(scoreText));
+
+		wchar_t scoreText2[256];
+		swprintf(scoreText2, 256, L"현재 점수2: %d", score);
+		TextOut(hdc, 10, 30, scoreText2, wcslen(scoreText2));
+		EndPaint(hWnd, &ps);
+		return 0;
+	}
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+}
+
 
 
 void PlayStation::SendRequestPlayerScore()

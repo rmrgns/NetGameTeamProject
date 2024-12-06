@@ -384,6 +384,7 @@ void Network::SendPlayerScore(unsigned int score)
 	m_score = score;
 	if(cmd == "EnterPlayStation")
 		cmd = "SendPlayerScore";
+	
 }
 
 void Network::SendEnterLobbyAndInfo(TitlePage* go)

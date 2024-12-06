@@ -48,6 +48,8 @@ private:
 	unsigned int m_score = 0;
 
 	const char* SERVERIP = (char*)"127.0.0.1";
+	//const char* SERVERIP = (char*)"192.168.0.2";
+	//const char* SERVERIP = (char*)"10.20.11.32";
 	int retval;
 	unsigned long len;
 	int SERVERPORT = 9000;

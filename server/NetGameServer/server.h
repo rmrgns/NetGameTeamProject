@@ -32,3 +32,5 @@ void RecvPlayerScore(SOCKET sock);
 
 // Lobby
 void RecvEnterLobbyAndInfo(SOCKET sock);
+void SendRequestAllReadyAndMusicIndex(SOCKET sock);
+void setReady();

@@ -128,6 +128,10 @@ private:
 	float pnW = 20;
 	
 	bool first = true;
+
+	// PS scoreboard
+	HWND m_hScoreWnd;
+
 public:
 	// variable access
 	PlayStation();
@@ -217,4 +221,9 @@ public:
 	// LeavePlayStation
 	void SendLeavePlayStation();
 	void LeavePlayStation();
+
+	// PS scoreboard
+	void CreateScoreWindow(HINSTANCE hInstance);
+	void UpdateScoreboard();
+	static LRESULT CALLBACK ScoreWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam); // 정적 함수로 선언
 };
