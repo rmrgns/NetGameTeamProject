@@ -434,7 +434,9 @@ void Network::ProcessEnterLobbyAndInfo()
 	}
 }
 
-void Network::SendUploadMusic(string musicname)
+void Network::SendUploadMusic(string filename, string music, string pattern)
 {
-	cout << musicname << endl;
+	cout << filename << endl;
+	cout << music << endl;
+	cout << pattern << endl;
 }

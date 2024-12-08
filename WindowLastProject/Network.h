@@ -62,7 +62,7 @@ public:
 	int temp = 0;
 	Network() {};
 	~Network() {
-		DeleteCriticalSection(&cs);
+		//DeleteCriticalSection(&cs);
 		closesocket(sock);
 		WSACleanup();
 
@@ -103,6 +103,6 @@ public:
 	void setCommand(string s) { cmd = s; }
 
 	//EditStation func
-	void SendUploadMusic(string name);
+	void SendUploadMusic(string filename, string music, string pattern);
 };
 

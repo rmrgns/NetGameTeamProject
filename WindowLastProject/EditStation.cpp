@@ -766,8 +766,11 @@ void EditStation::GetDialogData(float delta)
 
 	if (UMD_OUT_enable) {
 		UMD_OUT_enable = false;
-		
-		Network::GetInst()->SendUploadMusic(UploadMusicBtn_FileName);
+
+		/*cout << LoadMusicBtn_FileName << endl;
+		cout << SaveLevelBtn_FileName << endl;*/
+
+		Network::GetInst()->SendUploadMusic(UploadMusicBtn_FileName, LoadMusicBtn_FileName, SaveLevelBtn_FileName);
 	}
 }
 
@@ -870,10 +873,13 @@ INT_PTR CALLBACK UploadMusic_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LP
 		switch (LOWORD(wParam)) {
 		case IDOK: //--- ¹öÆ°
 		{
-			BOOL SUCCESS = TRUE;
-			wchar_t* str = NULL;
+			TCHAR fileName[256] = L"";
+			//LPWSTR temp = fileName;
+
+			BOOL SUCCESS = TRUE;			
+			GetDlgItemText(hDlg, IDC_EDIT_MUSICNAME, fileName, 256);
+			wchar_t* str = fileName;
 			char* pStr;
-			GetDlgItemText(hDlg, IDC_EDIT_MUSICNAME, str, FALSE);
 
 			int strSize = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
 			pStr = HeapDebugClass::HeapArrNew<char>(strSize);
@@ -883,9 +889,6 @@ INT_PTR CALLBACK UploadMusic_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LP
 				strcpy_s(EditStation::UploadMusicBtn_FileName, pStr);
 				EditStation::UMD_OUT_enable = true;
 			}
-
-
-
 
 			HeapDebugClass::HeapArrDelete<char>(pStr);
 			SendMessage(hDlg, WM_CLOSE, 0, 0);
