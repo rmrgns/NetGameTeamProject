@@ -168,8 +168,8 @@ void PlayStation::SetScore(const int& score)
 	if (enable) {
 		Score = score;
 		if (m_hScoreWnd) {
-			SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // Á¡¼ö °»½Å
-			InvalidateRect(m_hScoreWnd, NULL, TRUE); // È­¸é °»½Å ¿äÃ»
+			SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			InvalidateRect(m_hScoreWnd, NULL, TRUE); // È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 		}
 	}
 }
@@ -782,7 +782,7 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
 		Music::SetChannelPos(0, 1000 * GetTime());
-		// »ç¿îµå Á¶Àý
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Music::SetChannelVolume(0, 0.1f);
 	}
 	else {
@@ -796,7 +796,7 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
 		Music::SetChannelPos(0, 1000 * GetTime());
-		// »ç¿îµå Á¶Àý
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Music::SetChannelVolume(0, 0.1f);
 	}
 }
@@ -1060,7 +1060,7 @@ void PlayStation::Update(const float& delta)
 				if (n == -1) continue;
 				if (GetNote(n).enable == false) continue;
 
-				//È¸ÀüÁß È¸ÀüµÈ °á°ú ROTPOS¿¡¼­ ³ëÆ®¸¦ Ä¥ ¼ö ÀÖ°Ô ÇÔ.
+				//È¸ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ROTPOSï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ Ä¥ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½.
 				if (GetNote(n).rotPos != rotation) {
 					if (rotating) {
  						if (GetNextROTPOS(rotation, rotateLeft) == GetNote(n).rotPos) {
@@ -1639,12 +1639,12 @@ void PlayStation::Render(HDC hdc)
 			float rate = AnimClass::EaseOut(RotateFlow.x / RotateFlow.y, RotatePower);
 
 			if (rotateLeft) {
-				//¿ÞÂÊ È¸ÀüÁß
+				//ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½
 				numangle = shp::PI/2.0f;
 				
 			}
 			else {
-				//¿À¸¥ÂÊ È¸ÀüÁß
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½
 				numangle = shp::PI / 2.0f;
 				rate = 1.0f - rate;
 			}
@@ -1926,7 +1926,7 @@ void PlayStation::LeavePlayStation()
 void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 {
 	std::thread([this, hInstance]() {
-		// À©µµ¿ì Å¬·¡½º µî·Ï
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		WNDCLASS wc = {};
 		wc.lpfnWndProc = ScoreWindowProc;
 		wc.hInstance = hInstance;
@@ -1934,33 +1934,33 @@ void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 		RegisterClass(&wc);
 
-		// Á¡¼öÃ¢ »ý¼º
+		// ï¿½ï¿½ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½
 		m_hScoreWnd = CreateWindowEx(
 			0,
 			L"ScoreWindowClass",
-			L"Á¡¼ö",
+			L"ï¿½ï¿½ï¿½ï¿½",
 			WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
 			50, 50, 200, 100,
 			NULL, NULL, hInstance, NULL
 		);
 
-		SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // ÃÊ±â Á¡¼ö ¼³Á¤
+		SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		ShowWindow(m_hScoreWnd, SW_SHOW);
 
-		// ¸Þ½ÃÁö ·çÇÁ
+		// ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		MSG msg;
 		while (GetMessage(&msg, NULL, 0, 0)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		}).detach(); // ½º·¹µå¸¦ ºÐ¸®ÇÏ¿© µ¶¸³ÀûÀ¸·Î ½ÇÇà
+		}).detach(); // ï¿½ï¿½ï¿½ï¿½ï¿½å¸¦ ï¿½Ð¸ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 void PlayStation::UpdateScoreboard()
 {
 	SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score);
 
-	// Á¡¼öÃ¢ ´Ù½Ã ±×¸®±â ¿äÃ»
+	// ï¿½ï¿½ï¿½ï¿½Ã¢ ï¿½Ù½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 	InvalidateRect(m_hScoreWnd, NULL, TRUE);
 }
 
@@ -1971,16 +1971,16 @@ LRESULT CALLBACK PlayStation::ScoreWindowProc(HWND hWnd, UINT message, WPARAM wP
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
-		// Á¡¼ö °¡Á®¿À±â
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		int score = (int)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
-		// Á¡¼ö ÅØ½ºÆ® Ãâ·Â
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½
 		wchar_t scoreText[256];
-		swprintf(scoreText, 256, L"ÇöÀç Á¡¼ö: %d", score);
+		swprintf(scoreText, 256, L"score: %d", score);
 		TextOut(hdc, 10, 10, scoreText, wcslen(scoreText));
 
 		wchar_t scoreText2[256];
-		swprintf(scoreText2, 256, L"ÇöÀç Á¡¼ö2: %d", score);
+		swprintf(scoreText2, 256, L"score2: %d", score);
 		TextOut(hdc, 10, 30, scoreText2, wcslen(scoreText2));
 		EndPaint(hWnd, &ps);
 		return 0;
