@@ -770,7 +770,7 @@ void EditStation::GetDialogData(float delta)
 		/*cout << LoadMusicBtn_FileName << endl;
 		cout << SaveLevelBtn_FileName << endl;*/
 
-		Network::GetInst()->SendUploadMusic(UploadMusicBtn_FileName, LoadMusicBtn_FileName, SaveLevelBtn_FileName);
+		Network::GetInst()->SendUploadMusic(LoadMusicBtn_FileName, SaveLevelBtn_FileName);
 	}
 }
 
@@ -873,24 +873,24 @@ INT_PTR CALLBACK UploadMusic_Dlalog_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LP
 		switch (LOWORD(wParam)) {
 		case IDOK: //--- ¹öÆ°
 		{
-			TCHAR fileName[256] = L"";
-			//LPWSTR temp = fileName;
+			//TCHAR fileName[256] = L"";
+			////LPWSTR temp = fileName;
 
 			BOOL SUCCESS = TRUE;			
-			GetDlgItemText(hDlg, IDC_EDIT_MUSICNAME, fileName, 256);
-			wchar_t* str = fileName;
-			char* pStr;
+			//GetDlgItemText(hDlg, IDC_EDIT_MUSICNAME, fileName, 256);
+			//wchar_t* str = fileName;
+			//char* pStr;
 
-			int strSize = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
-			pStr = HeapDebugClass::HeapArrNew<char>(strSize);
-			WideCharToMultiByte(CP_ACP, 0, str, -1, pStr, strSize, 0, 0);
+			//int strSize = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+			//pStr = HeapDebugClass::HeapArrNew<char>(strSize);
+			//WideCharToMultiByte(CP_ACP, 0, str, -1, pStr, strSize, 0, 0);
 
 			if (SUCCESS == TRUE) {
-				strcpy_s(EditStation::UploadMusicBtn_FileName, pStr);
+				/*strcpy_s(EditStation::UploadMusicBtn_FileName, pStr);*/
 				EditStation::UMD_OUT_enable = true;
 			}
 
-			HeapDebugClass::HeapArrDelete<char>(pStr);
+			/*HeapDebugClass::HeapArrDelete<char>(pStr);*/
 			SendMessage(hDlg, WM_CLOSE, 0, 0);
 			break;
 		}
@@ -1020,6 +1020,9 @@ void IFClickLoadLevel(const GameButton* obj, const HWND& hWnd, const UINT& iMess
 void IFClickSaveLevel(const GameButton* obj, const HWND& hWnd, const UINT& iMessage, const WPARAM& wParam, const LPARAM& lParam)
 {
 	if (EditStation::SaveLevelBtn_Enable == false) {
+		TCHAR originPath[128] = {};
+		GetCurrentDirectory(128, originPath);
+
 		EditStation::SaveLevelBtn_Enable = true;
 		OPENFILENAME OFN;
 		TCHAR filePathName[256] = L"";
@@ -1044,7 +1047,23 @@ void IFClickSaveLevel(const GameButton* obj, const HWND& hWnd, const UINT& iMess
 			pStr = HeapDebugClass::HeapArrNew<char>(strSize);
 			WideCharToMultiByte(CP_ACP, 0, str, -1, pStr, strSize, 0, 0);
 
-			strcpy_s(EditStation::SaveLevelBtn_FileName, pStr);
+			char openpath[128] = {};
+			char filename[128] = {};
+			strcpy_s(openpath, pStr);
+			_fullpath(filename, "", 128);
+
+			int len = strlen(openpath);
+			int flen = strlen(filename);
+			char note[128] = "NoteData";
+			int k = 8;
+			for (int i = flen; i < len; ++i) {
+				k = 8 + i - flen;
+				note[k] = openpath[i];
+			}
+			k += 1;
+			note[k] = '\0';
+
+			strcpy_s(EditStation::SaveLevelBtn_FileName, note);
 
 			EditStation::SaveLevelBtn_Load = true;
 
@@ -1055,6 +1074,8 @@ void IFClickSaveLevel(const GameButton* obj, const HWND& hWnd, const UINT& iMess
 		}
 
 		GameUI::LBtnPressed = false;
+
+		SetCurrentDirectory(originPath);
 	}
 	else {
 		EditStation::SaveLevelBtn_Enable = false;

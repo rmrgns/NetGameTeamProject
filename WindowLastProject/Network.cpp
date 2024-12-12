@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS // ??? C ??? ?? ?? ?? ???
+﻿#define _CRT_SECURE_NO_WARNINGS // ??? C ??? ?? ?? ?? ???
 #define _WINSOCK_DEPRECATED_NO_WARNINGS // ??? ??? API ?? ?? ?? ???
 #define BUFSIZE 4096
 
@@ -155,7 +155,7 @@ void Network::ProcessCheckLoginAndMusicDownload()
 		err_display("SendCheckLoginAndMusicDownload()");
 	}*/
 	//len = 0;
-	// ??? ?̸? ???Ʈ ũ?? ?ޱ?(??? ???)
+	// ??? ?見? ???트 크?? ?檳?(??? ???)
 	for (int i{}; i < 11; i++)
 	{
 		// file name size recv
@@ -177,7 +177,7 @@ void Network::ProcessCheckLoginAndMusicDownload()
 
 		buf[retval] = '\0';
 		strcpy(name, buf);
-		FILE* recvFile = fopen(name, "wb"); // ???۹?? ??? ???(?????? ????)
+		FILE* recvFile = fopen(name, "wb"); // ???膀?? ??? ???(?????? ????)
 		if (recvFile == NULL) {
 			printf("file open error\n");
 			return;
@@ -208,14 +208,14 @@ void Network::ProcessCheckLoginAndMusicDownload()
 			fwrite(buf, 1, retval, recvFile);
 			totalBytesReceived += retval;
 
-			//printf("\033[%d;1H", 1);  // ?�라?�언??ID???�라 ?�른 줄로 ?�동
-			//printf("[?�라?�언??%d] 진행?? %d%% / ?�체 ?�이???�기: %ld, ?�재 받�? ?�기: %ld\n",
+			//printf("\033[%d;1H", 1);  // ?대씪?댁뼵??ID???곕씪 ?ㅻⅨ 以꾨줈 ?대룞
+			//printf("[?대씪?댁뼵??%d] 吏꾪뻾?? %d%% / ?꾩껜 ?곗씠???ш린: %ld, ?꾩옱 諛쏆? ?ш린: %ld\n",
 			//	1,
 			//	(int)(((float)totalBytesReceived / (float)len) * 100.f),
 			//	len, totalBytesReceived);
 		}
 		cout << "successNT" << endl;
-		fclose(recvFile);  // ??? ?ݱ?
+		fclose(recvFile);  // ??? ?膚?
 	}
 
 }
@@ -434,9 +434,78 @@ void Network::ProcessEnterLobbyAndInfo()
 	}
 }
 
-void Network::SendUploadMusic(string filename, string music, string pattern)
+void Network::SendUploadMusic(string music, string pattern)
 {
-	cout << filename << endl;
 	cout << music << endl;
-	cout << pattern << endl;
+	SendFile(music);
+	string ptName = pattern + ".txt";	
+	cout << ptName << endl;
+	SendFile(ptName);
+	
+}
+
+void Network::SendFile(string fn)
+{
+	string sl = "UploadMusic";
+	SendCommand(sl);
+
+	//string temp = fn;
+	//string find_str = "\\";
+	//string replace_str = "\\\\";
+
+	//temp.replace(temp.find(find_str), find_str.length(), replace_str);
+
+	char* filename = const_cast<char*>(fn.c_str());
+	//cout << filename << endl;
+
+	// ������ ������ ���� ����
+	FILE* send_file = fopen(filename, "rb");
+	if (send_file == NULL) {
+		printf("file open error : %d, %s\n", errno, filename);
+		return;
+	}
+
+	char buf[BUFSIZE];
+
+	// ���� ũ��
+	unsigned long fileSize;
+	fseek(send_file, 0, SEEK_END);	// ���� �����͸� ���� ������ �̵�
+	fileSize = ftell(send_file);	// ���� ���� ������ ��ġ�� ���� (���� ũ��)
+	rewind(send_file);				// ���� �����͸� �ٽ� ������ �������� ����
+
+	//len = (int)strlen(filename);
+	unsigned long len = static_cast<unsigned long>(strlen(filename));
+	strncpy(buf, filename, len);
+
+	// 파일 이름 크기 전송
+	retval = send(sock, (char*)&len, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("sendnamesize()");
+	}
+	buf[len] = '\0';
+
+	// 파일 이름 전송
+	retval = send(sock, buf, len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("sendname()");
+	}
+
+	// 파일 크기 전송
+	retval = send(sock, (char*)&fileSize, sizeof(fileSize), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("sendfileSize()");
+	}
+
+	// 파일 전송
+	int retvalRead;
+
+	while ((retvalRead = fread(buf, 1, BUFSIZE, send_file)) > 0) {
+		retval = send(sock, buf, retvalRead, 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("sendfile()");
+			break;
+		}
+	}
+
+	fclose(send_file);
 }

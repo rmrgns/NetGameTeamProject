@@ -1,4 +1,4 @@
-#include "server.h"
+﻿#include "server.h"
 #include "packet.h"
 
 vector<MusicData> musicDataSet;
@@ -30,7 +30,7 @@ vector<string> GetFileNamesFromFolder()
 	WIN32_FIND_DATAW findFileData;
 	HANDLE hFind;
 	string str;
-	wstring searchPath = L"Sound\\*"; // ���?���� �˻�
+	wstring searchPath = L"Sound\\*"; // 占쏙옙占?占쏙옙占쏙옙 占싯삼옙
 	//wstring wsearchPath = wstring(searchPath.begin(), searchPath.end());
 	hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
@@ -41,7 +41,7 @@ vector<string> GetFileNamesFromFolder()
 
 	do 
 	{
-		// ���丮 ����
+		// 占쏙옙占썰리 占쏙옙占쏙옙
 		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
 		{
 			fileNames.emplace_back(WStringToString(findFileData.cFileName));
@@ -56,7 +56,7 @@ void CheckSendList(string sList, SOCKET client_sock)
 {
 	HANDLE hThread;
 
-	// ������ sendList�� Ȯ���ؼ� �ش� server �Լ� ȣ��
+	// 占쏙옙占쏙옙占쏙옙 sendList占쏙옙 확占쏙옙占쌔쇽옙 占쌔댐옙 server 占쌉쇽옙 호占쏙옙
 	if (sList == "CheckLogin")
 	{
 		/*hThread = (HANDLE)_beginthreadex(NULL, 0, RecvCheckLoginAndMusicDownload, (LPVOID)client_sock, 0, NULL);
@@ -109,6 +109,11 @@ void CheckSendList(string sList, SOCKET client_sock)
 		RecvEnterLobbyAndInfo(client_sock);
 	}
 
+	else if (sList == "UploadMusic")
+	{
+		RecvUploadMusic(client_sock);
+	}
+
 	else
 	{
 		cout << "failed" << endl;
@@ -118,7 +123,7 @@ void CheckSendList(string sList, SOCKET client_sock)
 
 void RecvCheckLoginAndMusicDownload(SOCKET sock)
 {
-	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
+	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	
 
 	/*int num = 0;
@@ -133,17 +138,17 @@ void RecvCheckLoginAndMusicDownload(SOCKET sock)
 		char buf[BUFSIZE];
 
 		string path = "Sound/" + m.musicName;
-		// ������ ������ ���� ����
-		FILE* send_file = fopen(path.c_str(), "rb");  // ������ ���� ���� ����
+		// 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
+		FILE* send_file = fopen(path.c_str(), "rb");  // 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
 		if (send_file == NULL) {
 			printf("file open error %s\n", path.c_str());
 			//break;
 		}
 		//cout << path << endl;
 		unsigned long fileSize;
-		fseek(send_file, 0, SEEK_END);	// ���� �����͸� ���� ������ �̵�
-		fileSize = ftell(send_file);	// ���� ���� ������ ��ġ�� ���� (���� ũ��)
-		rewind(send_file);				// ���� �����͸� �ٽ� ������ �������� ����
+		fseek(send_file, 0, SEEK_END);	// 占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占싱듸옙
+		fileSize = ftell(send_file);	// 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙 (占쏙옙占쏙옙 크占쏙옙)
+		rewind(send_file);				// 占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쌕쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙
 
 		unsigned long len= static_cast<unsigned long>(strlen(path.c_str()));
 		strncpy(buf, path.c_str(), len);
@@ -203,7 +208,7 @@ void SendPlayerScore(SOCKET sock)
 void RecvLeaveEditStation(SOCKET sock)
 {
 
-	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
+	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;
 	bool checkLeaveEditStation = TRUE;
 
@@ -218,9 +223,9 @@ void RecvLeaveEditStation(SOCKET sock)
 void RecvEnterPlayStation(SOCKET sock)
 {
 
-	// �κ� �������?�÷��̾ 2���϶� ������ �㰡�Ѵ�
+	// 占싸븝옙 占쏙옙占쏙옙占쏙옙占?占시뤄옙占싱어가 2占쏙옙占싹띰옙 占쏙옙占쏙옙占쏙옙 占썬가占싼댐옙
 
-	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
+	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;
 
 	unsigned char check = 'p';
@@ -246,7 +251,7 @@ void RecvPlayerScore(SOCKET sock)
 {
 	int retval;
 
-	// �÷��̾� ���� �޾ƿ��� �ڵ�
+	// 占시뤄옙占싱억옙 占쏙옙占쏙옙 占쌨아울옙占쏙옙 占쌘듸옙
 	PlayerScorePacket p;
 	ThrottlePackets();
 	retval = recv(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
@@ -254,8 +259,8 @@ void RecvPlayerScore(SOCKET sock)
 		err_display("RecvPlayerScore()");
 	}
 
-	// ���� ������Ʈ ����
-	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
+	// 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트 占쏙옙占쏙옙
+	// 占시뤄옙占싱억옙 id占쏙옙 占쌨아쇽옙 占쌔댐옙 占시뤄옙占싱억옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트占싼댐옙
 	cout << "score: " << p.score << endl;
 
 }
@@ -325,7 +330,7 @@ void RecvEnterLobbyAndInfo(SOCKET sock)
 void RecvEnterEditStation(SOCKET sock)
 {
 
-	// send�ؼ� ��Ʈ��ũ������ �����͸� ������
+	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;
 	bool checkEnterEditStation = TRUE;
 
@@ -335,4 +340,84 @@ void RecvEnterEditStation(SOCKET sock)
 		err_display("RecvEnterEditStation()");
 	}
 	//cout << "success3" << endl;
+}
+
+void RecvUploadMusic(SOCKET sock)
+{
+	int retval;
+	unsigned long filesize = 0;
+	char buf[BUFSIZE + 1] = { 0 };
+	char name[BUFSIZE + 1];
+
+	retval = recv(sock, (char*)&filesize, sizeof(unsigned long), MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvnamesize()");
+		return;
+	}
+	else if (retval == 0) {
+		printf("1\n");
+		return;
+	}
+
+	// 파일 이름 전송
+
+	retval = recv(sock, buf, filesize, MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvname()");
+		return;
+	}
+	else if (retval == 0) {
+		printf("2\n");
+		return;
+	}
+
+	buf[retval] = '\0';
+	strcpy(name, buf);
+	FILE* recvFile = fopen(name, "wb");
+	if (recvFile == NULL) {
+		printf("file open error\n");
+		return;
+	}
+
+	// 파일 크기 전송
+	retval = recv(sock, (char*)&filesize, sizeof(filesize), MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvfilesize()");
+		return;
+	}
+	else if (retval == 0) {
+		printf("3\n");
+		return;
+	}
+
+	// 파일 전송    
+	unsigned long totalBytesReceived = 0;
+
+	//printf("\033[%d;1H", localclientid);
+	//printf("\033[K");
+
+	while (totalBytesReceived < filesize) {
+		retval = recv(sock, buf, BUFSIZE, 0);
+
+		if (retval == SOCKET_ERROR) {
+			err_display("recvfile()");
+			break;
+		}
+
+		fwrite(buf, 1, retval, recvFile);
+		totalBytesReceived += retval;
+
+		//// ���൵ ǥ��
+		//EnterCriticalSection(&cs);
+		//// �� ����: Ŭ���̾�Ʈ�� ���� �ٷ� �̵� �� ���൵ ǥ��
+		//printf("\033[%d;1H", localclientid);  // Ŭ���̾�Ʈ ID�� ���� �ٸ� �ٷ� �̵�
+		//printf("[Ŭ���̾�Ʈ %d] ���൵: %d%% / ��ü ������ ũ��: %ld, ���� ���� ũ��: %ld\n",
+		//	localclientid,
+		//	(int)(((float)totalBytesReceived / (float)len) * 100.f),
+		//	len, totalBytesReceived);
+
+		//LeaveCriticalSection(&cs);
+	}
+	cout << "success" << endl;
+	fclose(recvFile);  // ���� �ݱ�	
 }

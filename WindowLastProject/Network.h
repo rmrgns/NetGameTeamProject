@@ -103,6 +103,7 @@ public:
 	void setCommand(string s) { cmd = s; }
 
 	//EditStation func
-	void SendUploadMusic(string filename, string music, string pattern);
+	void SendUploadMusic(string music, string pattern);
+	void SendFile(string filename);
 };
 

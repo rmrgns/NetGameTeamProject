@@ -31,6 +31,7 @@ enum class sendList : unsigned short
 	AllReadyAndMusicIndex = 7,
 	LeaveEditStation,
 	EnterEditStation,
+	UploadMusic,
 
 };
 
