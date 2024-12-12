@@ -124,12 +124,9 @@ TitlePage::~TitlePage()
 
 TitlePage* TitlePage::Init(const shp::rect4f& loc, const int& layer)
 {
-	
-	AddMusicData("momijinosakamichi.ogg", "Momijinosakamichi.txt");
-	//AddMusicData("otherOperation5.mp3", "momi.txt");
-	//AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
-	//AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
-	//AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
+	AddMusicData("Raseed Short Ver.mp3", "RaSeed_H.txt");
+	AddMusicData("ChartreuseGreen_H.mp3", "ChartreuseGreen_H.txt");
+	AddMusicData("Hiatus_Departure.mp3", "HiatusDeparture_H.txt");
 	SetLocation(loc);
 	SetLayer(layer);
 	
@@ -242,11 +239,11 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_SPACE) {
 				IFClickSelect(SelectBtn, hWnd, iMessage, wParam, lParam);
 			}
-			if (wParam >= '1' && wParam <= '9')
+			if (wParam >= '1' && wParam <= '3')
 			{
-				Network::GetInst()->temp = int(wParam) - 49;
+				Network::GetInst()->musicIndex = int(wParam) - 49;
 				if (Network::GetInst()->musicDataSet.size() <= Network::GetInst()->musicIndex)
-					Network::GetInst()->musicIndex = 0;
+					Network::GetInst()->musicIndex;
 			}
 			if (wParam == 'q')
 			{
