@@ -110,18 +110,15 @@ void CheckSendList(string sList, SOCKET client_sock)
 	{
 		RecvEnterLobbyAndInfo(client_sock);
 	}
-
-
 	else if (sList == "UploadMusic")
 	{
 		RecvUploadMusic(client_sock);
-
+	}
 	else if (sList == "ReadyStatus")
 	{
 
 
 	}
-
 	else
 	{
 		cout << "failed" << endl;

@@ -72,7 +72,7 @@ void Network::SendUpdate()
 
 		if (m_index == p2.index)
 		{
-			m_score = p2.score;
+			
 		}
 		else
 		{
@@ -88,7 +88,7 @@ void Network::SendUpdate()
 
 		if (m_index == p3.index)
 		{
-			m_score = p3.score;
+			
 		}
 		else
 		{
