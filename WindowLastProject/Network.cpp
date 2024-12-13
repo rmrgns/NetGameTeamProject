@@ -324,7 +324,7 @@ void Network::ProcessLeaveEditStation()
 
 void Network::SendEnterEditStation(TitlePage* tp)
 {	
-	int retval;
+	/*int retval;
 	unsigned long len;
 
 	string sl = "EnterEditStation";
@@ -340,12 +340,34 @@ void Network::SendEnterEditStation(TitlePage* tp)
 		err_display("SendEnterEditStation()");
 	}
 	TitleTemp = tp;
+	processSendList = sendList::EnterEditStation;*/
+
+	string sl = "EnterEditStation";
+	SendCommand(sl);
+
+	char isReady = 'e';
+
+	ThrottlePackets();
+	retval = send(sock, (char*)&isReady, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("EnterEditStation");
+	}
+
+	ThrottlePackets();
+	retval = recv(sock, (char*)&m_index, sizeof(unsigned short), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("EnterEditStation");
+	}
+
+	//cout << "index: " << m_index << endl;
+
+	TitleTemp = tp;
 	processSendList = sendList::EnterEditStation;
 }
 
 void Network::ProcessEnterEditStation()
 {
-	int retval;
+	/*int retval;
 	bool check;
 
 	retval = recv(sock, (char*)&check, sizeof(bool), 0);
@@ -359,6 +381,23 @@ void Network::ProcessEnterEditStation()
 
 	if (check == TRUE) {
 		TitleTemp->EnterEditStation();
+	}*/
+
+	unsigned char check;
+
+	ThrottlePackets();
+	retval = recv(sock, (char*)&check, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("ProcessEnterEditStation");
+	}
+
+	if (check == 'e')
+	{
+		// PlayerStation ???
+		//tp->setSelectCommand(check);
+		TitleTemp->Select(check);
+		cmd = "EnterEditStation";
+		//cout << check << endl;
 	}
 }
 void Network::SendEnterPlayStation(TitlePage* go)

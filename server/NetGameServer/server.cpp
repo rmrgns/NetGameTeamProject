@@ -212,7 +212,7 @@ void SendPlayerScore(SOCKET sock)
 
 void RecvLeaveEditStation(SOCKET sock)
 {
-
+	
 	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;
 	bool checkLeaveEditStation = TRUE;
@@ -399,18 +399,71 @@ void RecvEnterLobbyAndInfo(SOCKET sock)
 
 void RecvEnterEditStation(SOCKET sock)
 {
-
-
-	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;
-	bool checkEnterEditStation = TRUE;
+
+	unsigned char isReady = ' ';
+	unsigned short index = 0;
+
+	ThrottlePackets();
+	retval = recv(sock, (char*)&isReady, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("EnterEditStation");
+	}
+	//if (isReady == 'e')
+	//{
+	//	if (lobby.isReady == false)
+	//	{
+	//		//cout << "1" << endl;
+	//		lobby.isReady = true;
+	//		index = 0;
+	//		ThrottlePackets();
+	//		retval = send(sock, (char*)&index, sizeof(unsigned short), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("RecvEnterEditStation()");
+	//		}
+	//	}
+	//	else
+	//	{
+	//		//cout << "2" << endl;
+	//		lobby.isReady2 = true;
+	//		index = 1;
+	//		ThrottlePackets();
+	//		retval = send(sock, (char*)&index, sizeof(unsigned short), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("RecvEnterEditStation()");
+	//		}
+	//	}
+	//}
+
+	{
+		index = 0;
+		ThrottlePackets();
+		retval = send(sock, (char*)&index, sizeof(unsigned short), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("RecvEnterEditStation()");
+		}
+	}
 
 
-	retval = send(sock, (char*)&checkEnterEditStation, sizeof(bool), 0);
+
+	unsigned char check = 'e';
+	ThrottlePackets();
+	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("RecvEnterEditStation()");
 	}
-	//cout << "success3" << endl;
+
+
+	//// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
+	//int retval;
+	//bool checkEnterEditStation = TRUE;
+
+
+	//retval = send(sock, (char*)&checkEnterEditStation, sizeof(bool), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("RecvEnterEditStation()");
+	//}
+	////cout << "success3" << endl;
 }
 
 void RecvUploadMusic(SOCKET sock)

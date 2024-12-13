@@ -353,9 +353,9 @@ void TitlePage::NextPage()
 				break;
 			case 'e':
 			{
-				SendEnterEditStation();
-				//GameManager* GM = (GameManager*)gm;
-				//GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
+				//SendEnterEditStation();
+				GameManager* GM = (GameManager*)gm;
+				GM->AddObject((GameObject*)HeapDebugClass::HeapNew<EditStation>()->Init(shp::rect4f(rt.left, rt.top, rt.right, rt.bottom), 1));
 			}
 				break;
 
@@ -479,7 +479,8 @@ void IFClickSelect(const GameButton* obj, const HWND& hWnd, const UINT& iMessage
 		//tp->SendEnterLobbyAndInfo();
 	}
 	else {
-		tp->Select('e');
+		tp->SendEnterEditStation();
+		//tp->Select('e');
 	}
 	
 }
