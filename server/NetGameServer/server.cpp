@@ -1,4 +1,4 @@
-﻿#include "server.h"
+#include "server.h"
 #include "packet.h"
 
 vector<MusicData> musicDataSet;
@@ -30,7 +30,9 @@ vector<string> GetFileNamesFromFolder()
 	WIN32_FIND_DATAW findFileData;
 	HANDLE hFind;
 	string str;
+
 	wstring searchPath = L"Sound\\*"; // 占쏙옙占?占쏙옙占쏙옙 占싯삼옙
+
 	//wstring wsearchPath = wstring(searchPath.begin(), searchPath.end());
 	hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
 
@@ -109,9 +111,15 @@ void CheckSendList(string sList, SOCKET client_sock)
 		RecvEnterLobbyAndInfo(client_sock);
 	}
 
+
 	else if (sList == "UploadMusic")
 	{
 		RecvUploadMusic(client_sock);
+
+	else if (sList == "ReadyStatus")
+	{
+
+
 	}
 
 	else
@@ -223,12 +231,59 @@ void RecvLeaveEditStation(SOCKET sock)
 void RecvEnterPlayStation(SOCKET sock)
 {
 
+
 	// 占싸븝옙 占쏙옙占쏙옙占쏙옙占?占시뤄옙占싱어가 2占쏙옙占싹띰옙 占쏙옙占쏙옙占쏙옙 占썬가占싼댐옙
 
 	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;
 
+	unsigned char isReady = ' ';
+	unsigned short index = 0;
+
+	ThrottlePackets();
+	retval = recv(sock, (char*)&isReady, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("EnterPlayStation");
+	}
+	if (isReady == 'p')
+	{
+		if (lobby.isReady == false)
+		{
+			//cout << "1" << endl;
+			lobby.isReady = true;
+			index = 0;
+			ThrottlePackets();
+			retval = send(sock, (char*)&index, sizeof(unsigned short), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("RecvEnterPlayStation()");
+			}
+		}
+		else
+		{
+			//cout << "2" << endl;
+			lobby.isReady2 = true;
+			index = 1;
+			ThrottlePackets();
+			retval = send(sock, (char*)&index, sizeof(unsigned short), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("RecvEnterPlayStation()");
+			}
+		}
+	}
+	else
+	{
+		index = 0;
+		ThrottlePackets();
+		retval = send(sock, (char*)&index, sizeof(unsigned short), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("RecvEnterPlayStation()");
+		}
+	}
+
+	
+
 	unsigned char check = 'p';
+	ThrottlePackets();
 	retval = send(sock, (char*)&check, sizeof(unsigned char), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("RecvEnterPlayStation()");
@@ -259,10 +314,28 @@ void RecvPlayerScore(SOCKET sock)
 		err_display("RecvPlayerScore()");
 	}
 
-	// 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트 占쏙옙占쏙옙
-	// 占시뤄옙占싱억옙 id占쏙옙 占쌨아쇽옙 占쌔댐옙 占시뤄옙占싱억옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트占싼댐옙
-	cout << "score: " << p.score << endl;
+	lobby.score[p.index] = p.score;
 
+	// ���� ������Ʈ ����
+	// �÷��̾� id�� �޾Ƽ� �ش� �÷��̾��� ������ ������Ʈ�Ѵ�
+	cout << p.index <<" score: " << p.score << endl;
+
+	p.index = 0;
+	p.score = lobby.score[0];
+	ThrottlePackets();
+	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvPlayerScore()");
+	}
+
+	p.index = 1;
+	p.score = lobby.score[1];
+
+	ThrottlePackets();
+	retval = send(sock, (char*)&p, sizeof(PlayerScorePacket), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("RecvPlayerScore()");
+	}
 }
 
 void RecvEnterLobbyAndInfo(SOCKET sock)
@@ -329,6 +402,7 @@ void RecvEnterLobbyAndInfo(SOCKET sock)
 
 void RecvEnterEditStation(SOCKET sock)
 {
+
 
 	// send占쌔쇽옙 占쏙옙트占쏙옙크占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占쏙옙占쏙옙占쏙옙
 	int retval;

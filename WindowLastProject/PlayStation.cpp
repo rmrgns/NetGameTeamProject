@@ -2,6 +2,7 @@
 #include "Page.h"
 #include "Network.h"
 
+
 extern vector<Sprite*> SpriteData;
 extern RECT rt;
 
@@ -16,6 +17,7 @@ PlayStation::PlayStation()
 	SetMaxCombo(0);
 	SetTempo(130);
 	SetRotPos(ROTPOS::bottom);
+
 }
 
 PlayStation::~PlayStation()
@@ -46,6 +48,10 @@ PlayStation* PlayStation::Init(const shp::rect4f& loc, const bool& autoplay, con
 	SetLayer(layer);
 	pnW = GetPlayLoc().getw() / 12;
 	BackGround = SpriteData[11];
+
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+	CreateScoreWindow(hInstance);
+
 	return this;
 }
 
@@ -103,6 +109,8 @@ void PlayStation::FirstInit()
 			Music::SetChannelPos(0, ms);
 		}
 		first = false;
+
+		Network::GetInst()->SetPlayStation(this);
 	}
 }
 
@@ -161,6 +169,7 @@ void PlayStation::SetScore(const int& score)
 {
 	if (enable) {
 		Score = score;
+		
 	}
 }
 
@@ -331,6 +340,14 @@ const Note& PlayStation::GetNote(const int& index) const
 	else {
 		return zero;
 	}
+}
+
+void PlayStation::SetScores(unsigned short idx1, unsigned int scr1, unsigned short idx2, unsigned int scr2)
+{
+	scores.index1 = idx1;
+	scores.score1 = scr1;
+	scores.index2 = idx2;
+	scores.score2 = scr2;
 }
 
 //void PlayStation::SetShow(const int& index, const Show& show)
@@ -772,7 +789,7 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
 		Music::SetChannelPos(0, 1000 * GetTime());
-		// »ç¿îµå Á¶Àý
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Music::SetChannelVolume(0, 0.1f);
 	}
 	else {
@@ -786,7 +803,7 @@ void PlayStation::LoadMusic(const char* musicName)
 		Music::ConnectSound(0, songSoundID);
 		Music::Play(0, true);
 		Music::SetChannelPos(0, 1000 * GetTime());
-		// »ç¿îµå Á¶Àý
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Music::SetChannelVolume(0, 0.1f);
 	}
 }
@@ -1050,7 +1067,7 @@ void PlayStation::Update(const float& delta)
 				if (n == -1) continue;
 				if (GetNote(n).enable == false) continue;
 
-				//È¸ÀüÁß È¸ÀüµÈ °á°ú ROTPOS¿¡¼­ ³ëÆ®¸¦ Ä¥ ¼ö ÀÖ°Ô ÇÔ.
+				//È¸ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ROTPOSï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ Ä¥ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½.
 				if (GetNote(n).rotPos != rotation) {
 					if (rotating) {
  						if (GetNextROTPOS(rotation, rotateLeft) == GetNote(n).rotPos) {
@@ -1298,6 +1315,10 @@ void PlayStation::Update(const float& delta)
 			//SendRequestPlayerScore();
 		}
 		
+	}
+	//cout << Score << endl;
+	if (m_hScoreWnd) {
+		InvalidateRect(m_hScoreWnd, NULL, TRUE); // È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 	}
 }
 
@@ -1627,12 +1648,12 @@ void PlayStation::Render(HDC hdc)
 			float rate = AnimClass::EaseOut(RotateFlow.x / RotateFlow.y, RotatePower);
 
 			if (rotateLeft) {
-				//¿ÞÂÊ È¸ÀüÁß
+				//ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½
 				numangle = shp::PI/2.0f;
 				
 			}
 			else {
-				//¿À¸¥ÂÊ È¸ÀüÁß
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½
 				numangle = shp::PI / 2.0f;
 				rate = 1.0f - rate;
 			}
@@ -1910,6 +1931,73 @@ void PlayStation::LeavePlayStation()
 	GM->Update(0);
 	SetEnable(false);
 }
+
+void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
+{
+	std::thread([this, hInstance]() {
+		WNDCLASS wc = {};
+		wc.lpfnWndProc = ScoreWindowProc;
+		wc.hInstance = hInstance;
+		wc.lpszClassName = L"ScoreWindowClass";
+		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+		RegisterClass(&wc);
+
+		// ï¿½ï¿½ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½
+		m_hScoreWnd = CreateWindowEx(
+			0,
+			L"ScoreWindowClass",
+			L"scoreboard",
+			WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
+			50, 50, 200, 100,
+			NULL, NULL, hInstance, NULL
+		);
+
+		SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)&scores);
+		ShowWindow(m_hScoreWnd, SW_SHOW);
+
+		// ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		MSG msg;
+		while (GetMessage(&msg, NULL, 0, 0)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		}).detach();
+}
+
+void PlayStation::UpdateScoreboard()
+{
+	
+}
+
+LRESULT CALLBACK PlayStation::ScoreWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message) {
+	case WM_PAINT: {
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		Scores* score = (Scores*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½
+		wchar_t scoreText[256];
+		swprintf(scoreText, 256, L"%d score: %d", score->index1+1, score->score1);
+		TextOut(hdc, 10, 10, scoreText, wcslen(scoreText));
+
+		wchar_t scoreText2[256];
+		swprintf(scoreText2, 256, L"%d score: %d", score->index2+1, score->score2);
+		TextOut(hdc, 10, 30, scoreText2, wcslen(scoreText2));
+		EndPaint(hWnd, &ps);
+		return 0;
+	}
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+}
+
 
 
 void PlayStation::SendRequestPlayerScore()

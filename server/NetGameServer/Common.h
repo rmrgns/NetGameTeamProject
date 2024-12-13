@@ -52,6 +52,7 @@ struct LobbyInfo
 	unsigned short playerNum = 0;
 	array<string, 2> id = { "","" };
 	bool isReady=false;
+	bool isReady2=false;
 	unsigned int musicIndex=0;
 	array<unsigned int, 2> score = { 0,0 };
 };

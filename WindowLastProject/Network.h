@@ -44,10 +44,16 @@ private:
 	int m_id;
 	int m_prev_size = 0;
 	bool m_iswork = true;
-	int m_index = 1;
+	unsigned short m_index = 0;
 	unsigned int m_score = 0;
 
+	unsigned short index2 = 0;
+	unsigned int score2 = 0;
+
+
 	const char* SERVERIP = (char*)"127.0.0.1";
+	//const char* SERVERIP = (char*)"192.168.0.2";
+	//const char* SERVERIP = (char*)"10.20.11.32";
 	int retval;
 	unsigned long len;
 	int SERVERPORT = 9000;
@@ -72,6 +78,8 @@ public:
 	bool Connect();
 	void SendUpdate();
 	void Update();	// �������� ������ ������ ���۹޴� �Լ�
+
+	void SetPlayStation(PlayStation* ps) { PlayTemp = ps; }
 
 public:
 	//������ Ŭ���� �߰��Լ�
@@ -99,7 +107,9 @@ public:
 	// Lobby func
 	void SendEnterLobbyAndInfo(TitlePage* go);
 	void ProcessEnterLobbyAndInfo();
-	// �޼�
+
+	void SendReadyStatus();
+
 	void setCommand(string s) { cmd = s; }
 
 	//EditStation func

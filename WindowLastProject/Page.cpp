@@ -226,7 +226,8 @@ void TitlePage::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	if (enable) {
 		if (checkGameStart == false) {
-			GameStartButton->Event(hWnd, iMessage, wParam, lParam);
+			if(GameStartButton != nullptr)
+				GameStartButton->Event(hWnd, iMessage, wParam, lParam);
 		}
 		else {
 			NextMenu->Event(hWnd, iMessage, wParam, lParam);

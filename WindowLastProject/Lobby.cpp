@@ -12,3 +12,8 @@ void Lobby::SendEnterPlayStation()
 {
 
 }
+
+void Lobby::SendReadyStatus()
+{
+
+}

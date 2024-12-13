@@ -5,6 +5,7 @@
 
 // lobby information
 static vector<LobbyInfo> lobbyData;
+static LobbyInfo lobby;
 
 #define BUFSIZE 4096	// ??? ????
 
@@ -34,3 +35,7 @@ void RecvPlayerScore(SOCKET sock);
 void RecvEnterLobbyAndInfo(SOCKET sock);
 
 void RecvUploadMusic(SOCKET sock);
+
+void SendRequestAllReadyAndMusicIndex(SOCKET sock);
+void setReady();
+
