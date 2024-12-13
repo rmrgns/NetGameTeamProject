@@ -169,10 +169,7 @@ void PlayStation::SetScore(const int& score)
 {
 	if (enable) {
 		Score = score;
-		//if (m_hScoreWnd) {
-		//	SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // ���� ����
-		//	InvalidateRect(m_hScoreWnd, NULL, TRUE); // ȭ�� ���� ��û
-		//}
+		
 	}
 }
 
@@ -1319,8 +1316,10 @@ void PlayStation::Update(const float& delta)
 		}
 		
 	}
-	cout << Score << endl;
-	
+	//cout << Score << endl;
+	if (m_hScoreWnd) {
+		InvalidateRect(m_hScoreWnd, NULL, TRUE); // ȭ�� ���� ��û
+	}
 }
 
 void PlayStation::Event(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -1947,7 +1946,7 @@ void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 		m_hScoreWnd = CreateWindowEx(
 			0,
 			L"ScoreWindowClass",
-			L"����",
+			L"scoreboard",
 			WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
 			50, 50, 200, 100,
 			NULL, NULL, hInstance, NULL
@@ -1967,19 +1966,7 @@ void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 
 void PlayStation::UpdateScoreboard()
 {
-	if (m_hScoreWnd) { // 점수 표시용 윈도우가 있는지 확인
-		wchar_t buffer[256];
-
-		// 점수 데이터 생성
-		swprintf(buffer, 256, L"Index1: %d, Score1: %d\nIndex2: %d, Score2: %d",
-			scores.index1, scores.score1, scores.index2, scores.score2);
-
-		// 윈도우 텍스트 설정
-		SetWindowText(m_hScoreWnd, buffer);
-
-		// 화면 갱신
-		InvalidateRect(m_hScoreWnd, NULL, TRUE);
-	}
+	
 }
 
 LRESULT CALLBACK PlayStation::ScoreWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
