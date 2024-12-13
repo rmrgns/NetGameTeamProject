@@ -61,6 +61,13 @@ typedef struct KeyData {
 	bool SpaceHit = false;
 };
 
+typedef struct Scores {
+	unsigned short index1;
+	unsigned int score1;
+	unsigned short index2;
+	unsigned int score2;
+};
+
 class PlayStation : GameObject{
 private:
 	bool isplaying = true; // false면 멈출 수 있게
@@ -132,6 +139,8 @@ private:
 	// PS scoreboard
 	HWND m_hScoreWnd;
 
+	Scores scores;
+
 public:
 	// variable access
 	PlayStation();
@@ -173,6 +182,9 @@ public:
 
 	void SetNote(const int& index, const Note& note);
 	const Note& GetNote(const int& index) const;
+
+	void SetScores(unsigned short idx1, unsigned int scr1, unsigned short idx2, unsigned int scr2);
+	Scores GetScores() const { return scores; };
 
 	shp::rect4f GetPlayLoc() {
 		shp::rect4f wloc = GetLocation();

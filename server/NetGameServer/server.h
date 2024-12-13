@@ -5,6 +5,7 @@
 
 // lobby information
 static vector<LobbyInfo> lobbyData;
+static LobbyInfo lobby;
 
 #define BUFSIZE 4096	// ??? ????
 

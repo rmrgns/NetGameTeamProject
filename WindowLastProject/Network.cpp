@@ -63,6 +63,41 @@ void Network::SendUpdate()
 		if (retval == SOCKET_ERROR) {
 			err_display("SendPlayerScore() score");
 		}
+		PlayerScorePacket p2;
+		ThrottlePackets();
+		retval = recv(sock, (char*)&p2, sizeof(PlayerScorePacket), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("SendPlayerScore() score");
+		}
+
+		if (m_index == p2.index)
+		{
+			m_score = p2.score;
+		}
+		else
+		{
+			index2 = p2.index;
+			score2 = p2.score;
+		}
+		PlayerScorePacket p3;
+		ThrottlePackets();
+		retval = recv(sock, (char*)&p3, sizeof(PlayerScorePacket), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("SendPlayerScore() score");
+		}
+
+		if (m_index == p3.index)
+		{
+			m_score = p3.score;
+		}
+		else
+		{
+			index2 = p3.index;
+			score2 = p3.score;
+		}
+		cout << "index: " << m_index << ", score: " << m_score << endl;
+
+		PlayTemp->SetScores(m_index, m_score, index2, score2);
 		//cout << p.score << ": " <<m_score << endl;
 		//processSendList = sendList::PlayerScore;
 	}
@@ -330,6 +365,23 @@ void Network::SendEnterPlayStation(TitlePage* go)
 {
 	string sl = "EnterPlayStation";
 	SendCommand(sl);
+
+	char isReady = 'p';
+
+	ThrottlePackets();
+	retval = send(sock, (char*)&isReady, sizeof(unsigned char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("EnterPlayStation");
+	}
+
+	ThrottlePackets();
+	retval = recv(sock, (char*)&m_index, sizeof(unsigned short), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("EnterPlayStation");
+	}
+
+	cout << "index: " << m_index << endl;
+
 	TitleTemp = go;
 	processSendList = sendList::EnterPlayStation;
 }

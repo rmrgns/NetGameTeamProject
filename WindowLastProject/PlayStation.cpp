@@ -109,6 +109,8 @@ void PlayStation::FirstInit()
 			Music::SetChannelPos(0, ms);
 		}
 		first = false;
+
+		Network::GetInst()->SetPlayStation(this);
 	}
 }
 
@@ -167,10 +169,10 @@ void PlayStation::SetScore(const int& score)
 {
 	if (enable) {
 		Score = score;
-		if (m_hScoreWnd) {
-			SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // ���� ����
-			InvalidateRect(m_hScoreWnd, NULL, TRUE); // ȭ�� ���� ��û
-		}
+		//if (m_hScoreWnd) {
+		//	SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // ���� ����
+		//	InvalidateRect(m_hScoreWnd, NULL, TRUE); // ȭ�� ���� ��û
+		//}
 	}
 }
 
@@ -341,6 +343,14 @@ const Note& PlayStation::GetNote(const int& index) const
 	else {
 		return zero;
 	}
+}
+
+void PlayStation::SetScores(unsigned short idx1, unsigned int scr1, unsigned short idx2, unsigned int scr2)
+{
+	scores.index1 = idx1;
+	scores.score1 = scr1;
+	scores.index2 = idx2;
+	scores.score2 = scr2;
 }
 
 //void PlayStation::SetShow(const int& index, const Show& show)
@@ -1926,7 +1936,6 @@ void PlayStation::LeavePlayStation()
 void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 {
 	std::thread([this, hInstance]() {
-		// ������ Ŭ���� ���
 		WNDCLASS wc = {};
 		wc.lpfnWndProc = ScoreWindowProc;
 		wc.hInstance = hInstance;
@@ -1944,7 +1953,7 @@ void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 			NULL, NULL, hInstance, NULL
 		);
 
-		SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score); // �ʱ� ���� ����
+		SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)&scores);
 		ShowWindow(m_hScoreWnd, SW_SHOW);
 
 		// �޽��� ����
@@ -1953,15 +1962,24 @@ void PlayStation::CreateScoreWindow(HINSTANCE hInstance)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		}).detach(); // �����带 �и��Ͽ� ���������� ����
+		}).detach();
 }
 
 void PlayStation::UpdateScoreboard()
 {
-	SetWindowLongPtr(m_hScoreWnd, GWLP_USERDATA, (LONG_PTR)Score);
+	if (m_hScoreWnd) { // 점수 표시용 윈도우가 있는지 확인
+		wchar_t buffer[256];
 
-	// ����â �ٽ� �׸��� ��û
-	InvalidateRect(m_hScoreWnd, NULL, TRUE);
+		// 점수 데이터 생성
+		swprintf(buffer, 256, L"Index1: %d, Score1: %d\nIndex2: %d, Score2: %d",
+			scores.index1, scores.score1, scores.index2, scores.score2);
+
+		// 윈도우 텍스트 설정
+		SetWindowText(m_hScoreWnd, buffer);
+
+		// 화면 갱신
+		InvalidateRect(m_hScoreWnd, NULL, TRUE);
+	}
 }
 
 LRESULT CALLBACK PlayStation::ScoreWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1972,15 +1990,15 @@ LRESULT CALLBACK PlayStation::ScoreWindowProc(HWND hWnd, UINT message, WPARAM wP
 		HDC hdc = BeginPaint(hWnd, &ps);
 
 		// ���� ��������
-		int score = (int)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+		Scores* score = (Scores*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 		// ���� �ؽ�Ʈ ���
 		wchar_t scoreText[256];
-		swprintf(scoreText, 256, L"score: %d", score);
+		swprintf(scoreText, 256, L"%d score: %d", score->index1+1, score->score1);
 		TextOut(hdc, 10, 10, scoreText, wcslen(scoreText));
 
 		wchar_t scoreText2[256];
-		swprintf(scoreText2, 256, L"score2: %d", score);
+		swprintf(scoreText2, 256, L"%d score: %d", score->index2+1, score->score2);
 		TextOut(hdc, 10, 30, scoreText2, wcslen(scoreText2));
 		EndPaint(hWnd, &ps);
 		return 0;
